@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Flame, CloudRain, SunMedium, Droplets, Leaf } from 'lucide-react';
 
 interface IndicatorItem {
   axis: string;
@@ -13,16 +13,26 @@ interface RiskRadarChartProps {
   districtName: string;
 }
 
+const AXIS_ICONS: Record<string, string> = {
+  heat: '🔥',
+  flood: '🌧️',
+  drought: '🏜️',
+  water: '💧',
+  agricultural: '🌾',
+  coastal: '🌊',
+  ecosystem: '🌿',
+};
+
 export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
   indicators,
-  overallIndex,
-  districtName
+  overallIndex = 78,
+  districtName = 'Sindh'
 }) => {
   if (!indicators || indicators.length === 0) return null;
 
-  const size = 300;
+  const size = 260;
   const center = size / 2;
-  const radius = 100;
+  const radius = 80;
   const numAxes = indicators.length;
 
   const getCoord = (index: number, val: number) => {
@@ -34,42 +44,40 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
     };
   };
 
-  // Concentric polygon grids (20%, 40%, 60%, 80%, 100%)
   const gridLevels = [25, 50, 75, 100];
 
-  // Polygon points for data
   const polyPoints = indicators.map((ind, i) => {
     const pt = getCoord(i, ind.score);
     return `${pt.x},${pt.y}`;
   }).join(' ');
 
   return (
-    <div className="flex flex-col h-full justify-between">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-eco-orange" />
-          <span className="text-xs font-grotesk text-eco-muted uppercase tracking-wider">6-Axis Climate Risk Radar</span>
+    <div className="flex flex-col h-full justify-between space-y-2 font-inter">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-xs font-space font-semibold text-slate-300">
+          <ShieldAlert className="w-3.5 h-3.5 text-warning-orange" />
+          <span>Vulnerability Radar</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-eco-muted uppercase">Vulnerability Index:</span>
-          <span className={`px-2 py-0.5 rounded text-xs font-orbitron font-bold ${
-            overallIndex >= 80 ? 'bg-eco-red/20 text-eco-red border border-eco-red/30' :
-            overallIndex >= 65 ? 'bg-eco-orange/20 text-eco-orange border border-eco-orange/30' :
-            'bg-eco-green/20 text-eco-green border border-eco-green/30'
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] font-mono text-slate-400">Score:</span>
+          <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${
+            overallIndex >= 80 ? 'bg-danger-red/20 text-danger-red border border-danger-red/30' :
+            overallIndex >= 65 ? 'bg-warning-orange/20 text-warning-orange border border-warning-orange/30' :
+            'bg-emerald-green/20 text-emerald-green border border-emerald-green/30'
           }`}>
-            {overallIndex} / 100
+            {overallIndex}/100
           </span>
         </div>
       </div>
 
-      {/* SVG Radar */}
-      <div className="relative flex items-center justify-center my-1">
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="select-none overflow-visible">
+      {/* ── Responsive SVG Radar Canvas ── */}
+      <div className="relative flex items-center justify-center py-1">
+        <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[210px] h-auto select-none overflow-visible">
           <defs>
             <radialGradient id="radarFill" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#22B8FF" stopOpacity="0.45" />
-              <stop offset="100%" stopColor="#35D39A" stopOpacity="0.10" />
+              <stop offset="0%" stopColor="#20C5FF" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#22D3A0" stopOpacity="0.12" />
             </radialGradient>
           </defs>
 
@@ -84,7 +92,7 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
                 key={lvl}
                 points={pts}
                 fill="none"
-                stroke="rgba(255,255,255,0.08)"
+                stroke="rgba(255,255,255,0.09)"
                 strokeDasharray="2 2"
               />
             );
@@ -109,43 +117,44 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
           <polygon
             points={polyPoints}
             fill="url(#radarFill)"
-            stroke="#22B8FF"
-            strokeWidth="2.2"
+            stroke="#20C5FF"
+            strokeWidth="2"
           />
 
           {/* Vertex dots & Axis Labels */}
           {indicators.map((ind, i) => {
             const pt = getCoord(i, ind.score);
-            const labelPt = getCoord(i, 122);
+            const labelPt = getCoord(i, 118);
+            const shortName = ind.axis.split(' ')[0];
 
             return (
               <g key={ind.axis}>
                 <circle
                   cx={pt.x}
                   cy={pt.y}
-                  r={4.5}
-                  fill={ind.score >= 85 ? '#FF5555' : ind.score >= 70 ? '#FF9F43' : '#35D39A'}
+                  r={3.5}
+                  fill={ind.score >= 85 ? '#FF5D63' : ind.score >= 70 ? '#FFAA45' : '#22D3A0'}
                   stroke="#FFFFFF"
-                  strokeWidth="1.5"
+                  strokeWidth="1.2"
                 />
                 <text
                   x={labelPt.x}
                   y={labelPt.y}
-                  fill="#F5F7FA"
-                  fontSize="9"
+                  fill="#F8FAFC"
+                  fontSize="8.5"
                   fontFamily="'Space Grotesk', sans-serif"
                   fontWeight="600"
                   textAnchor="middle"
                   dominantBaseline="central"
                 >
-                  {ind.axis.split(' ')[0]}
+                  {shortName}
                 </text>
                 <text
                   x={labelPt.x}
-                  y={labelPt.y + 11}
-                  fill={ind.score >= 85 ? '#FF5555' : ind.score >= 70 ? '#FF9F43' : '#35D39A'}
-                  fontSize="8"
-                  fontFamily="monospace"
+                  y={labelPt.y + 10}
+                  fill={ind.score >= 85 ? '#FF5D63' : ind.score >= 70 ? '#FFAA45' : '#22D3A0'}
+                  fontSize="7.5"
+                  fontFamily="'JetBrains Mono', monospace"
                   textAnchor="middle"
                   dominantBaseline="central"
                 >
@@ -157,18 +166,23 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
         </svg>
       </div>
 
-      {/* Breakdown list */}
-      <div className="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-white/5 text-[10px] font-mono">
-        {indicators.slice(0, 3).map((ind) => (
-          <div key={ind.axis} className="bg-eco-bg/40 p-1.5 rounded">
-            <span className="text-eco-muted block truncate">{ind.axis}</span>
-            <span className={`font-bold ${ind.score >= 85 ? 'text-eco-red' : ind.score >= 70 ? 'text-eco-orange' : 'text-eco-green'}`}>
-              {ind.score}/100 · {ind.severity}
-            </span>
-          </div>
-        ))}
+      {/* ── Clear Breakdown Chips (HCI Compliant) ── */}
+      <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-white/5 text-[10px] font-mono">
+        {indicators.slice(0, 3).map((ind) => {
+          const key = ind.axis.toLowerCase();
+          const icon = AXIS_ICONS[Object.keys(AXIS_ICONS).find(k => key.includes(k)) || 'heat'];
+          return (
+            <div key={ind.axis} className="bg-[#06111F]/70 border border-white/5 p-1.5 rounded-lg text-center">
+              <span className="text-slate-400 block truncate text-[9px] mb-0.5">
+                {icon} {ind.axis.split(' ')[0]}
+              </span>
+              <span className={`font-bold text-[10px] block ${ind.score >= 85 ? 'text-danger-red' : ind.score >= 70 ? 'text-warning-orange' : 'text-emerald-green'}`}>
+                {ind.score}%
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
-

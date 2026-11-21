@@ -14,7 +14,10 @@ import {
   Brain,
   ShieldCheck,
   CheckCircle2,
-  Database
+  Database,
+  Thermometer,
+  Droplets,
+  Info
 } from 'lucide-react';
 import { useActiveLocation } from '../context/LocationContext';
 import { API_BASE } from '../config/api';
@@ -268,19 +271,19 @@ export const ClimateIntelligence: React.FC = () => {
         </div>
       </div>
 
-      {/* ── 4 KPI Cards (Matching Tile 3) ── */}
+      {/* ── 4 KPI Cards (Matching Tile 3 with HCI Clarity) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Mean Warming Rate */}
         <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
+            <span className="text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold">
               Mean Warming Rate
             </span>
             <div className="text-2xl sm:text-3xl font-space font-bold text-white mt-1">
               +{summaryData?.warming_rate_per_decade || '0.8'}°C
             </div>
-            <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
-              Per Decade (Scikit-Learn ML)
+            <span className="text-[11px] text-warning-orange font-mono mt-0.5 block">
+              Rise per 10 years (ML)
             </span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-warning-orange shrink-0">
@@ -291,14 +294,14 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 2: Since 1980 */}
         <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
-              Since 1980
+            <span className="text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold">
+              Since 1980 Warming
             </span>
             <div className="text-2xl sm:text-3xl font-space font-bold text-emerald-green mt-1">
               +{summaryData?.observed_warming_since_1980 || '1.9'}°C
             </div>
-            <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
-              vs 1980 Baseline Anomaly
+            <span className="text-[11px] text-emerald-green font-mono mt-0.5 block">
+              Observed anomaly vs baseline
             </span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-green shrink-0">
@@ -309,14 +312,14 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 3: Record Summer */}
         <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
-              Record Summer
+            <span className="text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold">
+              Record Summer Peak
             </span>
-            <div className="text-2xl sm:text-3xl font-space font-bold text-warning-orange mt-1">
+            <div className="text-2xl sm:text-3xl font-space font-bold text-amber-400 mt-1">
               {summaryData?.record_max_temp || '47.5'}°C
             </div>
-            <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
-              Year {summaryData?.record_max_temp_year || '2022'} Extreme
+            <span className="text-[11px] text-amber-300 font-mono mt-0.5 block">
+              Year {summaryData?.record_max_temp_year || '2022'} heatwave
             </span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
@@ -327,14 +330,14 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 4: 2022 Monsoon */}
         <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
           <div>
-            <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
-              2022 Monsoon
+            <span className="text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold">
+              2022 Monsoon Flood
             </span>
             <div className="text-2xl sm:text-3xl font-space font-bold text-primary-cyan mt-1">
               {summaryData?.record_flood_rainfall || '312'} mm
             </div>
-            <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
-              Flood Inundation Peak
+            <span className="text-[11px] text-primary-cyan font-mono mt-0.5 block">
+              Catastrophic precipitation peak
             </span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-primary-cyan shrink-0">
@@ -344,46 +347,49 @@ export const ClimateIntelligence: React.FC = () => {
       </div>
 
       {/* ── 3 Main Analytics Charts (Row 2, Matching Tile 3) ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         
         {/* 1. Historical Climate Trends */}
         <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <h3 className="font-space font-bold text-white text-sm">
                 Historical Climate Trends
               </h3>
               {/* Sub-tabs: Temperature, Rainfall, Humidity */}
-              <div className="flex bg-[#06111F]/80 p-0.5 rounded-lg border border-white/10">
+              <div className="flex bg-[#06111F] p-1 rounded-xl border border-white/10 shrink-0">
                 <button
                   onClick={() => setHistoricalTab('temperature')}
-                  className={`px-2 py-0.5 text-[10px] font-space font-medium rounded transition ${
+                  className={`px-2.5 py-1 text-[11px] font-space font-medium rounded-lg flex items-center gap-1 transition cursor-pointer ${
                     historicalTab === 'temperature'
-                      ? 'bg-primary-cyan text-[#06111F] font-bold'
+                      ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  Temperature
+                  <Thermometer className="w-3 h-3" />
+                  <span>Temp</span>
                 </button>
                 <button
                   onClick={() => setHistoricalTab('rainfall')}
-                  className={`px-2 py-0.5 text-[10px] font-space font-medium rounded transition ${
+                  className={`px-2.5 py-1 text-[11px] font-space font-medium rounded-lg flex items-center gap-1 transition cursor-pointer ${
                     historicalTab === 'rainfall'
-                      ? 'bg-primary-cyan text-[#06111F] font-bold'
+                      ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  Rainfall
+                  <CloudRain className="w-3 h-3" />
+                  <span>Rain</span>
                 </button>
                 <button
                   onClick={() => setHistoricalTab('humidity')}
-                  className={`px-2 py-0.5 text-[10px] font-space font-medium rounded transition ${
+                  className={`px-2.5 py-1 text-[11px] font-space font-medium rounded-lg flex items-center gap-1 transition cursor-pointer ${
                     historicalTab === 'humidity'
-                      ? 'bg-primary-cyan text-[#06111F] font-bold'
+                      ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  Humidity
+                  <Droplets className="w-3 h-3" />
+                  <span>Humidity</span>
                 </button>
               </div>
             </div>
