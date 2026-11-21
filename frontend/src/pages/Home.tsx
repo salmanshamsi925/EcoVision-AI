@@ -381,8 +381,6 @@ export const Home: React.FC = () => {
               </button>
             </div>
           </div>
-        </>
-      )}
 
           {/* Right-Side Floating Planetary Telemetry Card (Desktop Composition Balance) */}
           <div className="hidden xl:flex flex-col gap-3 absolute top-28 right-8 z-20 w-80 pointer-events-auto">
