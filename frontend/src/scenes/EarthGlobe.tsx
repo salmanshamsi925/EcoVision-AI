@@ -59,7 +59,19 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     cameraRef.current = camera;
-    camera.position.set(0, 2.5, 6.5);
+    camera.position.set(0, 1.2, 5.8);
+
+    // Dynamic Camera View Offset: On desktop (>=1024px), shifts the 3D origin (Earth)
+    // cleanly to the RIGHT half of the viewport (~72% screen width), giving hero text full breathing room on the left!
+    const updateCameraViewOffset = (w: number, h: number) => {
+      if (w >= 1024) {
+        camera.setViewOffset(w, h, -w * 0.22, 0, w, h);
+      } else {
+        camera.clearViewOffset();
+      }
+      camera.updateProjectionMatrix();
+    };
+    updateCameraViewOffset(width, height);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
@@ -78,15 +90,13 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     controls.minDistance = 2.4;
     controls.maxDistance = 14.0;
     controls.enablePan = false;
+    controls.target.set(0, 0, 0);
 
-    // 3. Globe Group (Cleanly positioned in the right-hand column on desktop)
-    const globeOffsetX = width >= 1024 ? 1.75 : 0;
+    // 3. Globe Group (Origin centered at 0, 0, 0 for perfect spherical rotation)
     const globeGroup = new THREE.Group();
-    globeGroup.position.set(globeOffsetX, 0, 0);
+    globeGroup.position.set(0, 0, 0);
     globeGroupRef.current = globeGroup;
     scene.add(globeGroup);
-
-    controls.target.set(globeOffsetX, 0, 0);
 
     // Initial orientation: Rotate so Pakistan is naturally facing towards the front
     const initialTarget = latLonToVector3(28.5, 69.0, 1.0).normalize();
@@ -265,8 +275,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
 
         if (cameraRef.current) {
           cameraRef.current.position.lerpVectors(cameraStartPos.current, cameraEndPos.current, ease);
-          cameraRef.current.lookAt(globeGroup.position.x, 0, 0);
-          controls.target.set(globeGroup.position.x, 0, 0);
+          cameraRef.current.lookAt(0, 0, 0);
+          controls.target.set(0, 0, 0);
         }
       } else if (globeGroupRef.current && !controls.state && !reducedMotion) {
         // Gentle orbital spin when idle
@@ -295,13 +305,9 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
       const w = currentMount.clientWidth;
       const h = currentMount.clientHeight;
       camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+      updateCameraViewOffset(w, h);
       renderer.setSize(w, h);
-      const newOffsetX = w >= 1024 ? 1.75 : 0;
-      if (globeGroupRef.current) {
-        globeGroupRef.current.position.x = newOffsetX;
-      }
-      controls.target.set(newOffsetX, 0, 0);
+      controls.target.set(0, 0, 0);
     };
 
     window.addEventListener('resize', handleResize);
@@ -399,9 +405,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     startQuat.current.copy(globeGroupRef.current.quaternion);
     targetQuat.current.setFromUnitVectors(localPoint, cameraDir);
 
-    const globeOffsetX = mountRef.current ? (mountRef.current.clientWidth >= 1024 ? 1.75 : 0) : 0;
     cameraStartPos.current.copy(cameraRef.current.position);
-    cameraEndPos.current.set(globeOffsetX, 1.0, 5.2);
+    cameraEndPos.current.set(0, 0.8, 5.2);
 
     rotProgress.current = 0;
     isRotating.current = true;

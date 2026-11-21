@@ -319,9 +319,9 @@ export const Home: React.FC = () => {
       {/* 3. ORIGINAL CINEMATIC HERO (Exact Visual Aesthetic as Requested) */}
       {!fullScreenGlobe && !selectedLocation && (
         <>
-          <div className="relative z-20 max-w-xl mt-6 sm:mt-10 md:mt-12 px-6 md:px-12 pointer-events-auto">
+          <div className="relative z-20 max-w-lg lg:max-w-xl mt-3 sm:mt-6 px-4 sm:px-8 lg:px-12 pointer-events-auto">
             {/* Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-eco-surface/90 border border-eco-blue/30 backdrop-blur-md mb-4 shadow-lg pointer-events-auto">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-eco-surface/90 border border-eco-blue/30 backdrop-blur-md mb-3 shadow-lg pointer-events-auto">
               <span className="w-2.5 h-2.5 rounded-full bg-eco-green animate-pulse" />
               <span className="font-grotesk text-xs tracking-wider text-eco-blue uppercase font-bold">
                 Pakistan Climate Command &bull; Live Telemetry
@@ -329,7 +329,7 @@ export const Home: React.FC = () => {
             </div>
 
             {/* Headline with Strong Drop Shadow */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
               THE FUTURE IS IN <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-eco-blue via-eco-green to-cyan-300">
                 YOUR HANDS
@@ -337,15 +337,15 @@ export const Home: React.FC = () => {
             </h1>
 
             {/* Description */}
-            <p className="mt-3 text-sm md:text-base text-slate-100 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-lg">
+            <p className="mt-2.5 text-xs sm:text-sm text-slate-200 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-md">
               One Planet. Two Possible Futures. One Choice. Explore realistic near-term climate projection timelines for Pakistan &amp; Sindh.
             </p>
 
             {/* Action Buttons */}
-            <div className="mt-6 flex flex-wrap gap-3 pointer-events-auto">
+            <div className="mt-4 sm:mt-5 flex flex-wrap gap-2.5 pointer-events-auto">
               <button
                 onClick={handleEnterExperience}
-                className="px-7 py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-sm flex items-center justify-center gap-2 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
               >
                 <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
                 <span>{isEnteringExperience ? 'ROTATING TO PAKISTAN...' : 'ENTER THE EXPERIENCE'}</span>
@@ -354,7 +354,7 @@ export const Home: React.FC = () => {
 
               <button
                 onClick={() => navigate('/pakistan')}
-                className="px-6 py-3 rounded-xl bg-eco-surface/90 border border-eco-blue/40 text-eco-blue font-grotesk font-semibold text-sm flex items-center justify-center gap-2 hover:bg-eco-blue/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-eco-surface/90 border border-eco-blue/40 text-eco-blue font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-eco-blue/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer"
               >
                 <Compass className="w-4 h-4 text-eco-green" />
                 <span>Explore Sindh &amp; Pakistan</span>
@@ -363,10 +363,10 @@ export const Home: React.FC = () => {
               {/* Instant Full-Screen Globe Button */}
               <button
                 onClick={() => setFullScreenGlobe(true)}
-                className="px-4 py-3 rounded-xl bg-eco-surface/80 border border-white/10 text-white font-grotesk font-semibold text-xs flex items-center justify-center gap-1.5 hover:border-eco-green hover:text-eco-green transition backdrop-blur-md cursor-pointer"
+                className="px-3.5 py-2.5 rounded-xl bg-eco-surface/80 border border-white/10 text-white font-grotesk font-semibold text-xs flex items-center justify-center gap-1.5 hover:border-eco-green hover:text-eco-green transition backdrop-blur-md cursor-pointer"
                 title="Hide text and view full rotating 3D Earth"
               >
-                <Maximize2 className="w-4 h-4 text-eco-green" />
+                <Maximize2 className="w-3.5 h-3.5 text-eco-green" />
                 <span>Rotate 3D Earth</span>
               </button>
             </div>
@@ -376,7 +376,7 @@ export const Home: React.FC = () => {
               onClick={() => {
                 document.getElementById('earth-focus-section')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="mt-6 sm:mt-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#07111F]/80 border border-eco-blue/40 hover:border-eco-blue backdrop-blur-md text-xs font-grotesk text-eco-blue hover:text-white transition shadow-lg cursor-pointer animate-pulse"
+              className="mt-4 sm:mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#07111F]/80 border border-eco-blue/40 hover:border-eco-blue backdrop-blur-md text-[11px] font-grotesk text-eco-blue hover:text-white transition shadow-lg cursor-pointer"
             >
               <span>↓ Scroll down to view &amp; rotate full 3D Earth</span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-eco-blue/20 text-eco-blue">Tap to Scroll</span>
