@@ -324,7 +324,7 @@ export const Home: React.FC = () => {
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-eco-surface/90 border border-eco-blue/30 backdrop-blur-md mb-4 shadow-lg pointer-events-auto">
               <span className="w-2.5 h-2.5 rounded-full bg-eco-green animate-pulse" />
               <span className="font-grotesk text-xs tracking-wider text-eco-blue uppercase font-bold">
-                3D Planetary Digital Twin Active
+                Pakistan Climate Command &bull; Live Telemetry
               </span>
             </div>
 
@@ -398,40 +398,6 @@ export const Home: React.FC = () => {
               >
                 Back to Top ↑
               </button>
-            </div>
-          </div>
-
-          {/* Right-Side Floating Planetary Telemetry Card (Desktop Composition Balance) */}
-          <div className="hidden xl:flex flex-col gap-3 absolute top-28 right-8 z-20 w-80 pointer-events-auto">
-            <div className="hud-card p-4 rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl space-y-3" style={{ background: 'rgba(7,17,31,0.85)' }}>
-              <div className="flex items-center justify-between pb-2 border-b border-white/10">
-                <span className="text-xs font-orbitron font-bold text-white flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-eco-green" /> Planetary Telemetry
-                </span>
-                <span className="text-[10px] font-mono text-eco-blue bg-eco-blue/10 px-2 py-0.5 rounded border border-eco-blue/30">
-                  REAL-TIME SATELLITE
-                </span>
-              </div>
-
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center p-2 rounded-lg bg-white/[0.03] border border-white/5">
-                  <span className="text-eco-muted font-grotesk">Global Atmospheric CO₂</span>
-                  <span className="font-mono text-eco-orange font-bold">424.8 ppm</span>
-                </div>
-                <div className="flex justify-between items-center p-2 rounded-lg bg-white/[0.03] border border-white/5">
-                  <span className="text-eco-muted font-grotesk">Pakistan Mean Anomaly</span>
-                  <span className="font-mono text-red-400 font-bold">+1.82°C</span>
-                </div>
-                <div className="flex justify-between items-center p-2 rounded-lg bg-white/[0.03] border border-white/5">
-                  <span className="text-eco-muted font-grotesk">Indus Basin Stress Level</span>
-                  <span className="font-mono text-amber-400 font-bold">High Inflow Risk</span>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-eco-muted">
-                <span>Model: CMIP6 AR6</span>
-                <span className="text-eco-green">&bull; 100% Keyless</span>
-              </div>
             </div>
           </div>
         </>

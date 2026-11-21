@@ -7,12 +7,10 @@ import {
   Sliders, 
   Info,
   Menu,
-  X,
-  FileDown
+  X
 } from 'lucide-react';
 import { ActiveLocationPill } from './GuidedWorkflow';
 import { useActiveLocation } from '../context/LocationContext';
-import { generateClimatePDF } from '../reports/reportGenerator';
 
 const navItems = [
   { name: 'Globe', path: '/', icon: Globe2 },
@@ -25,24 +23,6 @@ const navItems = [
 export const NavBar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeLocation } = useActiveLocation();
-
-  const handleQuickPDFDownload = () => {
-    generateClimatePDF({
-      location: activeLocation,
-      timelineYear: 2035,
-      scenario: 'CMIP6 Synthesis (SSP2-4.5)',
-      resilienceScore: 68.0,
-      resilienceLevel: 'High Climate Resilience',
-      policies: {
-        renewable_energy: 55,
-        forest_afforestation: 50,
-        mangrove_conservation: 60,
-        water_canal_lining: 65,
-        emission_reduction: 45,
-        urban_greening: 50,
-      },
-    });
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-[#07111F]/95 backdrop-blur-xl border-b border-white/[0.08]">
@@ -94,23 +74,13 @@ export const NavBar: React.FC = () => {
             {/* Active Region Dropdown Pill */}
             <ActiveLocationPill />
 
-            {/* Quick 1-Click PDF Report Download */}
-            <button
-              onClick={handleQuickPDFDownload}
-              title="Download Climate PDF Impact Report"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-eco-green/10 hover:bg-eco-green/20 border border-eco-green/30 text-eco-green text-xs font-grotesk font-semibold whitespace-nowrap transition-all shadow-sm shrink-0"
-            >
-              <FileDown className="w-3.5 h-3.5 shrink-0" />
-              <span>PDF Report</span>
-            </button>
-
             {/* Minimal Live Status Badge */}
             <div 
-              title="NASA POWER & PMD Telemetry Synchronized"
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0B1A2C] border border-white/[0.08] text-[10px] font-mono text-eco-green shrink-0"
+              title="Real-Time Open-Meteo Satellite Feed Synchronized"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-mono text-emerald-400 shrink-0 shadow-sm"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-eco-green animate-pulse" />
-              <span>LIVE</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold">LIVE TELEMETRY</span>
             </div>
 
             {/* Responsive Mobile Drawer Button */}
@@ -149,19 +119,6 @@ export const NavBar: React.FC = () => {
               </NavLink>
             );
           })}
-
-          <div className="pt-3 border-t border-white/10 sm:hidden">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleQuickPDFDownload();
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-eco-green/20 border border-eco-green/40 text-eco-green text-xs font-grotesk font-bold"
-            >
-              <FileDown className="w-4 h-4" />
-              <span>Download PDF Impact Report</span>
-            </button>
-          </div>
         </div>
       )}
     </header>
