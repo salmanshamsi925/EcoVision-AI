@@ -1,0 +1,499 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "sindh",
+        "name": "Sindh",
+        "capital": "Karachi",
+        "area_km2": 140914,
+        "heat_risk": "Extreme",
+        "flood_exposure": "Critical",
+        "drought_index": "High",
+        "annual_rainfall_mm": 180,
+        "avg_temp_c": 28.5,
+        "vulnerability": "High"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              68.2,
+              28.4
+            ],
+            [
+              69.2,
+              28.5
+            ],
+            [
+              70.1,
+              28.3
+            ],
+            [
+              70.5,
+              27.8
+            ],
+            [
+              71.1,
+              27.2
+            ],
+            [
+              70.8,
+              25.8
+            ],
+            [
+              71.2,
+              24.8
+            ],
+            [
+              70.5,
+              24.1
+            ],
+            [
+              69.5,
+              23.7
+            ],
+            [
+              68.2,
+              23.8
+            ],
+            [
+              67.5,
+              24.2
+            ],
+            [
+              66.8,
+              24.8
+            ],
+            [
+              66.6,
+              25.2
+            ],
+            [
+              67.1,
+              26.0
+            ],
+            [
+              67.5,
+              27.0
+            ],
+            [
+              67.8,
+              27.8
+            ],
+            [
+              68.2,
+              28.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "balochistan",
+        "name": "Balochistan",
+        "capital": "Quetta",
+        "area_km2": 347190,
+        "heat_risk": "High",
+        "flood_exposure": "High",
+        "drought_index": "Extreme",
+        "annual_rainfall_mm": 120,
+        "avg_temp_c": 24.2,
+        "vulnerability": "Very High"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              60.9,
+              25.1
+            ],
+            [
+              61.8,
+              25.3
+            ],
+            [
+              63.5,
+              25.2
+            ],
+            [
+              65.5,
+              25.3
+            ],
+            [
+              66.6,
+              25.2
+            ],
+            [
+              67.1,
+              26.0
+            ],
+            [
+              67.5,
+              27.0
+            ],
+            [
+              68.0,
+              28.2
+            ],
+            [
+              69.8,
+              28.4
+            ],
+            [
+              70.2,
+              29.8
+            ],
+            [
+              69.8,
+              31.2
+            ],
+            [
+              69.2,
+              31.8
+            ],
+            [
+              68.0,
+              31.5
+            ],
+            [
+              66.5,
+              30.5
+            ],
+            [
+              64.5,
+              29.5
+            ],
+            [
+              62.5,
+              29.5
+            ],
+            [
+              61.0,
+              29.0
+            ],
+            [
+              61.5,
+              27.2
+            ],
+            [
+              60.9,
+              25.1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "punjab",
+        "name": "Punjab",
+        "capital": "Lahore",
+        "area_km2": 205344,
+        "heat_risk": "Very High",
+        "flood_exposure": "High",
+        "drought_index": "Moderate",
+        "annual_rainfall_mm": 450,
+        "avg_temp_c": 25.8,
+        "vulnerability": "Moderate to High"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              69.8,
+              28.4
+            ],
+            [
+              70.5,
+              28.5
+            ],
+            [
+              71.5,
+              29.0
+            ],
+            [
+              73.0,
+              29.5
+            ],
+            [
+              74.0,
+              30.5
+            ],
+            [
+              74.5,
+              31.5
+            ],
+            [
+              75.0,
+              32.2
+            ],
+            [
+              74.3,
+              32.8
+            ],
+            [
+              73.5,
+              33.2
+            ],
+            [
+              72.8,
+              33.6
+            ],
+            [
+              71.8,
+              33.5
+            ],
+            [
+              71.2,
+              32.5
+            ],
+            [
+              70.5,
+              31.5
+            ],
+            [
+              70.2,
+              29.8
+            ],
+            [
+              69.8,
+              28.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "khyber-pakhtunkhwa",
+        "name": "Khyber Pakhtunkhwa",
+        "capital": "Peshawar",
+        "area_km2": 101741,
+        "heat_risk": "Moderate",
+        "flood_exposure": "Critical",
+        "drought_index": "Moderate",
+        "annual_rainfall_mm": 650,
+        "avg_temp_c": 21.4,
+        "vulnerability": "High"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              69.2,
+              31.8
+            ],
+            [
+              70.5,
+              31.8
+            ],
+            [
+              71.5,
+              32.8
+            ],
+            [
+              72.2,
+              33.5
+            ],
+            [
+              73.2,
+              34.2
+            ],
+            [
+              73.5,
+              35.0
+            ],
+            [
+              73.8,
+              36.2
+            ],
+            [
+              72.8,
+              36.8
+            ],
+            [
+              71.5,
+              36.2
+            ],
+            [
+              71.2,
+              34.5
+            ],
+            [
+              70.0,
+              33.5
+            ],
+            [
+              69.5,
+              32.5
+            ],
+            [
+              69.2,
+              31.8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "gilgit-baltistan",
+        "name": "Gilgit-Baltistan",
+        "capital": "Gilgit",
+        "area_km2": 72971,
+        "heat_risk": "Low",
+        "flood_exposure": "Extreme",
+        "drought_index": "Low",
+        "annual_rainfall_mm": 200,
+        "avg_temp_c": 14.2,
+        "vulnerability": "High (GLOF & Cryosphere Melt)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.5,
+              35.0
+            ],
+            [
+              74.5,
+              35.2
+            ],
+            [
+              76.5,
+              35.5
+            ],
+            [
+              77.5,
+              35.8
+            ],
+            [
+              77.0,
+              36.8
+            ],
+            [
+              75.5,
+              37.0
+            ],
+            [
+              74.0,
+              36.8
+            ],
+            [
+              73.0,
+              36.5
+            ],
+            [
+              73.5,
+              35.0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "islamabad",
+        "name": "Islamabad Capital Territory",
+        "capital": "Islamabad",
+        "area_km2": 906,
+        "heat_risk": "Moderate",
+        "flood_exposure": "Moderate",
+        "drought_index": "Low",
+        "annual_rainfall_mm": 1140,
+        "avg_temp_c": 21.8,
+        "vulnerability": "Moderate"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.85,
+              33.6
+            ],
+            [
+              73.2,
+              33.6
+            ],
+            [
+              73.25,
+              33.8
+            ],
+            [
+              72.9,
+              33.8
+            ],
+            [
+              72.85,
+              33.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ajk",
+        "name": "Azad Jammu and Kashmir",
+        "capital": "Muzaffarabad",
+        "area_km2": 13297,
+        "heat_risk": "Moderate",
+        "flood_exposure": "High",
+        "drought_index": "Low",
+        "annual_rainfall_mm": 1300,
+        "avg_temp_c": 19.5,
+        "vulnerability": "High (Landslides & Cloudbursts)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.4,
+              33.0
+            ],
+            [
+              74.2,
+              33.2
+            ],
+            [
+              74.5,
+              34.2
+            ],
+            [
+              74.2,
+              35.0
+            ],
+            [
+              73.5,
+              34.6
+            ],
+            [
+              73.3,
+              33.8
+            ],
+            [
+              73.4,
+              33.0
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
