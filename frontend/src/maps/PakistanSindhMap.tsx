@@ -6,7 +6,7 @@ import { API_BASE } from '../config/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface DistrictData {
+export interface DistrictData {
   id: string;
   name: string;
   province: string;
@@ -23,17 +23,22 @@ interface DistrictData {
   resolution: string;
 }
 
+export type OverlayType = 'temperature' | 'flood' | 'drought' | 'vegetation' | 'none';
+
 interface PakistanSindhMapProps {
   initialDistrict?: string | null;
+  selectedDistrictId?: string | null;
   onDistrictSelect?: (district: DistrictData | null) => void;
+  overlay?: OverlayType;
+  basemap?: 'dark' | 'satellite';
+  showBoundaries?: boolean;
 }
 
-type OverlayType = 'none' | 'heat' | 'flood' | 'drought';
 type ViewMode = 'pakistan' | 'sindh';
 
 // ─── District Climate Database ────────────────────────────────────────────────
 
-const DISTRICT_DATA: Record<string, DistrictData> = {
+export const DISTRICT_DATA: Record<string, DistrictData> = {
   karachi: {
     id: 'karachi', name: 'Karachi', province: 'Sindh',
     lat: 24.8607, lon: 67.0011,
@@ -156,107 +161,67 @@ function getOverlayColor(feature: GeoJSON.Feature, overlay: OverlayType): string
   const districtId = (props.id || props.name || '').toLowerCase().replace(/\s+/g, '').replace('mirpurkhas', 'mirpurkhas').replace('shaheedbenazirabad', 'shaheedbenazirababad');
   const data = DISTRICT_DATA[districtId];
 
-  if (overlay === 'none') return 'rgba(34,184,255,0.15)';
+  if (overlay === 'none') return '#20C5FF';
 
-  if (overlay === 'heat') {
+  if (overlay === 'temperature') {
     const risk = data?.heat_risk || props.heat_risk || '';
-    if (risk.includes('Extreme') || risk.includes('Globally')) return '#FF5555';
-    if (risk.includes('Very High')) return '#FF9F43';
+    if (risk.includes('Extreme') || risk.includes('Globally')) return '#FF5D63';
+    if (risk.includes('Very High')) return '#FFAA45';
     if (risk.includes('High')) return '#FFD93D';
-    return '#35D39A';
+    return '#22D3A0';
   }
 
   if (overlay === 'flood') {
     const flood = data?.flood_exposure || props.flood_exposure || '';
-    if (flood.toLowerCase().includes('extreme')) return '#FF5555';
-    if (flood.toLowerCase().includes('high')) return '#FF9F43';
+    if (flood.toLowerCase().includes('extreme')) return '#FF5D63';
+    if (flood.toLowerCase().includes('high')) return '#FFAA45';
     if (flood.toLowerCase().includes('moderate')) return '#FFD93D';
-    return '#35D39A';
+    return '#22D3A0';
   }
 
   if (overlay === 'drought') {
     const drought = data?.drought_index || props.drought_index || '';
-    if (drought.includes('Critical')) return '#FF5555';
-    if (drought.includes('Very High')) return '#FF9F43';
+    if (drought.includes('Critical')) return '#FF5D63';
+    if (drought.includes('Very High')) return '#FFAA45';
     if (drought.includes('High')) return '#FFD93D';
-    if (drought.includes('Moderate')) return '#A8B4C5';
-    return '#35D39A';
+    if (drought.includes('Moderate')) return '#A8B7C9';
+    return '#22D3A0';
   }
 
-  if (overlay === 'rainfall') {
-    const mm = data?.rainfall_mm || 150;
-    if (mm < 80) return '#FF5555';
-    if (mm < 120) return '#FF9F43';
-    if (mm < 180) return '#FFD93D';
-    if (mm < 250) return '#35D39A';
-    return '#22B8FF';
+  if (overlay === 'vegetation') {
+    // NDVI estimate based on rainfall and proximity to Indus River
+    const mm = data?.rainfall_mm || 100;
+    if (mm > 180) return '#22D3A0';
+    if (mm > 100) return '#86EFAC';
+    if (mm > 80) return '#FDE047';
+    return '#D97706';
   }
 
-  return 'rgba(34,184,255,0.15)';
+  return '#20C5FF';
 }
 
 function getProvinceColor(name: string): string {
   const palette: Record<string, string> = {
-    'Sindh': '#22B8FF',
-    'Punjab': '#35D39A',
-    'Balochistan': '#FF9F43',
-    'Khyber Pakhtunkhwa': '#9B59B6',
-    'Gilgit-Baltistan': '#1ABC9C',
-    'Islamabad Capital Territory': '#E74C3C',
-    'Azad Jammu & Kashmir': '#F39C12',
+    'Sindh': '#20C5FF',
+    'Punjab': '#22D3A0',
+    'Balochistan': '#FFAA45',
+    'Khyber Pakhtunkhwa': '#A78BFA',
+    'Gilgit-Baltistan': '#38BDF8',
+    'Islamabad Capital Territory': '#FF5D63',
+    'Azad Jammu & Kashmir': '#F59E0B',
   };
-  return palette[name] || '#A8B4C5';
+  return palette[name] || '#A8B7C9';
 }
-
-// ─── Legend ───────────────────────────────────────────────────────────────────
-
-const LEGEND_CONFIG: Record<OverlayType, { title: string; items: { color: string; label: string }[] }> = {
-  none: { title: 'Provinces / Districts', items: [] },
-  heat: {
-    title: 'Heat Risk Level',
-    items: [
-      { color: '#FF5555', label: 'Extreme / Globally Critical' },
-      { color: '#FF9F43', label: 'Very High' },
-      { color: '#FFD93D', label: 'High' },
-      { color: '#35D39A', label: 'Moderate / Low' },
-    ]
-  },
-  flood: {
-    title: 'Flood Exposure',
-    items: [
-      { color: '#FF5555', label: 'Extreme' },
-      { color: '#FF9F43', label: 'High' },
-      { color: '#FFD93D', label: 'Moderate' },
-      { color: '#35D39A', label: 'Low' },
-    ]
-  },
-  drought: {
-    title: 'Drought / Aridity Index',
-    items: [
-      { color: '#FF5555', label: 'Critical' },
-      { color: '#FF9F43', label: 'Very High' },
-      { color: '#FFD93D', label: 'High' },
-      { color: '#A8B4C5', label: 'Moderate' },
-      { color: '#35D39A', label: 'Low' },
-    ]
-  },
-  rainfall: {
-    title: 'Annual Rainfall (mm)',
-    items: [
-      { color: '#FF5555', label: '< 80 mm (Arid)' },
-      { color: '#FF9F43', label: '80–120 mm (Semi-Arid)' },
-      { color: '#FFD93D', label: '120–180 mm (Sub-Humid)' },
-      { color: '#35D39A', label: '180–250 mm (Humid)' },
-      { color: '#22B8FF', label: '> 250 mm (Wet)' },
-    ]
-  }
-};
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   initialDistrict,
-  onDistrictSelect
+  selectedDistrictId,
+  onDistrictSelect,
+  overlay = 'temperature',
+  basemap = 'satellite',
+  showBoundaries = true,
 }) => {
   const { setActiveLocationId } = useActiveLocation();
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -264,17 +229,19 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const provinceLayers = useRef<L.GeoJSON | null>(null);
   const districtLayers = useRef<L.GeoJSON | null>(null);
-  const markerRef = useRef<L.CircleMarker | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
 
-  const [viewMode, setViewMode] = useState<ViewMode>('pakistan');
-  const [overlay, setOverlay] = useState<OverlayType>('none');
-  const [selectedDistrict, setSelectedDistrict] = useState<DistrictData | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('sindh');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pakistanGeo, setPakistanGeo] = useState<GeoJSON.FeatureCollection | null>(null);
   const [sindhGeo, setSindhGeo] = useState<GeoJSON.FeatureCollection | null>(null);
-  const overlayRef = useRef<OverlayType>('none');
-  overlayRef.current = overlay;
+
+  const activeOverlayRef = useRef<OverlayType>(overlay);
+  activeOverlayRef.current = overlay;
+
+  const showBoundariesRef = useRef<boolean>(showBoundaries);
+  showBoundariesRef.current = showBoundaries;
 
   // ── Fetch GeoJSON Data ──────────────────────────────────────────────────
   useEffect(() => {
@@ -290,124 +257,141 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
       })
       .catch(err => {
         console.error('GeoJSON fetch error:', err);
-        setError('Could not load geographic data. Is the backend running on port 8000?');
+        setError('Could not load geographic boundaries.');
         setLoading(false);
       });
   }, []);
 
-  // ── Initialise Leaflet Map (100% KEYLESS OSM DARK / VECTOR GRID) ────────
+  // ── Initialise Leaflet Map ──────────────────────────────────────────────
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [30.0, 69.5],
-      zoom: 5,
+      center: [26.8, 68.6],
+      zoom: 6.8,
       zoomControl: false,
       attributionControl: false,
       minZoom: 4,
-      maxZoom: 12,
+      maxZoom: 14,
     });
 
-    // 100% Free, Keyless, Zero-Watermark Dark Canvas Basemap (Esri ArcGIS Dark Gray)
-    const darkTile = L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-      {
-        attribution: 'Esri, © OpenStreetMap contributors',
-        maxNativeZoom: 16,
-        maxZoom: 18,
-      }
-    );
-    darkTile.addTo(map);
-    tileLayerRef.current = darkTile;
+    const tileUrl = basemap === 'satellite'
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 
+    const tileLayer = L.tileLayer(tileUrl, {
+      maxNativeZoom: 16,
+      maxZoom: 18,
+    }).addTo(map);
+
+    tileLayerRef.current = tileLayer;
+
+    // Elegant Bottom-Right Zoom Control
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    L.control.attribution({ position: 'bottomleft', prefix: '' })
-      .addAttribution('Data: NASA POWER / PMD / World Bank | © EcoVision-AI 2027')
-      .addTo(map);
-
     mapRef.current = map;
-    return () => { map.remove(); mapRef.current = null; };
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
   }, []);
+
+  // ── Handle Basemap Switch (Satellite vs Dark) ───────────────────────────
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const tileUrl = basemap === 'satellite'
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+
+    if (tileLayerRef.current) {
+      tileLayerRef.current.setUrl(tileUrl);
+    }
+  }, [basemap]);
 
   // ── Lookup district data helper ─────────────────────────────────────────
   const lookupDistrict = useCallback((feature: GeoJSON.Feature): DistrictData | null => {
     const props = feature.properties || {};
-    const rawName = (props.name || props.district || '').toLowerCase();
+    const rawName = (props.id || props.name || props.district || '').toLowerCase();
     const normalized = rawName
       .replace(/\s+/g, '')
       .replace('shaheedbenazirabad', 'shaheedbenazirababad')
-      .replace('mirpur khas', 'mirpurkhas')
-      .replace('mirpurkhas', 'mirpurkhas');
+      .replace('mirpur khas', 'mirpurkhas');
     return DISTRICT_DATA[normalized] || DISTRICT_DATA[rawName] || null;
+  }, []);
+
+  // ── Place custom glowing Leaflet Pin ────────────────────────────────────
+  const placeMarker = useCallback((lat: number, lon: number, name: string) => {
+    if (!mapRef.current) return;
+    if (markerRef.current) {
+      markerRef.current.remove();
+    }
+
+    const customIcon = L.divIcon({
+      className: 'custom-gis-pin',
+      html: `
+        <div style="position:relative;display:flex;flex-direction:column;align-items:center;transform:translate(-50%, -100%);pointer-events:none;">
+          <div style="background:#10243A;border:1px solid #20C5FF;box-shadow:0 0 15px rgba(32,197,255,0.6);border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#20C5FF;animation:pulse 1.5s infinite;"></span>
+            <span style="color:#FFFFFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.02em;">${name}</span>
+          </div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #20C5FF;margin-top:-1px;"></div>
+          <div style="width:8px;height:4px;border-radius:50%;background:rgba(32,197,255,0.4);filter:blur(1px);margin-top:2px;"></div>
+        </div>
+      `,
+      iconSize: [120, 40],
+      iconAnchor: [60, 40],
+    });
+
+    const marker = L.marker([lat, lon], { icon: customIcon }).addTo(mapRef.current);
+    markerRef.current = marker;
   }, []);
 
   // ── Style functions ─────────────────────────────────────────────────────
   const styleProvince = useCallback((feature?: GeoJSON.Feature) => {
     if (!feature) return {};
     const name = feature.properties?.name || '';
+    const isVisible = showBoundariesRef.current;
     return {
       fillColor: getProvinceColor(name),
-      fillOpacity: 0.18,
+      fillOpacity: isVisible ? 0.22 : 0.05,
       color: getProvinceColor(name),
-      weight: 2,
-      opacity: 0.9,
+      weight: isVisible ? 2 : 0.5,
+      opacity: isVisible ? 0.9 : 0.2,
     };
   }, []);
 
   const styleDistrict = useCallback((feature?: GeoJSON.Feature) => {
     if (!feature) return {};
-    const color = getOverlayColor(feature, overlayRef.current);
-    const isDefault = overlayRef.current === 'none';
+    const color = getOverlayColor(feature, activeOverlayRef.current);
+    const isDefault = activeOverlayRef.current === 'none';
+    const isVisible = showBoundariesRef.current;
     return {
-      fillColor: isDefault ? '#0ea5e9' : color,
-      fillOpacity: isDefault ? 0.30 : 0.65,
-      color: isDefault ? '#38bdf8' : color,
-      weight: 2,
+      fillColor: isDefault ? '#20C5FF' : color,
+      fillOpacity: isDefault ? 0.25 : 0.62,
+      color: isVisible ? '#FFFFFF' : color,
+      weight: isVisible ? 1.5 : 0.5,
       opacity: 0.95,
+      dashArray: isVisible ? undefined : '3, 3',
     };
   }, []);
 
-  // ── Place a glowing marker ──────────────────────────────────────────────
-  const placeMarker = useCallback((lat: number, lon: number) => {
-    if (!mapRef.current) return;
-    if (markerRef.current) { markerRef.current.remove(); }
-    markerRef.current = L.circleMarker([lat, lon], {
-      radius: 10,
-      fillColor: '#22B8FF',
-      fillOpacity: 0.8,
-      color: '#FFFFFF',
-      weight: 2,
-    }).addTo(mapRef.current);
-  }, []);
-
-  // ── Render province layer ───────────────────────────────────────────────
+  // ── Render Province Layer (Pakistan view) ──────────────────────────────
   useEffect(() => {
     if (!mapRef.current || !pakistanGeo) return;
-    if (provinceLayers.current) { provinceLayers.current.remove(); }
+    if (provinceLayers.current) provinceLayers.current.remove();
 
     const layer = L.geoJSON(pakistanGeo as GeoJSON.GeoJsonObject, {
       style: styleProvince,
       onEachFeature: (feature, lyr) => {
         const name = feature.properties?.name || 'Province';
-        // Permanent high-contrast province label centered on region
         lyr.bindTooltip(
-          `<span style="color:${getProvinceColor(name)};font-weight:800;font-size:12px;letter-spacing:0.06em">${name.toUpperCase()}</span>`,
+          `<span style="color:#F8FAFC;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,0.8);">${name.toUpperCase()}</span>`,
           { permanent: true, direction: 'center', className: 'province-map-label' }
         );
-        lyr.on('mouseover', function () {
-          (this as L.Path).setStyle({ fillOpacity: 0.35, weight: 3 });
-        });
-        lyr.on('mouseout', function () {
-          layer.resetStyle(this as L.Layer);
-        });
-        lyr.on('click', function () {
-          const bounds = (lyr as L.Polygon).getBounds();
-          mapRef.current?.flyToBounds(bounds, { padding: [30, 30], duration: 1.2 });
+        lyr.on('click', () => {
           if (name === 'Sindh') {
-            setTimeout(() => {
-              setViewMode('sindh');
-            }, 600);
+            setViewMode('sindh');
+            mapRef.current?.flyTo([26.8, 68.6], 7, { duration: 1.2 });
           }
         });
       }
@@ -419,33 +403,33 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
     provinceLayers.current = layer;
   }, [pakistanGeo, styleProvince, viewMode]);
 
-  // ── Render district layer ───────────────────────────────────────────────
+  // ── Render District Layer (Sindh Choropleth) ───────────────────────────
   useEffect(() => {
     if (!mapRef.current || !sindhGeo) return;
-    if (districtLayers.current) { districtLayers.current.remove(); }
+    if (districtLayers.current) districtLayers.current.remove();
 
     const layer = L.geoJSON(sindhGeo as GeoJSON.GeoJsonObject, {
       style: styleDistrict,
       onEachFeature: (feature, lyr) => {
         const distData = lookupDistrict(feature);
         const name = distData?.name || feature.properties?.name || 'District';
-        // Permanent high-contrast district name label centered directly on map
+
         lyr.bindTooltip(
-          `<span style="color:#22B8FF;font-weight:700;font-size:11px;letter-spacing:0.04em">${name}</span>`,
+          `<div style="font-family:'Space Grotesk',sans-serif;color:#F8FAFC;font-weight:700;font-size:10.5px;letter-spacing:0.03em;text-shadow:0 1px 3px rgba(0,0,0,0.9);">${name}</div>`,
           { permanent: true, direction: 'center', className: 'district-map-label' }
         );
+
         lyr.on('mouseover', function () {
-          (this as L.Path).setStyle({ fillOpacity: 0.75, weight: 2.5, color: '#FFFFFF' });
+          (this as L.Path).setStyle({ fillOpacity: 0.85, weight: 2.5, color: '#20C5FF' });
         });
         lyr.on('mouseout', function () {
           layer.resetStyle(this as L.Layer);
         });
         lyr.on('click', function () {
           const bounds = (lyr as L.Polygon).getBounds();
-          mapRef.current?.flyToBounds(bounds, { padding: [60, 60], duration: 1.0 });
+          mapRef.current?.flyToBounds(bounds, { padding: [50, 50], duration: 1.0 });
           if (distData) {
-            placeMarker(distData.lat, distData.lon);
-            setSelectedDistrict(distData);
+            placeMarker(distData.lat, distData.lon, distData.name);
             setActiveLocationId(distData.id);
             onDistrictSelect?.(distData);
           }
@@ -453,160 +437,59 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
       }
     });
 
-    if (viewMode === 'sindh') {
-      layer.addTo(mapRef.current);
-    }
+    layer.addTo(mapRef.current);
     districtLayers.current = layer;
-  }, [sindhGeo, styleDistrict, viewMode, lookupDistrict, placeMarker, onDistrictSelect]);
+  }, [sindhGeo, styleDistrict, lookupDistrict, placeMarker, onDistrictSelect, setActiveLocationId]);
 
-  // ── Handle view mode switch ─────────────────────────────────────────────
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (viewMode === 'pakistan') {
-      districtLayers.current?.remove();
-      if (pakistanGeo) provinceLayers.current?.addTo(mapRef.current);
-      mapRef.current.flyTo([30.0, 69.5], 5, { duration: 1.2 });
-      setSelectedDistrict(null);
-    } else {
-      provinceLayers.current?.remove();
-      if (sindhGeo) districtLayers.current?.addTo(mapRef.current);
-      mapRef.current.flyTo([26.5, 68.5], 7, { duration: 1.2 });
-    }
-  }, [viewMode, pakistanGeo, sindhGeo]);
-
-  // ── Handle overlay change ───────────────────────────────────────────────
+  // ── Handle Overlay Updates ──────────────────────────────────────────────
   useEffect(() => {
     if (districtLayers.current) {
-      districtLayers.current.setStyle((feature) => {
-        if (!feature) return {};
-        const color = getOverlayColor(feature, overlay);
-        const isDefault = overlay === 'none';
-        return {
-          fillColor: isDefault ? '#0ea5e9' : color,
-          fillOpacity: isDefault ? 0.30 : 0.65,
-          color: isDefault ? '#38bdf8' : color,
-          weight: 2,
-          opacity: 0.95,
-        };
-      });
+      districtLayers.current.setStyle(styleDistrict);
     }
-  }, [overlay]);
+  }, [overlay, showBoundaries, styleDistrict]);
 
-  // ── Handle initial district deep-link ──────────────────────────────────
+  // ── Handle external district selection & deep-link ─────────────────────
   useEffect(() => {
-    if (!initialDistrict || !sindhGeo || !mapRef.current) return;
+    const targetId = selectedDistrictId || initialDistrict;
+    if (!targetId || !sindhGeo || !mapRef.current) return;
 
-    const normalized = initialDistrict.toLowerCase().replace(/\s+/g, '');
+    const normalized = targetId.toLowerCase().replace(/\s+/g, '');
     const distData = DISTRICT_DATA[normalized] ||
       Object.values(DISTRICT_DATA).find(d => d.name.toLowerCase().replace(/\s+/g, '') === normalized);
 
     if (distData) {
-      setViewMode('sindh');
-      setTimeout(() => {
-        if (mapRef.current) {
-          mapRef.current.flyTo([distData.lat, distData.lon], 9, { duration: 1.5 });
-          placeMarker(distData.lat, distData.lon);
-          setSelectedDistrict(distData);
-          onDistrictSelect?.(distData);
-        }
-      }, 800);
+      mapRef.current.flyTo([distData.lat, distData.lon], 8.5, { duration: 1.2 });
+      placeMarker(distData.lat, distData.lon, distData.name);
+      onDistrictSelect?.(distData);
     }
-  }, [initialDistrict, sindhGeo, placeMarker, onDistrictSelect]);
-
-  // ─── Render ────────────────────────────────────────────────────────────────
-
-  const legend = LEGEND_CONFIG[overlay];
+  }, [selectedDistrictId, initialDistrict, sindhGeo, placeMarker, onDistrictSelect]);
 
   return (
-    <div className="relative w-full h-full flex flex-col" style={{ background: '#07111F' }}>
-      {/* ── Minimal Top Controls ── */}
-      <div className="absolute top-4 left-4 sm:left-6 z-[1000] flex flex-wrap gap-2.5 max-w-[calc(100%-120px)]">
-        {/* View Mode Toggle */}
-        <div className="flex rounded-xl overflow-hidden border border-white/10 shadow-lg" style={{ backdropFilter: 'blur(12px)' }}>
-          <button
-            onClick={() => setViewMode('pakistan')}
-            className={`px-3.5 py-2 text-xs font-grotesk font-semibold whitespace-nowrap transition-all ${
-              viewMode === 'pakistan'
-                ? 'bg-eco-blue text-eco-bg font-bold shadow-sm'
-                : 'bg-[#0B1A2C]/90 text-eco-muted hover:text-white'
-            }`}
-          >
-            Pakistan
-          </button>
-          <button
-            onClick={() => setViewMode('sindh')}
-            className={`px-3.5 py-2 text-xs font-grotesk font-semibold whitespace-nowrap transition-all border-l border-white/10 ${
-              viewMode === 'sindh'
-                ? 'bg-eco-blue text-eco-bg font-bold shadow-sm'
-                : 'bg-[#0B1A2C]/90 text-eco-muted hover:text-white'
-            }`}
-          >
-            Sindh Districts
-          </button>
-        </div>
-
-        {/* Climate Layer Filter (only show in Sindh view) */}
-        {viewMode === 'sindh' && (
-          <div className="flex rounded-xl overflow-hidden border border-white/10 shadow-lg" style={{ backdropFilter: 'blur(12px)' }}>
-            {(['none', 'heat', 'flood', 'drought'] as OverlayType[]).map((ov) => (
-              <button
-                key={ov}
-                onClick={() => setOverlay(ov)}
-                className={`px-3 py-2 text-xs font-grotesk whitespace-nowrap transition-all border-l border-white/10 first:border-l-0 ${
-                  overlay === ov
-                    ? 'bg-eco-orange text-eco-bg font-bold shadow-sm'
-                    : 'bg-[#0B1A2C]/90 text-eco-muted hover:text-white'
-                }`}
-              >
-                {ov === 'none' ? 'Overview' : ov === 'heat' ? 'Heat Risk' : ov === 'flood' ? 'Flood Risk' : 'Drought'}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
+    <div className="relative w-full h-full flex flex-col bg-[#06111F] overflow-hidden">
       {/* ── Map Canvas ── */}
       <div
         ref={mapContainerRef}
-        className="flex-1 w-full"
-        style={{ background: '#07111F', minHeight: 420 }}
+        className="w-full h-full min-h-[500px]"
+        style={{ background: '#06111F' }}
       />
 
-      {/* ── Loading / Error Overlay ── */}
+      {/* ── Loading Overlay ── */}
       {loading && (
-        <div className="absolute inset-0 z-[2000] flex items-center justify-center bg-eco-bg/80">
+        <div className="absolute inset-0 z-[2000] flex items-center justify-center bg-[#06111F]/80 backdrop-blur-sm">
           <div className="text-center">
-            <div className="w-12 h-12 border-2 border-eco-blue border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-eco-blue font-grotesk text-sm">Loading map data…</p>
-          </div>
-        </div>
-      )}
-      {error && (
-        <div className="absolute inset-0 z-[2000] flex items-center justify-center bg-eco-bg/90">
-          <div className="text-center max-w-sm px-4">
-            <div className="text-red-400 text-4xl mb-3">⚠</div>
-            <p className="text-red-400 font-grotesk text-sm font-semibold">{error}</p>
-            <p className="text-eco-muted text-xs mt-2">Start backend: uvicorn app.main:app --port 8000</p>
+            <div className="w-10 h-10 border-2 border-primary-cyan border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-primary-cyan font-grotesk text-xs uppercase tracking-wider">Loading GIS Boundaries…</p>
           </div>
         </div>
       )}
 
-      {/* ── Legend (only when overlay is active) ── */}
-      {legend.items.length > 0 && (
-        <div
-          className="absolute bottom-4 left-4 z-[1000] rounded-xl p-3 text-xs font-grotesk shadow-lg"
-          style={{ background: 'rgba(11,26,44,0.92)', backdropFilter: 'blur(12px)', border: '1px solid rgba(34,184,255,0.2)' }}
-        >
-          <p className="text-eco-blue font-semibold mb-2 uppercase tracking-wider text-[10px]">{legend.title}</p>
-          {legend.items.map((item) => (
-            <div key={item.label} className="flex items-center gap-2 mb-1">
-              <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: item.color }} />
-              <span className="text-eco-muted">{item.label}</span>
-            </div>
-          ))}
+      {error && (
+        <div className="absolute inset-0 z-[2000] flex items-center justify-center bg-[#06111F]/90">
+          <div className="text-center max-w-sm px-4">
+            <p className="text-danger-red font-grotesk text-sm font-semibold">{error}</p>
+          </div>
         </div>
       )}
     </div>
   );
 };
-

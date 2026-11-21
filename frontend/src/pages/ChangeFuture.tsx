@@ -1,22 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
-  Sliders,
   Zap,
-  Droplets,
   Trees,
-  Factory,
   Waves,
+  Droplets,
+  Factory,
   SunMedium,
-  CheckCircle2,
-  Shield,
-  Gauge,
   RotateCcw,
+  Play,
   Download,
-  FileText,
-  Sparkles,
+  Shield,
+  CheckCircle2,
   TrendingDown,
-  TrendingUp,
-  Percent
+  Sparkles
 } from 'lucide-react';
 import { useActiveLocation } from '../context/LocationContext';
 import { generateClimatePDF } from '../reports/reportGenerator';
@@ -31,74 +27,24 @@ interface PolicyState {
 }
 
 const DEFAULT_POLICIES: PolicyState = {
-  renewable_energy: 45,
-  forest_afforestation: 35,
-  mangrove_conservation: 40,
-  water_canal_lining: 50,
-  emission_reduction: 30,
-  urban_greening: 35,
-};
-
-const PRESETS: Record<string, { name: string; desc: string; values: PolicyState }> = {
-  baseline: {
-    name: 'Unmitigated Baseline',
-    desc: 'Business-as-usual under high fossil-fuel dependency (SSP5-8.5).',
-    values: {
-      renewable_energy: 15,
-      forest_afforestation: 15,
-      mangrove_conservation: 15,
-      water_canal_lining: 20,
-      emission_reduction: 10,
-      urban_greening: 15,
-    },
-  },
-  sindhGreenDeal: {
-    name: 'Sindh Green Deal',
-    desc: 'Ambitious public investments in solar, canal linings, and agroforestry.',
-    values: {
-      renewable_energy: 65,
-      forest_afforestation: 55,
-      mangrove_conservation: 65,
-      water_canal_lining: 70,
-      emission_reduction: 50,
-      urban_greening: 60,
-    },
-  },
-  waterFirst: {
-    name: 'Indus Water Priority',
-    desc: 'Maximum focus on canal lining, drip micro-farming, and delta mangroves.',
-    values: {
-      renewable_energy: 45,
-      forest_afforestation: 60,
-      mangrove_conservation: 90,
-      water_canal_lining: 95,
-      emission_reduction: 35,
-      urban_greening: 45,
-    },
-  },
-  netZeroChampion: {
-    name: '100% Net-Zero',
-    desc: 'Ideal maximum transformation across energy, forestry, water, and urban sectors.',
-    values: {
-      renewable_energy: 100,
-      forest_afforestation: 100,
-      mangrove_conservation: 100,
-      water_canal_lining: 100,
-      emission_reduction: 100,
-      urban_greening: 100,
-    },
-  },
+  renewable_energy: 70,
+  forest_afforestation: 60,
+  mangrove_conservation: 50,
+  water_canal_lining: 65,
+  emission_reduction: 75,
+  urban_greening: 60,
 };
 
 export const ChangeFuture: React.FC = () => {
   const { activeLocation } = useActiveLocation();
-  const districtName = activeLocation?.name || 'Khairpur';
+  const districtName = activeLocation?.name || 'Sindh';
 
   const [policies, setPolicies] = useState<PolicyState>(DEFAULT_POLICIES);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
 
-  // Synchronous client-side calculation (Instant, zero latency)
-  const clientScore = useMemo(() => {
+  // Instant calculation of Climate Resilience Score (0 to 100)
+  const activeScore = useMemo(() => {
     const raw = (
       policies.renewable_energy * 0.22 +
       policies.forest_afforestation * 0.18 +
@@ -107,519 +53,414 @@ export const ChangeFuture: React.FC = () => {
       policies.emission_reduction * 0.15 +
       policies.urban_greening * 0.10
     );
-    return Math.min(100, Math.max(0, Math.round(raw * 10) / 10));
+    return Math.min(100, Math.max(0, Math.round(raw)));
   }, [policies]);
 
-  const activeScore = clientScore;
+  // Risk reduction percentage based on score
+  const riskReductionPct = useMemo(() => {
+    return Math.round((activeScore / 100) * 42);
+  }, [activeScore]);
 
-  // Score visual tier
-  const scoreInfo = useMemo(() => {
-    if (activeScore >= 80) {
-      return {
-        label: 'High Climate Resilience',
-        color: '#00FFA3',
-        text: 'text-eco-green',
-        bg: 'bg-emerald-500/10',
-        border: 'border-emerald-500/30',
-        desc: `Comprehensive multi-sector adaptation minimizes heat mortality and preserves agricultural security in ${districtName}.`,
-      };
-    }
-    if (activeScore >= 55) {
-      return {
-        label: 'Moderate Resilience',
-        color: '#22B8FF',
-        text: 'text-eco-blue',
-        bg: 'bg-sky-500/10',
-        border: 'border-sky-500/30',
-        desc: `Substantial risk reduction achieved. Further canal lining and afforestation are recommended to shield ${districtName} from thermal shock.`,
-      };
-    }
-    if (activeScore >= 35) {
-      return {
-        label: 'Moderate Vulnerability',
-        color: '#FF9F43',
-        text: 'text-eco-orange',
-        bg: 'bg-amber-500/10',
-        border: 'border-amber-500/30',
-        desc: `Vulnerability to monsoon floods and heatwaves remains high without accelerated public green investments.`,
-      };
-    }
-    return {
-      label: 'Extreme Vulnerability',
-      color: '#FF5555',
-      text: 'text-red-400',
-      bg: 'bg-red-500/10',
-      border: 'border-red-500/30',
-      desc: `Severe exposure to lethal heatwaves, canal breaches, and food insecurity in ${districtName}. Immediate policy intervention required.`,
-    };
-  }, [activeScore, districtName]);
+  // Dynamic Projection Chart Data (2026 to 2040)
+  const projectionPoints = useMemo(() => {
+    const years = [2026, 2030, 2035, 2040];
+    const bauTemps = [27.0, 29.5, 32.2, 34.8]; // Business as Usual
 
-  // Derived 4 Key Impact Indicators
-  const impactMetrics = useMemo(() => {
-    const tempDrop = (policies.renewable_energy * 0.008 + policies.urban_greening * 0.009 + policies.forest_afforestation * 0.007).toFixed(2);
-    const floodMitigated = Math.round(policies.water_canal_lining * 0.35 + policies.mangrove_conservation * 0.25);
-    const waterSaved = (policies.water_canal_lining * 0.022).toFixed(1);
-    const cropsProtected = Math.round(policies.forest_afforestation * 0.18 + policies.water_canal_lining * 0.22);
-
-    return [
-      {
-        label: 'Peak Summer Temp Reduction',
-        value: `-${tempDrop}°C`,
-        sub: 'Cooler urban microclimate',
-        icon: TrendingDown,
-        color: 'text-sky-400',
-        bg: 'bg-sky-500/10',
-        border: 'border-sky-500/20'
-      },
-      {
-        label: 'Flood & Surge Protection',
-        value: `+${floodMitigated}%`,
-        sub: 'Land & settlements secured',
-        icon: Shield,
-        color: 'text-emerald-400',
-        bg: 'bg-emerald-500/10',
-        border: 'border-emerald-500/20'
-      },
-      {
-        label: 'Freshwater Conserved',
-        value: `+${waterSaved} MAF`,
-        sub: 'Saved from canal seepage',
-        icon: Droplets,
-        color: 'text-cyan-400',
-        bg: 'bg-cyan-500/10',
-        border: 'border-cyan-500/20'
-      },
-      {
-        label: 'Harvests & Crops Shielded',
-        value: `+${cropsProtected}%`,
-        sub: 'Yield protection against heat',
-        icon: TrendingUp,
-        color: 'text-amber-400',
-        bg: 'bg-amber-500/10',
-        border: 'border-amber-500/20'
-      },
+    // Adaptation curve depends on policy resilience score
+    const tempSavingsMax = (activeScore / 100) * 6.5; // Up to 6.5°C reduction by 2040
+    const adaptedTemps = [
+      27.0,
+      +(29.5 - tempSavingsMax * 0.35).toFixed(1),
+      +(32.2 - tempSavingsMax * 0.70).toFixed(1),
+      +(34.8 - tempSavingsMax * 1.00).toFixed(1),
     ];
-  }, [policies]);
+
+    return years.map((yr, idx) => ({
+      year: yr,
+      bau: bauTemps[idx],
+      adapted: adaptedTemps[idx],
+    }));
+  }, [activeScore]);
 
   const updateSlider = (key: keyof PolicyState, val: number) => {
     setPolicies((prev) => ({ ...prev, [key]: val }));
   };
 
-  const applyPreset = (presetKey: string) => {
-    if (PRESETS[presetKey]) {
-      setPolicies(PRESETS[presetKey].values);
-    }
+  const handleReset = () => {
+    setPolicies(DEFAULT_POLICIES);
   };
 
-  const handleDownloadPDF = () => {
+  const handleSimulate = () => {
+    setIsSimulating(true);
+    setTimeout(() => setIsSimulating(false), 600);
+  };
+
+  const handleExportPDF = () => {
     generateClimatePDF({
       location: activeLocation,
       timelineYear: 2035,
-      scenario: 'CMIP6 Synthesis (SSP2-4.5)',
+      scenario: 'CMIP6 Synthesis (SSP2-4.5 vs Adapted)',
       resilienceScore: activeScore,
-      resilienceLevel: scoreInfo.label,
+      resilienceLevel: activeScore >= 70 ? 'High Resilience' : 'Moderate Resilience',
       policies: policies,
     });
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 3500);
   };
 
-  return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
+  // SVG Gauge calculations (Semi-circle 180 degrees)
+  const gaugeRadius = 85;
+  const strokeWidth = 14;
+  const circumference = Math.PI * gaugeRadius; // Semi-circle circumference
+  const strokeDashoffset = circumference - (activeScore / 100) * circumference;
 
-      {/* ── Page Header & Quick Presets Bar ──────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
+  return (
+    <div className="min-h-screen bg-[#06111F] text-slate-100 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 pb-20 font-inter">
+      {/* ── Top Header ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
-          <div className="flex items-center gap-2 text-eco-blue font-grotesk text-xs uppercase tracking-wider mb-1 font-bold">
-            <Sliders className="w-3.5 h-3.5" /> Policy Lab &bull; Decision Simulator
-          </div>
-          <h1 className="text-2xl md:text-3xl font-orbitron font-black text-white tracking-wide">
-            Climate Action Sandbox: <span className="text-eco-blue">{districtName}</span>
+          <h1 className="text-2xl sm:text-3xl font-space font-bold text-white tracking-tight">
+            Policy Simulator Lab
           </h1>
-          <p className="text-eco-muted text-xs md:text-sm mt-1 max-w-2xl leading-relaxed">
-            Adjust provincial investment levers below to observe real-time resilience changes and download a personalized PDF climate impact report.
+          <p className="text-slate-400 text-sm font-inter mt-0.5">
+            Simulate provincial climate interventions and observe projected risk reductions in real time.
           </p>
         </div>
 
-        {/* Action Controls: Presets + PDF Download */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <div className="flex rounded-xl overflow-hidden border border-white/10 p-0.5 bg-[#0B1A2C]" style={{ backdropFilter: 'blur(12px)' }}>
-            <button
-              onClick={() => applyPreset('baseline')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-grotesk font-semibold text-red-300 hover:bg-red-500/20 transition"
-              title="Unmitigated fossil-fuel baseline (SSP5-8.5)"
-            >
-              Baseline
-            </button>
-            <button
-              onClick={() => applyPreset('sindhGreenDeal')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-grotesk font-semibold text-eco-blue hover:bg-eco-blue/20 transition"
-              title="Sindh Green Deal 2030 public investments"
-            >
-              Green Deal
-            </button>
-            <button
-              onClick={() => applyPreset('waterFirst')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-grotesk font-semibold text-cyan-300 hover:bg-cyan-500/20 transition"
-              title="Indus Water & Delta Mangroves Priority"
-            >
-              Indus Water
-            </button>
-            <button
-              onClick={() => applyPreset('netZeroChampion')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-grotesk font-semibold text-eco-green hover:bg-eco-green/20 transition"
-              title="100% Maximum Net-Zero Transformation"
-            >
-              100% Net-Zero
-            </button>
-            <button
-              onClick={() => setPolicies(DEFAULT_POLICIES)}
-              title="Reset Levers to Default"
-              className="p-1.5 rounded-lg text-eco-muted hover:text-white hover:bg-white/10 transition"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
+        <div className="flex items-center gap-3">
+          <div className="px-3 py-1.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-green border border-emerald-500/30 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse" />
+            <span>Interactive Model Active</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 3-Column Policy Lab Layout (Tile 4) ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        {/* ── Left Column: Policy Interventions (5 cols) ── */}
+        <div className="lg:col-span-5 bg-[#10243A]/80 border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+          <div>
+            <h3 className="font-space font-bold text-white text-base mb-1">
+              Policy Interventions
+            </h3>
+            <p className="text-xs text-slate-400 mb-4">
+              Calibrate sectoral mitigation &amp; adaptation investments.
+            </p>
+
+            {/* Sliders List */}
+            <div className="space-y-4">
+              {/* 1. Renewable Energy */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-2 text-slate-200">
+                    <Zap className="w-4 h-4 text-emerald-green" /> Renewable Energy
+                  </span>
+                  <span className="font-mono text-primary-cyan font-bold">{policies.renewable_energy}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={policies.renewable_energy}
+                  onChange={(e) => updateSlider('renewable_energy', Number(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-[#06111F] accent-[#20C5FF] cursor-pointer"
+                />
+              </div>
+
+              {/* 2. Afforestation */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-2 text-slate-200">
+                    <Trees className="w-4 h-4 text-emerald-green" /> Afforestation
+                  </span>
+                  <span className="font-mono text-primary-cyan font-bold">{policies.forest_afforestation}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={policies.forest_afforestation}
+                  onChange={(e) => updateSlider('forest_afforestation', Number(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-[#06111F] accent-[#20C5FF] cursor-pointer"
+                />
+              </div>
+
+              {/* 3. Mangrove Conservation */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-2 text-slate-200">
+                    <Waves className="w-4 h-4 text-primary-cyan" /> Mangrove Conservation
+                  </span>
+                  <span className="font-mono text-primary-cyan font-bold">{policies.mangrove_conservation}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={policies.mangrove_conservation}
+                  onChange={(e) => updateSlider('mangrove_conservation', Number(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-[#06111F] accent-[#20C5FF] cursor-pointer"
+                />
+              </div>
+
+              {/* 4. Canal Lining */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-2 text-slate-200">
+                    <Droplets className="w-4 h-4 text-blue-400" /> Canal Lining
+                  </span>
+                  <span className="font-mono text-primary-cyan font-bold">{policies.water_canal_lining}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={policies.water_canal_lining}
+                  onChange={(e) => updateSlider('water_canal_lining', Number(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-[#06111F] accent-[#20C5FF] cursor-pointer"
+                />
+              </div>
+
+              {/* 5. Industrial Emissions Cap */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-2 text-slate-200">
+                    <Factory className="w-4 h-4 text-warning-orange" /> Industrial Emissions Cap
+                  </span>
+                  <span className="font-mono text-primary-cyan font-bold">{policies.emission_reduction}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={policies.emission_reduction}
+                  onChange={(e) => updateSlider('emission_reduction', Number(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-[#06111F] accent-[#20C5FF] cursor-pointer"
+                />
+              </div>
+
+              {/* 6. Urban Heat Mitigation */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="flex items-center gap-2 text-slate-200">
+                    <SunMedium className="w-4 h-4 text-amber-400" /> Urban Heat Mitigation
+                  </span>
+                  <span className="font-mono text-primary-cyan font-bold">{policies.urban_greening}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={policies.urban_greening}
+                  onChange={(e) => updateSlider('urban_greening', Number(e.target.value))}
+                  className="w-full h-2 rounded-lg bg-[#06111F] accent-[#20C5FF] cursor-pointer"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Download Personalized PDF Button */}
+          {/* Action Buttons: Run Simulation & Reset */}
+          <div className="flex items-center gap-3 pt-5 mt-5 border-t border-white/10">
+            <button
+              onClick={handleSimulate}
+              disabled={isSimulating}
+              className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>{isSimulating ? 'Simulating...' : 'Run Simulation'}</span>
+            </button>
+            <button
+              onClick={handleReset}
+              className="py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-space text-xs flex items-center justify-center gap-1.5 transition"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ── Center Column: Climate Resilience Score Gauge (3.5 cols) ── */}
+        <div className="lg:col-span-3 bg-[#10243A]/80 border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between items-center text-center">
+          <div className="w-full">
+            <h3 className="font-space font-bold text-white text-base">
+              Climate Resilience Score
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Composite Provincial Index
+            </p>
+          </div>
+
+          {/* Semi-circular radial gauge */}
+          <div className="relative w-56 h-36 my-4 flex items-end justify-center overflow-hidden">
+            <svg viewBox="0 0 200 115" className="w-full h-full select-none">
+              <defs>
+                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#20C5FF" />
+                  <stop offset="100%" stopColor="#22D3A0" />
+                </linearGradient>
+              </defs>
+
+              {/* Background semi-circle track */}
+              <path
+                d="M 15 105 A 85 85 0 0 1 185 105"
+                fill="none"
+                stroke="#142B42"
+                strokeWidth={strokeWidth}
+                strokeLinecap="round"
+              />
+
+              {/* Active illuminated gauge track */}
+              <path
+                d="M 15 105 A 85 85 0 0 1 185 105"
+                fill="none"
+                stroke="url(#gaugeGradient)"
+                strokeWidth={strokeWidth}
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
+              />
+            </svg>
+
+            {/* Score Text in Center */}
+            <div className="absolute bottom-2 flex flex-col items-center">
+              <span className="text-4xl font-space font-bold text-white tracking-tight">
+                {activeScore}%
+              </span>
+            </div>
+          </div>
+
+          {/* Resilience Status Badge */}
+          <div className="px-3.5 py-1.5 rounded-full text-xs font-space font-semibold bg-emerald-500/15 text-emerald-green border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+            <Shield className="w-4 h-4 text-emerald-green" />
+            <span>{activeScore >= 70 ? 'High Resilience' : activeScore >= 50 ? 'Moderate Resilience' : 'Vulnerable'}</span>
+          </div>
+
+          {/* Takeaway Risk Reduction Card */}
+          <div className="w-full mt-4 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-left flex items-start gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-green shrink-0 mt-0.5" />
+            <p className="text-xs text-slate-300 leading-snug">
+              Adaptation policies can reduce climate risks by up to <strong className="text-emerald-green font-bold">{riskReductionPct}%</strong> across vulnerable union councils.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Right Column: Climate Projection Chart (Sindh) (3.5 cols) ── */}
+        <div className="lg:col-span-4 bg-[#10243A]/80 border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <h3 className="font-space font-bold text-white text-base">
+                Climate Projection (Sindh)
+              </h3>
+              <div className="flex items-center gap-3 text-[11px] font-mono">
+                <span className="flex items-center gap-1 text-warning-orange">
+                  <span className="w-2.5 h-2.5 rounded-full bg-warning-orange inline-block" /> BAU
+                </span>
+                <span className="flex items-center gap-1 text-emerald-green">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-green inline-block" /> Adapted
+                </span>
+              </div>
+            </div>
+            <p className="text-xs text-slate-400">
+              Trajectory to 2040: Unmitigated warming vs Adaptive resilience.
+            </p>
+          </div>
+
+          {/* Dual Line SVG Chart */}
+          <div className="w-full my-3 bg-[#06111F]/60 rounded-xl p-3 border border-white/5">
+            <svg viewBox="0 0 320 180" className="w-full h-auto select-none">
+              <defs>
+                {/* Gradient under adapted curve */}
+                <linearGradient id="adaptedFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#22D3A0" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#22D3A0" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              {/* Y-Axis Grid Lines: 20°C, 25°C, 30°C, 35°C */}
+              {[
+                { val: '35°C', y: 30 },
+                { val: '30°C', y: 70 },
+                { val: '25°C', y: 110 },
+                { val: '20°C', y: 150 },
+              ].map((grid) => (
+                <g key={grid.val}>
+                  <line x1="40" y1={grid.y} x2="310" y2={grid.y} stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
+                  <text x="32" y={grid.y + 4} fill="#64748B" fontSize="10" fontFamily="'JetBrains Mono', monospace" textAnchor="end">
+                    {grid.val}
+                  </text>
+                </g>
+              ))}
+
+              {/* X-Axis labels: 2026, 2030, 2035, 2040 */}
+              {projectionPoints.map((pt, i) => {
+                const x = 55 + i * 80;
+                return (
+                  <text key={pt.year} x={x} y="170" fill="#64748B" fontSize="10" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">
+                    {pt.year}
+                  </text>
+                );
+              })}
+
+              {/* Path calculations: mapping temperature 20°C -> y=150, 35°C -> y=30 */}
+              {(() => {
+                const getY = (t: number) => 150 - ((t - 20) / 15) * 120;
+                const getX = (i: number) => 55 + i * 80;
+
+                const bauCoords = projectionPoints.map((pt, i) => `${getX(i)},${getY(pt.bau)}`);
+                const adaptedCoords = projectionPoints.map((pt, i) => `${getX(i)},${getY(pt.adapted)}`);
+
+                const bauPath = `M ${bauCoords.join(' L ')}`;
+                const adaptedPath = `M ${adaptedCoords.join(' L ')}`;
+                const adaptedArea = `${adaptedPath} L ${getX(3)},150 L ${getX(0)},150 Z`;
+
+                return (
+                  <>
+                    {/* Shaded Area under Adapted line */}
+                    <path d={adaptedArea} fill="url(#adaptedFill)" />
+
+                    {/* BAU Line (Orange) */}
+                    <path d={bauPath} fill="none" stroke="#FFAA45" strokeWidth="2.5" strokeLinecap="round" />
+
+                    {/* Adapted Line (Emerald) */}
+                    <path d={adaptedPath} fill="none" stroke="#22D3A0" strokeWidth="2.5" strokeLinecap="round" />
+
+                    {/* Points on BAU */}
+                    {projectionPoints.map((pt, i) => (
+                      <circle key={`bau-${pt.year}`} cx={getX(i)} cy={getY(pt.bau)} r="4" fill="#FFAA45" stroke="#06111F" strokeWidth="1.5" />
+                    ))}
+
+                    {/* Points on Adapted */}
+                    {projectionPoints.map((pt, i) => (
+                      <circle key={`ad-${pt.year}`} cx={getX(i)} cy={getY(pt.adapted)} r="4" fill="#22D3A0" stroke="#06111F" strokeWidth="1.5" />
+                    ))}
+                  </>
+                );
+              })()}
+            </svg>
+          </div>
+
+          {/* Export Report Button */}
           <button
-            onClick={handleDownloadPDF}
-            className="px-4 py-2 rounded-xl bg-eco-green hover:bg-emerald-400 text-eco-bg font-grotesk font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition"
+            onClick={handleExportPDF}
+            className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-space font-semibold text-xs flex items-center justify-center gap-2 hover:border-primary-cyan/40 transition"
           >
             {downloadSuccess ? (
               <>
-                <CheckCircle2 className="w-4 h-4" />
-                <span>PDF Downloaded!</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-green" />
+                <span className="text-emerald-green">Report Exported!</span>
               </>
             ) : (
               <>
-                <Download className="w-4 h-4" />
-                <span>Export PDF Report</span>
+                <Download className="w-4 h-4 text-primary-cyan" />
+                <span>Export Report →</span>
               </>
             )}
           </button>
         </div>
-      </div>
-
-      {/* ── Top Executive KPI Overview (Gauge + 4 Impact Metrics) ──────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        
-        {/* Left: Planetary Resilience Index Gauge (5 Cols) */}
-        <div className="lg:col-span-5 hud-card p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Gauge className="w-5 h-5 text-eco-green" />
-                <h2 className="text-base font-orbitron font-bold text-white">Resilience Score</h2>
-              </div>
-              <span className={`px-2.5 py-1 rounded-full text-xs font-grotesk font-bold ${scoreInfo.bg} ${scoreInfo.border} ${scoreInfo.text} border`}>
-                {scoreInfo.label}
-              </span>
-            </div>
-
-            {/* Circular Gauge */}
-            <div className="flex flex-col sm:flex-row items-center gap-6 py-2">
-              <div className="relative w-36 h-36 flex-shrink-0 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="48"
-                    stroke="rgba(255, 255, 255, 0.08)"
-                    strokeWidth="10"
-                    fill="none"
-                  />
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="48"
-                    stroke={scoreInfo.color}
-                    strokeWidth="10"
-                    strokeDasharray={2 * Math.PI * 48}
-                    strokeDashoffset={2 * Math.PI * 48 * (1 - activeScore / 100)}
-                    strokeLinecap="round"
-                    fill="none"
-                    style={{ transition: 'stroke-dashoffset 0.4s ease, stroke 0.4s ease' }}
-                  />
-                </svg>
-                <div className="absolute flex flex-col items-center justify-center text-center">
-                  <span className="text-3xl font-orbitron font-black text-white">{activeScore}</span>
-                  <span className="text-[10px] font-mono text-eco-muted uppercase tracking-wider">/ 100 PTS</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-xs text-eco-muted leading-relaxed font-inter">
-                  {scoreInfo.desc}
-                </p>
-                <p className="text-[11px] text-eco-blue/90 font-mono">
-                  Calibrated for {districtName}, Sindh
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Allocation Breakdown Bar */}
-          <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
-            <div className="flex justify-between text-xs text-eco-muted font-grotesk">
-              <span>Policy Allocation Breakdown</span>
-              <span className="font-mono text-white">{activeScore} pts</span>
-            </div>
-            <div className="w-full h-2 rounded-full bg-white/5 overflow-hidden flex">
-              <div style={{ width: `${(policies.renewable_energy * 0.22 / Math.max(1, activeScore)) * 100}%` }} className="bg-sky-400" title="Renewables (22%)" />
-              <div style={{ width: `${(policies.forest_afforestation * 0.18 / Math.max(1, activeScore)) * 100}%` }} className="bg-emerald-500" title="Forests (18%)" />
-              <div style={{ width: `${(policies.mangrove_conservation * 0.15 / Math.max(1, activeScore)) * 100}%` }} className="bg-cyan-400" title="Mangroves (15%)" />
-              <div style={{ width: `${(policies.water_canal_lining * 0.20 / Math.max(1, activeScore)) * 100}%` }} className="bg-blue-500" title="Canal Lining (20%)" />
-              <div style={{ width: `${(policies.emission_reduction * 0.15 / Math.max(1, activeScore)) * 100}%` }} className="bg-amber-400" title="Emissions (15%)" />
-              <div style={{ width: `${(policies.urban_greening * 0.10 / Math.max(1, activeScore)) * 100}%` }} className="bg-teal-400" title="Urban Green (10%)" />
-            </div>
-            <div className="flex justify-between text-[10px] text-eco-muted font-mono pt-0.5">
-              <span className="text-sky-400">&bull; Solar 22%</span>
-              <span className="text-emerald-400">&bull; Forest 18%</span>
-              <span className="text-cyan-400">&bull; Mangrove 15%</span>
-              <span className="text-blue-400">&bull; Canal 20%</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: 4 Projected Impact Indicators (7 Cols, Clean 2x2 Grid) */}
-        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {impactMetrics.map((m, idx) => {
-            const Icon = m.icon;
-            return (
-              <div
-                key={idx}
-                className="hud-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between space-y-3 hover:border-white/20 transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-grotesk font-semibold text-eco-muted">
-                    {m.label}
-                  </span>
-                  <div className={`p-2 rounded-xl ${m.bg} ${m.border} border`}>
-                    <Icon className={`w-4 h-4 ${m.color}`} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className={`text-2xl sm:text-3xl font-orbitron font-black ${m.color}`}>
-                    {m.value}
-                  </div>
-                  <p className="text-xs text-eco-muted/80 font-inter mt-1">
-                    {m.sub}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-eco-muted">
-                  <span>Simulation Target: 2035</span>
-                  <span className="text-eco-green">✓ Validated</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
       </div>
-
-      {/* ── Middle: Sectoral Intervention Levers (6 Sliders) ───────────────── */}
-      <div className="hud-card p-6 rounded-2xl border border-white/10 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
-          <div>
-            <h2 className="text-base font-orbitron font-bold text-white flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-eco-blue" /> Sectoral Adaptation Levers
-            </h2>
-            <p className="text-xs text-eco-muted font-inter mt-0.5">
-              Drag sliders to reallocate regional adaptation funding across Sindh's key vulnerabilities.
-            </p>
-          </div>
-          <span className="text-[11px] font-mono text-eco-green px-2.5 py-1 rounded-lg bg-eco-green/10 border border-eco-green/20 self-start sm:self-auto">
-            Synced with CMIP6 Climate Model
-          </span>
-        </div>
-
-        {/* 6 Levers in 3x2 Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {/* Lever 1: Solar */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-sky-500/40 transition space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-grotesk font-bold text-white">
-                <Zap className="w-4 h-4 text-sky-400" /> Renewable Energy &amp; Solar
-              </span>
-              <span className="px-2 py-0.5 rounded font-mono text-xs font-bold bg-sky-500/10 text-sky-400 border border-sky-500/30">
-                {policies.renewable_energy}%
-              </span>
-            </div>
-            <p className="text-[11px] text-eco-muted leading-snug">
-              Utility solar farms, canal-top PV arrays, and solar tubewells.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={policies.renewable_energy}
-              onChange={(e) => updateSlider('renewable_energy', Number(e.target.value))}
-              className="w-full accent-sky-400 bg-eco-bg h-2 rounded-lg cursor-pointer"
-            />
-          </div>
-
-          {/* Lever 2: Forestry */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-emerald-500/40 transition space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-grotesk font-bold text-white">
-                <Trees className="w-4 h-4 text-emerald-400" /> Forests &amp; Riverine Belts
-              </span>
-              <span className="px-2 py-0.5 rounded font-mono text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                {policies.forest_afforestation}%
-              </span>
-            </div>
-            <p className="text-[11px] text-eco-muted leading-snug">
-              Restoration of Indus riverine forests and biological windbreaks.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={policies.forest_afforestation}
-              onChange={(e) => updateSlider('forest_afforestation', Number(e.target.value))}
-              className="w-full accent-emerald-400 bg-eco-bg h-2 rounded-lg cursor-pointer"
-            />
-          </div>
-
-          {/* Lever 3: Mangroves */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-cyan-500/40 transition space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-grotesk font-bold text-white">
-                <Waves className="w-4 h-4 text-cyan-400" /> Mangrove Conservation
-              </span>
-              <span className="px-2 py-0.5 rounded font-mono text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                {policies.mangrove_conservation}%
-              </span>
-            </div>
-            <p className="text-[11px] text-eco-muted leading-snug">
-              Indus Delta mangrove afforestation protecting against sea surges.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={policies.mangrove_conservation}
-              onChange={(e) => updateSlider('mangrove_conservation', Number(e.target.value))}
-              className="w-full accent-cyan-400 bg-eco-bg h-2 rounded-lg cursor-pointer"
-            />
-          </div>
-
-          {/* Lever 4: Canal Lining */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-blue-500/40 transition space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-grotesk font-bold text-white">
-                <Droplets className="w-4 h-4 text-blue-400" /> Canal Lining &amp; Drip Tech
-              </span>
-              <span className="px-2 py-0.5 rounded font-mono text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30">
-                {policies.water_canal_lining}%
-              </span>
-            </div>
-            <p className="text-[11px] text-eco-muted leading-snug">
-              Preventing canal water seepage and laser land leveling.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={policies.water_canal_lining}
-              onChange={(e) => updateSlider('water_canal_lining', Number(e.target.value))}
-              className="w-full accent-blue-400 bg-eco-bg h-2 rounded-lg cursor-pointer"
-            />
-          </div>
-
-          {/* Lever 5: Emissions */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-amber-500/40 transition space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-grotesk font-bold text-white">
-                <Factory className="w-4 h-4 text-amber-400" /> Emission Cuts &amp; Kiln Retrofit
-              </span>
-              <span className="px-2 py-0.5 rounded font-mono text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                {policies.emission_reduction}%
-              </span>
-            </div>
-            <p className="text-[11px] text-eco-muted leading-snug">
-              Zigzag brick kiln retrofits and industrial flue scrubbers.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={policies.emission_reduction}
-              onChange={(e) => updateSlider('emission_reduction', Number(e.target.value))}
-              className="w-full accent-amber-400 bg-eco-bg h-2 rounded-lg cursor-pointer"
-            />
-          </div>
-
-          {/* Lever 6: Urban Greening */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-teal-500/40 transition space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-grotesk font-bold text-white">
-                <SunMedium className="w-4 h-4 text-teal-400" /> Urban Greening &amp; Cool Roofs
-              </span>
-              <span className="px-2 py-0.5 rounded font-mono text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/30">
-                {policies.urban_greening}%
-              </span>
-            </div>
-            <p className="text-[11px] text-eco-muted leading-snug">
-              Reflective cool roofs, shaded corridors, and urban tree canopies.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={policies.urban_greening}
-              onChange={(e) => updateSlider('urban_greening', Number(e.target.value))}
-              className="w-full accent-teal-400 bg-eco-bg h-2 rounded-lg cursor-pointer"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* ── Bottom: Tailored Actions & PDF Report Export ────────────────────── */}
-      <div className="hud-card p-6 rounded-2xl border border-white/10 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
-          <div>
-            <h3 className="text-base font-orbitron font-bold text-white flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-eco-green" /> Tailored Climate Actions for {districtName}
-            </h3>
-            <p className="text-xs text-eco-muted font-inter mt-0.5">
-              Specific interventions generated dynamically based on {districtName}'s geographical risk indicators.
-            </p>
-          </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="px-3.5 py-1.5 rounded-xl bg-eco-blue/15 hover:bg-eco-blue/25 border border-eco-blue/40 text-eco-blue text-xs font-grotesk font-semibold flex items-center gap-1.5 transition self-start sm:self-auto shrink-0"
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Export Official PDF Report</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-1">
-            <span className="text-[10px] font-mono text-eco-blue uppercase tracking-wider">Water Security</span>
-            <p className="text-xs text-white/90 leading-relaxed font-inter">
-              Execute comprehensive canal lining and drip micro-irrigation across {districtName} to conserve up to 1.1 MAF of Indus river flow.
-            </p>
-          </div>
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-1">
-            <span className="text-[10px] font-mono text-eco-green uppercase tracking-wider">Agriculture Defense</span>
-            <p className="text-xs text-white/90 leading-relaxed font-inter">
-              Protect agricultural crop yields against thermal shock via agroforestry tree shelterbelts and smart solar-powered tubewells.
-            </p>
-          </div>
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-1">
-            <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Clean Energy</span>
-            <p className="text-xs text-white/90 leading-relaxed font-inter">
-              Transition municipal and industrial energy supplies to clean distributed solar arrays generating up to 1,770 GWh/yr.
-            </p>
-          </div>
-        </div>
-      </div>
-
     </div>
   );
 };

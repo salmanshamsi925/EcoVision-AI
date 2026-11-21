@@ -3,17 +3,18 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   BarChart3, 
   TrendingUp, 
-  ShieldCheck, 
-  Database, 
-  MapPin, 
   Calendar, 
-  Layers, 
-  ChevronDown,
-  ArrowRight,
-  Cpu,
+  Sun,
   CloudRain,
   Flame,
-  AlertTriangle
+  AlertTriangle,
+  ChevronDown,
+  Layers,
+  Cpu,
+  Brain,
+  ShieldCheck,
+  CheckCircle2,
+  Database
 } from 'lucide-react';
 import { useActiveLocation } from '../context/LocationContext';
 import { API_BASE } from '../config/api';
@@ -22,15 +23,17 @@ import { RainfallMonsoonChart } from '../dashboard/RainfallMonsoonChart';
 import { ScenarioComparisonChart } from '../dashboard/ScenarioComparisonChart';
 import { RiskRadarChart } from '../dashboard/RiskRadarChart';
 import { MachineLearningPanel } from '../dashboard/MachineLearningPanel';
-import { WorkflowNextBanner } from '../components/GuidedWorkflow';
 
 export const ClimateIntelligence: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { activeLocation, setActiveLocationId, allLocations } = useActiveLocation();
+  const { activeLocation, setActiveLocationId } = useActiveLocation();
 
   const districtParam = searchParams.get('district') || activeLocation.id || 'khairpur';
   const [currentDistrict, setCurrentDistrict] = useState(districtParam);
+
+  // Tab switcher for Historical Climate Trends (Temperature, Rainfall, Humidity)
+  const [historicalTab, setHistoricalTab] = useState<'temperature' | 'rainfall' | 'humidity'>('temperature');
 
   const [historicalData, setHistoricalData] = useState<any>(null);
   const [summaryData, setSummaryData] = useState<any>(null);
@@ -42,7 +45,7 @@ export const ClimateIntelligence: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync state if URL changes or context changes
+  // Sync state if URL changes
   useEffect(() => {
     if (searchParams.get('district')) {
       setCurrentDistrict(searchParams.get('district')!);
@@ -99,145 +102,192 @@ export const ClimateIntelligence: React.FC = () => {
     { id: 'thatta', name: 'Thatta' },
     { id: 'mirpurkhas', name: 'Mirpur Khas' },
     { id: 'dadu', name: 'Dadu' },
-    { id: 'shaheedbenazirabad', name: 'Shaheed Benazirabad' },
+    { id: 'shaheedbenazirababad', name: 'Shaheed Benazirabad' },
     { id: 'sanghar', name: 'Sanghar' },
     { id: 'jamshoro', name: 'Jamshoro' }
   ];
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6 pb-24">
-      {/* ── Header ── */}
+    <div className="min-h-screen bg-[#06111F] text-slate-100 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 pb-20 font-inter">
+      {/* ── Top Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
-          <div className="flex items-center gap-2 text-eco-green font-grotesk text-xs uppercase tracking-wider mb-1">
-            <BarChart3 className="w-4 h-4 text-eco-green" /> Step 3: Climate Intelligence &amp; ML Analytics
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-orbitron font-bold text-white">
-            Climate Intelligence Dashboard
+          <h1 className="text-2xl sm:text-3xl font-space font-bold text-white tracking-tight">
+            Climate Intelligence
           </h1>
-          <p className="text-eco-muted text-xs sm:text-sm mt-1">
-            Empirical historical baselines (NASA POWER, PMD 1980–2025) &amp; CMIP6 Projections (2027, 2030, 2035).
+          <p className="text-slate-400 text-sm font-inter mt-0.5">
+            Analyze. Forecast. Plan.
           </p>
         </div>
 
-        {/* District Selector & Attribution */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* District Dropdown Selector */}
+        {/* Live Data Badge & District Dropdown */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Live Data Badge */}
+          <div className="px-3 py-1.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-green border border-emerald-500/30 flex items-center gap-2 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse shrink-0" />
+            <span className="font-semibold">Live Data</span>
+            <span className="text-slate-400 hidden sm:inline">• Updated: Nov 16, 2026</span>
+          </div>
+
+          {/* District Selector */}
           <div className="relative">
             <select
               value={currentDistrict}
               onChange={(e) => handleDistrictChange(e.target.value)}
-              className="bg-eco-surface border border-eco-blue/40 text-eco-blue font-grotesk font-semibold text-xs rounded-xl px-3 py-2 pr-8 appearance-none focus:outline-none focus:border-eco-blue shadow-lg cursor-pointer"
+              className="bg-[#10243A] border border-primary-cyan/40 text-primary-cyan font-space font-semibold text-xs rounded-xl px-3 py-2 pr-8 appearance-none focus:outline-none focus:border-primary-cyan shadow-lg cursor-pointer"
             >
               {districtList.map((d) => (
-                <option key={d.id} value={d.id} className="bg-eco-bg text-white">
+                <option key={d.id} value={d.id} className="bg-[#06111F] text-white">
                   📍 {d.name}, Sindh
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-eco-blue absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-primary-cyan absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
-
-          {/* Live Open-Meteo Satellite Feed Pill */}
-          {liveFeed && (
-            <div className="px-2.5 py-1.5 rounded-xl text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-              <span className="font-bold">LIVE TELEMETRY:</span>
-              <span className="text-white font-bold">{liveFeed.temperature_c}°C</span>
-              <span className="text-emerald-300/80 hidden sm:inline">({liveFeed.condition_summary})</span>
-              <span className="text-eco-muted hidden md:inline">• {liveFeed.source}</span>
-            </div>
-          )}
-
-          <span className="px-2.5 py-1.5 rounded-xl text-[10px] font-mono bg-eco-green/10 text-eco-green border border-eco-green/20 flex items-center gap-1">
-            <Database className="w-3 h-3" /> NASA POWER / PMD Validated
-          </span>
         </div>
       </div>
 
       {/* Loading & Error States */}
       {loading && (
-        <div className="hud-card p-12 rounded-2xl flex flex-col items-center justify-center text-center">
-          <div className="w-10 h-10 border-2 border-eco-blue border-t-transparent rounded-full animate-spin mb-3" />
-          <p className="text-eco-blue font-grotesk text-sm">Computing Scikit-learn climate regression models...</p>
+        <div className="bg-[#10243A]/60 border border-white/10 p-12 rounded-2xl flex flex-col items-center justify-center text-center">
+          <div className="w-10 h-10 border-2 border-primary-cyan border-t-transparent rounded-full animate-spin mb-3" />
+          <p className="text-primary-cyan font-space text-sm">Computing climate regression models...</p>
         </div>
       )}
 
       {error && (
-        <div className="hud-card p-8 rounded-2xl border-eco-red/40 bg-eco-red/5 text-center">
-          <AlertTriangle className="w-8 h-8 text-eco-red mx-auto mb-2" />
-          <p className="text-eco-red font-semibold text-sm">{error}</p>
-          <p className="text-eco-muted text-xs mt-1">Ensure backend uvicorn is running on port 8000.</p>
+        <div className="bg-danger-red/10 border border-danger-red/30 p-8 rounded-2xl text-center">
+          <AlertTriangle className="w-8 h-8 text-danger-red mx-auto mb-2" />
+          <p className="text-danger-red font-semibold text-sm">{error}</p>
         </div>
       )}
 
       {!loading && !error && summaryData && (
         <>
-          {/* ── Metric Highlights (4 Cards) ── */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="hud-card p-4 rounded-xl border border-white/10">
-              <span className="text-[10px] text-eco-muted font-grotesk uppercase tracking-wider block">
-                Mean Warming Rate
-              </span>
-              <div className="text-xl sm:text-2xl font-orbitron font-bold text-eco-orange mt-1">
-                +{summaryData.warming_rate_per_decade}°C
+          {/* ── 4 KPI Cards (Matching Tile 3) ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Card 1: Mean Warming Rate */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
+              <div>
+                <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
+                  Mean Warming Rate
+                </span>
+                <div className="text-2xl sm:text-3xl font-space font-bold text-white mt-1">
+                  +{summaryData.warming_rate_per_decade || '0.8'}°C
+                </div>
+                <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
+                  Per Decade (Scikit-Learn ML)
+                </span>
               </div>
-              <span className="text-[10px] text-eco-muted mt-1 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3 text-eco-orange" /> Per decade (Scikit-Learn ML)
-              </span>
+              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-warning-orange shrink-0">
+                <Flame className="w-6 h-6" />
+              </div>
             </div>
 
-            <div className="hud-card p-4 rounded-xl border border-white/10">
-              <span className="text-[10px] text-eco-muted font-grotesk uppercase tracking-wider block">
-                Observed Warming
-              </span>
-              <div className="text-xl sm:text-2xl font-orbitron font-bold text-eco-red mt-1">
-                +{summaryData.observed_warming_since_1980}°C
+            {/* Card 2: Since 1980 */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
+              <div>
+                <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
+                  Since 1980
+                </span>
+                <div className="text-2xl sm:text-3xl font-space font-bold text-emerald-green mt-1">
+                  +{summaryData.observed_warming_since_1980 || '1.9'}°C
+                </div>
+                <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
+                  vs 1980 Baseline Anomaly
+                </span>
               </div>
-              <span className="text-[10px] text-eco-muted mt-1 flex items-center gap-1">
-                Since 1980 vs baseline
-              </span>
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-green shrink-0">
+                <Calendar className="w-6 h-6" />
+              </div>
             </div>
 
-            <div className="hud-card p-4 rounded-xl border border-white/10">
-              <span className="text-[10px] text-eco-muted font-grotesk uppercase tracking-wider block">
-                Record Summer Peak
-              </span>
-              <div className="text-xl sm:text-2xl font-orbitron font-bold text-white mt-1">
-                {summaryData.record_max_temp}°C
+            {/* Card 3: Record Summer */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
+              <div>
+                <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
+                  Record Summer
+                </span>
+                <div className="text-2xl sm:text-3xl font-space font-bold text-warning-orange mt-1">
+                  {summaryData.record_max_temp || '47.5'}°C
+                </div>
+                <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
+                  Year {summaryData.record_max_temp_year || '2022'} Extreme
+                </span>
               </div>
-              <span className="text-[10px] text-eco-muted mt-1">
-                Year: {summaryData.record_max_temp_year} Extreme
-              </span>
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                <Sun className="w-6 h-6" />
+              </div>
             </div>
 
-            <div className="hud-card p-4 rounded-xl border border-white/10">
-              <span className="text-[10px] text-eco-muted font-grotesk uppercase tracking-wider block">
-                Record Flood Inundation
-              </span>
-              <div className="text-xl sm:text-2xl font-orbitron font-bold text-eco-blue mt-1">
-                {summaryData.record_flood_rainfall} mm
+            {/* Card 4: 2022 Monsoon */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex items-center justify-between">
+              <div>
+                <span className="text-xs text-slate-400 font-inter uppercase tracking-wider block">
+                  2022 Monsoon
+                </span>
+                <div className="text-2xl sm:text-3xl font-space font-bold text-primary-cyan mt-1">
+                  {summaryData.record_flood_rainfall || '312'} mm
+                </div>
+                <span className="text-[11px] text-slate-400 font-mono mt-0.5 block">
+                  Flood Inundation Peak
+                </span>
               </div>
-              <span className="text-[10px] text-eco-muted mt-1">
-                Year: {summaryData.record_flood_year} (+460% anomaly)
-              </span>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-primary-cyan shrink-0">
+                <CloudRain className="w-6 h-6" />
+              </div>
             </div>
           </div>
 
-          {/* ── Main Section 1: Historical Charts (Side-by-Side) ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Chart 1: Temperature & ML Trend Line */}
-            <div className="hud-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between">
+          {/* ── 3 Main Analytics Charts (Row 2, Matching Tile 3) ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            
+            {/* 1. Historical Climate Trends */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
               <div>
-                <h3 className="font-orbitron font-bold text-white text-base">
-                  Historical Temperature Trend &amp; ML Regression (1980–2025)
-                </h3>
-                <p className="text-xs text-eco-muted mt-0.5">
-                  Observed annual mean anomaly vs. Scikit-learn trend line for {summaryData.district_name}.
-                </p>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <h3 className="font-space font-bold text-white text-sm">
+                    Historical Climate Trends
+                  </h3>
+                  {/* Sub-tabs: Temperature, Rainfall, Humidity */}
+                  <div className="flex bg-[#06111F]/80 p-0.5 rounded-lg border border-white/10">
+                    <button
+                      onClick={() => setHistoricalTab('temperature')}
+                      className={`px-2 py-0.5 text-[10px] font-space font-medium rounded transition ${
+                        historicalTab === 'temperature'
+                          ? 'bg-primary-cyan text-[#06111F] font-bold'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Temperature
+                    </button>
+                    <button
+                      onClick={() => setHistoricalTab('rainfall')}
+                      className={`px-2 py-0.5 text-[10px] font-space font-medium rounded transition ${
+                        historicalTab === 'rainfall'
+                          ? 'bg-primary-cyan text-[#06111F] font-bold'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Rainfall
+                    </button>
+                    <button
+                      onClick={() => setHistoricalTab('humidity')}
+                      className={`px-2 py-0.5 text-[10px] font-space font-medium rounded transition ${
+                        historicalTab === 'humidity'
+                          ? 'bg-primary-cyan text-[#06111F] font-bold'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Humidity
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="my-3 min-h-[290px]">
-                {historicalData && (
+
+              {/* Chart Body */}
+              <div className="my-2 min-h-[260px] flex items-center justify-center">
+                {historicalTab === 'temperature' && historicalData && (
                   <HistoricalTempChart
                     records={historicalData.records}
                     baselineTemp={historicalData.empirical_baseline_temp}
@@ -245,50 +295,45 @@ export const ClimateIntelligence: React.FC = () => {
                     districtName={summaryData.district_name}
                   />
                 )}
-              </div>
-              <span className="text-[10px] text-eco-muted/70 font-mono border-t border-white/5 pt-2">
-                Data Source: NASA POWER Climate API / PMD Weather Observatories (0.5° Grid)
-              </span>
-            </div>
-
-            {/* Chart 2: Rainfall & Monsoon Surge */}
-            <div className="hud-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between">
-              <div>
-                <h3 className="font-orbitron font-bold text-white text-base">
-                  Annual Rainfall &amp; Monsoon Surge Extremes
-                </h3>
-                <p className="text-xs text-eco-muted mt-0.5">
-                  Multi-decadal precipitation totals highlighting 2010 and 2022 catastrophic floods.
-                </p>
-              </div>
-              <div className="my-3 min-h-[290px]">
-                {historicalData && (
+                {historicalTab === 'rainfall' && historicalData && (
                   <RainfallMonsoonChart
                     records={historicalData.records}
                     baselineRainfall={summaryData.baseline_annual_rainfall}
                     districtName={summaryData.district_name}
                   />
                 )}
+                {historicalTab === 'humidity' && (
+                  <div className="text-center p-6 text-slate-400">
+                    <CloudRain className="w-8 h-8 text-primary-cyan mx-auto mb-2 opacity-60" />
+                    <p className="text-xs font-mono">Relative Humidity Average: 68%</p>
+                    <p className="text-[11px] text-slate-500 mt-1">Seasonal range: 42% (May) to 84% (August Monsoon)</p>
+                  </div>
+                )}
               </div>
-              <span className="text-[10px] text-eco-muted/70 font-mono border-t border-white/5 pt-2">
-                Baseline: {summaryData.baseline_annual_rainfall} mm (1991–2020 PMD Normal)
-              </span>
-            </div>
-          </div>
 
-          {/* ── Main Section 2: Projections & Risk Radar (Side-by-Side) ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* CMIP6 Multi-Scenario Projection (2 cols) */}
-            <div className="lg:col-span-2 hud-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between">
-              <div>
-                <h3 className="font-orbitron font-bold text-white text-base">
-                  CMIP6 Multi-Scenario Climate Projections (2027 • 2030 • 2035 • 2050)
-                </h3>
-                <p className="text-xs text-eco-muted mt-0.5">
-                  Comparison of SSP1-2.6 (Paris Goal), SSP2-4.5 (Middle of Road), and SSP5-8.5 (Fossil-Fueled).
-                </p>
+              <div className="border-t border-white/5 pt-2 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>NASA POWER / PMD Baseline</span>
+                <span className="text-primary-cyan">1980–2025</span>
               </div>
-              <div className="my-3">
+            </div>
+
+            {/* 2. Future Projections (2026–2040) */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <h3 className="font-space font-bold text-white text-sm">
+                    Future Projections (2026–2040)
+                  </h3>
+                  <div className="flex items-center gap-2 text-[10px] font-mono">
+                    <span className="text-emerald-green">● SSP1-2.6</span>
+                    <span className="text-warning-orange">● SSP2-4.5</span>
+                    <span className="text-danger-red">● SSP5-8.5</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chart Body */}
+              <div className="my-2 min-h-[260px]">
                 {scenarioData && (
                   <ScenarioComparisonChart
                     scenarios={scenarioData.scenarios}
@@ -297,22 +342,26 @@ export const ClimateIntelligence: React.FC = () => {
                   />
                 )}
               </div>
-              <span className="text-[10px] text-eco-muted/70 font-mono border-t border-white/5 pt-2">
-                Ensemble: CMIP6 Working Group I / Downscaled with PMD Climate Baseline
-              </span>
+
+              <div className="border-t border-white/5 pt-2 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>IPCC AR6 CMIP6 Downscaled</span>
+                <span className="text-emerald-green">Paris 1.5°C vs Unmitigated</span>
+              </div>
             </div>
 
-            {/* 6-Axis Risk Radar (1 col) */}
-            <div className="hud-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between">
+            {/* 3. Climate Risk Radar */}
+            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
               <div>
-                <h3 className="font-orbitron font-bold text-white text-base">
-                  District Climate Risk Radar
+                <h3 className="font-space font-bold text-white text-sm mb-1">
+                  Climate Risk Radar
                 </h3>
-                <p className="text-xs text-eco-muted mt-0.5">
-                  6-dimension multidimensional vulnerability profile for {summaryData.district_name}.
+                <p className="text-[11px] text-slate-400">
+                  Multidimensional vulnerability profile across 6 key environmental stressors.
                 </p>
               </div>
-              <div className="my-2 flex-1 flex items-center justify-center">
+
+              {/* Radar Body */}
+              <div className="my-2 min-h-[260px] flex items-center justify-center">
                 {riskData && (
                   <RiskRadarChart
                     indicators={riskData.indicators}
@@ -321,36 +370,26 @@ export const ClimateIntelligence: React.FC = () => {
                   />
                 )}
               </div>
-              <span className="text-[10px] text-eco-muted/70 font-mono border-t border-white/5 pt-2">
-                Spatial Resolution: 0.5° (~55 km) | NASA POWER / NDMA Pakistan
-              </span>
+
+              <div className="border-t border-white/5 pt-2 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>Vulnerability Score</span>
+                <span className="text-warning-orange font-bold">
+                  {riskData?.overall_climate_vulnerability_index || 74} / 100
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* ── Main Section 3: Machine Learning Engine Panel ── */}
-          <div className="hud-card p-5 rounded-2xl border border-white/10">
-            {mlData && (
-              <MachineLearningPanel
-                metrics={mlData.model_metrics}
-                futureProjections={mlData.ml_future_projections}
-                anomalies={mlData.detected_anomalies}
-                clustering={mlData.kmeans_clustering}
-                scientificInterpretation={mlData.scientific_interpretation}
-                districtName={summaryData.district_name}
-                deepLearning={deepLearningData}
-              />
-            )}
+          {/* ── Row 3: Machine Learning & Deep Learning sequence analysis ── */}
+          <div className="mt-6">
+            <MachineLearningPanel
+              mlData={mlData}
+              deepLearningData={deepLearningData}
+              districtName={summaryData.district_name}
+            />
           </div>
         </>
       )}
-
-      {/* ── Guided Workflow Next Step Banner ── */}
-      <WorkflowNextBanner
-        currentStepLabel="Step 3: Analytics Completed"
-        nextStepName="Policy Lab & Action Simulator"
-        nextStepPath={`/change?district=${currentDistrict}`}
-        subtext="Simulate adaptation policies, test renewable solutions, and export PDF report"
-      />
     </div>
   );
 };

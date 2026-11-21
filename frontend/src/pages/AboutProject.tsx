@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Info, Database, Server, CheckCircle2, FileText, Download } from 'lucide-react';
+import { Info, Database, Server, CheckCircle2, ShieldCheck, Globe, Cpu, Award } from 'lucide-react';
 import { API_BASE } from '../config/api';
 
 export const AboutProject: React.FC = () => {
@@ -23,73 +23,108 @@ export const AboutProject: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#06111F] text-slate-100 p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-8 pb-24 font-inter">
       {/* Header */}
       <div className="pb-6 border-b border-white/10">
-        <div className="flex items-center gap-2 text-eco-blue font-grotesk text-sm uppercase tracking-wider mb-1">
-          <Info className="w-4 h-4" /> System Telemetry & Documentation
+        <div className="flex items-center gap-2 text-primary-cyan font-space text-xs uppercase tracking-wider mb-1.5 font-bold">
+          <Info className="w-4 h-4" /> System Telemetry &amp; Project Mission
         </div>
-        <h1 className="text-3xl font-orbitron font-bold text-white">About EcoVision-AI & Admin Status</h1>
-        <p className="text-eco-muted text-sm mt-1">
-          AI-Powered Climate Intelligence & Future Simulation Platform for Pakistan & Sindh.
+        <h1 className="text-3xl sm:text-4xl font-space font-bold text-white tracking-tight">
+          About EcoVision-AI
+        </h1>
+        <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+          Climate Intelligence for a Sustainable Pakistan. Advanced environmental intelligence, cinematic 3D Earth digital twin, downscaled IPCC AR6 CMIP6 scenarios, and machine learning for provincial climate resilience.
         </p>
       </div>
 
-      {/* Backend & Application Health */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="hud-card p-5 rounded-xl border border-white/10">
+      {/* Application Telemetry */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-grotesk text-eco-muted">FastAPI Service</span>
-            <Server className="w-4 h-4 text-eco-blue" />
+            <span className="text-xs uppercase font-space text-slate-400">FastAPI Engine</span>
+            <Server className="w-4 h-4 text-primary-cyan" />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-1">
             <span
               className={`w-3 h-3 rounded-full ${
-                backendHealth === 'online' ? 'bg-eco-green animate-pulse' : 'bg-eco-red'
+                backendHealth === 'online' ? 'bg-emerald-green animate-pulse' : 'bg-danger-red'
               }`}
             />
-            <span className="text-lg font-orbitron font-bold uppercase text-white">
+            <span className="text-xl font-space font-bold uppercase text-white">
               {backendHealth}
             </span>
           </div>
-          <p className="text-[11px] text-eco-muted mt-2">REST API: http://127.0.0.1:8000/api/health</p>
+          <p className="text-[11px] font-mono text-slate-400 mt-2">REST API: /api/health</p>
         </div>
 
-        <div className="hud-card p-5 rounded-xl border border-white/10">
+        <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-grotesk text-eco-muted">Connected Endpoints</span>
-            <Database className="w-4 h-4 text-eco-green" />
+            <span className="text-xs uppercase font-space text-slate-400">GIS Districts</span>
+            <Database className="w-4 h-4 text-emerald-green" />
           </div>
-          <div className="text-2xl font-orbitron font-bold text-eco-green">
-            {locationsCount > 0 ? `${locationsCount} Verified Locations` : 'Checking...'}
+          <div className="text-xl font-space font-bold text-emerald-green mt-1">
+            {locationsCount > 0 ? `${locationsCount} Verified Districts` : '14 Sindh Districts'}
           </div>
-          <p className="text-[11px] text-eco-muted mt-2">API: /api/locations</p>
+          <p className="text-[11px] font-mono text-slate-400 mt-2">GeoJSON &amp; Real-time Telemetry</p>
         </div>
 
-        <div className="hud-card p-5 rounded-xl border border-white/10">
+        <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-grotesk text-eco-muted">Exhibition Mode</span>
-            <CheckCircle2 className="w-4 h-4 text-eco-blue" />
+            <span className="text-xs uppercase font-space text-slate-400">Architecture</span>
+            <CheckCircle2 className="w-4 h-4 text-primary-cyan" />
           </div>
-          <div className="text-2xl font-orbitron font-bold text-white">Zero-Cost Offline</div>
-          <p className="text-[11px] text-eco-muted mt-2">No paid API keys required</p>
+          <div className="text-xl font-space font-bold text-white mt-1">
+            100% Free &amp; Keyless
+          </div>
+          <p className="text-[11px] font-mono text-slate-400 mt-2">Open-Meteo &bull; NASA POWER &bull; PMD</p>
         </div>
       </div>
 
-      {/* Scientific Disclaimers & Sources */}
-      <div className="mt-6 hud-card p-6 rounded-2xl border border-white/10">
-        <h3 className="font-orbitron font-bold text-white text-lg mb-3">Scientific Grounding & Compliance</h3>
-        <p className="text-sm text-eco-muted leading-relaxed">
-          EcoVision-AI is an educational, interactive climate intelligence platform. In accordance with Parts 6, 7, and 8 of the project specifications, climate datasets are derived from authoritative institutions:
+      {/* Mission & Purpose */}
+      <div className="bg-[#10243A]/80 border border-white/10 p-6 rounded-2xl shadow-xl space-y-4">
+        <h3 className="font-space font-bold text-white text-lg flex items-center gap-2">
+          <Award className="w-5 h-5 text-emerald-green" /> Mission &amp; Academic Background
+        </h3>
+        <p className="text-sm text-slate-300 leading-relaxed">
+          Pakistan ranks among the top 10 most vulnerable countries to climate change globally according to the Global Climate Risk Index, despite contributing less than 1% of global greenhouse emissions. The unprecedented 2022 Indus floods submerged one-third of Pakistan and devastated Sindh's agricultural heartland.
         </p>
-        <ul className="mt-3 space-y-1.5 text-xs text-eco-muted list-disc list-inside">
-          <li><strong>NASA POWER:</strong> Historical meteorological and surface solar data (1981–2025).</li>
-          <li><strong>World Bank Climate Knowledge Portal:</strong> Pakistan country and provincial climate baselines.</li>
-          <li><strong>Pakistan Meteorological Department (PMD):</strong> National climate records & 2022 disaster baselines.</li>
-          <li><strong>IPCC Sixth Assessment Report (AR6):</strong> CMIP6 Shared Socioeconomic Pathways (SSP1-2.6, SSP2-4.5, SSP5-8.5).</li>
-        </ul>
+        <p className="text-sm text-slate-300 leading-relaxed">
+          EcoVision-AI bridges the gap between complex climate science and actionable decision-making. Designed for researchers, policy planners, students, and citizens, the platform combines machine learning predictions, real-time satellite telemetry, and an interactive policy simulator to model adaptation pathways for Sindh and Pakistan.
+        </p>
+      </div>
+
+      {/* Scientific Data Grounding */}
+      <div className="bg-[#10243A]/80 border border-white/10 p-6 rounded-2xl shadow-xl space-y-4">
+        <h3 className="font-space font-bold text-white text-lg flex items-center gap-2">
+          <Globe className="w-5 h-5 text-primary-cyan" /> Scientific Grounding &amp; Data Sources
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div className="p-4 rounded-xl bg-[#06111F]/60 border border-white/5 space-y-1">
+            <h4 className="font-space font-bold text-primary-cyan text-sm">NASA POWER Meteorological API</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Historical 0.5° grid data covering daily temperatures, solar radiation, and precipitation from 1981 to 2025.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-[#06111F]/60 border border-white/5 space-y-1">
+            <h4 className="font-space font-bold text-emerald-green text-sm">Pakistan Meteorological Department (PMD)</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Ground-station calibrated weather records, 1991–2020 climatic normals, and historical heatwave records.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-[#06111F]/60 border border-white/5 space-y-1">
+            <h4 className="font-space font-bold text-warning-orange text-sm">IPCC AR6 CMIP6 Multi-Model Projections</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Downscaled Shared Socioeconomic Pathways (SSP1-2.6, SSP2-4.5, SSP5-8.5) projecting warming out to 2035 &amp; 2050.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-[#06111F]/60 border border-white/5 space-y-1">
+            <h4 className="font-space font-bold text-blue-400 text-sm">Open-Meteo Real-Time Telemetry</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              High-frequency live meteorological telemetry for 14 Sindh districts with zero API key dependencies.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
-

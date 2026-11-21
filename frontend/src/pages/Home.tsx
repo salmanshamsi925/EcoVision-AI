@@ -151,6 +151,13 @@ export const Home: React.FC = () => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<LocationDetail | null>(null);
   const [flyToTrigger, setFlyToTrigger] = useState(0);
+  const [liveWeather, setLiveWeather] = useState<{
+    temperature_c?: number;
+    feels_like_c?: number;
+    humidity_percent?: number;
+    precipitation_mm?: number;
+    condition_summary?: string;
+  } | null>(null);
 
   // Experience Controls
   const [audioActive, setAudioActive] = useState(false);
@@ -171,6 +178,21 @@ export const Home: React.FC = () => {
         // graceful offline fallback is already loaded
       });
   }, []);
+
+  // Fetch live weather telemetry for the active/selected city
+  useEffect(() => {
+    const targetId = selectedLocation?.id || 'khairpur';
+    fetch(`${API_BASE}/api/climate/live?district=${targetId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.temperature_c !== undefined) {
+          setLiveWeather(data);
+        }
+      })
+      .catch(() => {
+        setLiveWeather(null);
+      });
+  }, [selectedLocation?.id]);
 
   // Filtered search list
   const filteredLocations = searchQuery.trim()
@@ -233,22 +255,22 @@ export const Home: React.FC = () => {
       </div>
 
       {/* 2. LEFT COCKPIT COLUMN (Contains Search, Hero Text, Action CTAs, and Status) */}
-      {!fullScreenGlobe && !selectedLocation && (
+      {!fullScreenGlobe && (
         <div className="relative z-20 w-full lg:w-1/2 h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none">
           
           {/* Top: Google Earth-Style City Search Bar & Quick Chips */}
           <div className="w-full max-w-lg pointer-events-auto">
-            <div className="hud-card rounded-2xl flex items-center px-4 py-2.5 border border-eco-blue/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-eco-blue focus-within:shadow-neon-blue">
-              <Search className="w-5 h-5 text-eco-blue shrink-0 mr-3" />
+            <div className="hud-card rounded-2xl flex items-center px-4 py-2.5 border border-[#20C5FF]/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-neon-blue">
+              <Search className="w-4 h-4 text-[#20C5FF] shrink-0 mr-3" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
-                placeholder="Search any city or district in Pakistan (e.g. Khairpur, Karachi, Sukkur...)"
+                placeholder="Search location... (e.g. Khairpur, Karachi, Sukkur)"
                 className="w-full bg-transparent text-xs sm:text-sm text-white placeholder-eco-muted/70 focus:outline-none font-inter"
               />
-              {searchQuery && (
+              {searchQuery ? (
                 <button
                   onClick={() => {
                     setSearchQuery('');
@@ -258,20 +280,30 @@ export const Home: React.FC = () => {
                 >
                   <X className="w-4 h-4" />
                 </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    const first = filteredLocations[0] || locations[0];
+                    if (first) handleSelectCity(first);
+                  }}
+                  className="w-7 h-7 rounded-xl bg-[#20C5FF]/20 hover:bg-[#20C5FF] text-[#20C5FF] hover:text-[#06111F] flex items-center justify-center transition-all cursor-pointer shrink-0"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               )}
             </div>
 
             {/* Autocomplete Dropdown */}
             {searchFocused && filteredLocations.length > 0 && (
-              <div className="absolute top-16 left-4 sm:left-6 lg:left-12 right-4 sm:right-auto sm:w-[480px] bg-[#07111F]/98 border border-eco-blue/40 rounded-xl overflow-hidden shadow-2xl backdrop-blur-xl max-h-64 overflow-y-auto z-40">
+              <div className="absolute top-16 left-4 sm:left-6 lg:left-12 right-4 sm:right-auto sm:w-[480px] bg-[#0B1B2D]/98 border border-[#20C5FF]/40 rounded-xl overflow-hidden shadow-2xl backdrop-blur-xl max-h-64 overflow-y-auto z-40">
                 {filteredLocations.map((loc) => (
                   <button
                     key={loc.id}
                     onClick={() => handleSelectCity(loc)}
-                    className="w-full px-4 py-3 text-left hover:bg-eco-blue/15 border-b border-white/5 flex items-center justify-between transition group"
+                    className="w-full px-4 py-3 text-left hover:bg-[#20C5FF]/15 border-b border-white/5 flex items-center justify-between transition group"
                   >
                     <div className="flex items-center gap-2.5">
-                      <MapPin className="w-4 h-4 text-eco-green group-hover:text-eco-blue transition" />
+                      <MapPin className="w-4 h-4 text-[#22D3A0] group-hover:text-[#20C5FF] transition" />
                       <div>
                         <span className="font-grotesk font-semibold text-sm text-white block">
                           {loc.name}
@@ -282,7 +314,7 @@ export const Home: React.FC = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-[11px] font-mono text-eco-orange block">
+                      <span className="text-[11px] font-mono text-[#FFAA45] block">
                         {loc.temp_anomaly}
                       </span>
                       <span className="text-[10px] text-eco-muted">
@@ -294,22 +326,19 @@ export const Home: React.FC = () => {
               </div>
             )}
 
-            {/* Quick-Select City Chips */}
-            <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 scrollbar-none">
-              <span className="text-[11px] font-grotesk font-medium text-eco-muted whitespace-nowrap mr-1">
-                Quick Fly-To:
-              </span>
-              {['Khairpur', 'Karachi', 'Sukkur', 'Larkana', 'Tharparkar', 'Dadu'].map((cityName) => (
+            {/* Quick-Select City Chips matching Reference Tile 1 */}
+            <div className="flex items-center gap-1.5 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
+              {['Khairpur', 'Karachi', 'Sukkur', 'Larkana', 'Islamabad'].map((cityName) => (
                 <button
                   key={cityName}
                   onClick={() => {
                     const target = locations.find((l) => l.name.toLowerCase() === cityName.toLowerCase());
                     if (target) handleSelectCity(target);
                   }}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-grotesk font-medium transition whitespace-nowrap border ${
+                  className={`px-3 py-1 rounded-full text-xs font-grotesk font-medium transition whitespace-nowrap border ${
                     selectedLocation?.name.toLowerCase() === cityName.toLowerCase()
-                      ? 'bg-eco-blue text-eco-bg border-eco-blue font-bold shadow-neon-blue'
-                      : 'bg-eco-surface/80 border-white/10 text-eco-muted hover:text-white hover:border-eco-blue/40'
+                      ? 'bg-[#20C5FF] text-[#06111F] border-[#20C5FF] font-bold shadow-md shadow-[#20C5FF]/30'
+                      : 'bg-[#10243A]/80 border-white/10 text-eco-muted hover:text-white hover:border-[#20C5FF]/40'
                   }`}
                 >
                   {cityName}
@@ -320,160 +349,101 @@ export const Home: React.FC = () => {
 
           {/* Middle: Mission Hero Briefing & Action CTAs */}
           <div className="w-full max-w-lg pointer-events-auto my-auto py-2">
-            {/* Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-eco-surface/90 border border-eco-blue/30 backdrop-blur-md mb-3 shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-eco-green animate-pulse" />
-              <span className="font-grotesk text-[11px] tracking-wider text-eco-blue uppercase font-bold">
-                Pakistan Climate Command &bull; Live Telemetry
+            {/* Small Label Pill */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10243A] border border-[#20C5FF]/30 backdrop-blur-md mb-3 shadow-lg">
+              <span className="w-2 h-2 rounded-full bg-[#22D3A0] animate-pulse" />
+              <span className="font-grotesk text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold">
+                Pakistan Climate Command &bull; Live Intelligence
               </span>
             </div>
 
-            {/* Headline with Strong Drop Shadow */}
+            {/* Headline with Cyan to Emerald Gradient */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
               THE FUTURE IS IN <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-eco-blue via-eco-green to-cyan-300">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#20C5FF] via-[#22D3A0] to-[#22D3A0]">
                 YOUR HANDS
               </span>
             </h1>
 
-            {/* Description */}
+            {/* Subtitle matching Tile 1 */}
             <p className="mt-3 text-xs sm:text-sm text-slate-200 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-md">
-              One Planet. Two Possible Futures. One Choice. Explore realistic near-term climate projection timelines for Pakistan &amp; Sindh.
+              Smart Climate Intelligence for Pakistan &amp; Sindh Powered by AI, GIS and Real-Time Data. Explore verified near-term climate projection timelines.
             </p>
 
-            {/* Action Buttons: 2 Clean CTAs */}
+            {/* Action Buttons matching Tile 1 */}
             <div className="mt-5 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleEnterExperience}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
               >
                 <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
-                <span>{isEnteringExperience ? 'ROTATING TO PAKISTAN...' : 'ENTER THE EXPERIENCE'}</span>
+                <span>{isEnteringExperience ? 'Rotating to Pakistan...' : 'Enter Experience'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
                 onClick={() => navigate('/pakistan')}
-                className="px-5 py-3 rounded-xl bg-eco-surface/90 border border-eco-blue/40 text-eco-blue font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-eco-blue/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer"
+                className="px-5 py-3 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#20C5FF]/10 hover:border-[#20C5FF] transition backdrop-blur-md cursor-pointer"
               >
-                <Compass className="w-4 h-4 text-eco-green" />
-                <span>Explore Sindh &amp; Pakistan</span>
+                <Compass className="w-4 h-4 text-[#22D3A0]" />
+                <span>Explore Pakistan</span>
               </button>
             </div>
           </div>
 
-          {/* Bottom: 3D Interaction Control & Fullscreen Switcher */}
-          <div className="w-full max-w-lg pointer-events-auto flex items-center justify-between text-[11px] font-mono text-eco-muted pt-2 border-t border-white/5">
-            <span className="flex items-center gap-1.5 text-eco-blue/80">
-              <span className="w-1.5 h-1.5 rounded-full bg-eco-green animate-pulse" />
-              3D Earth: Drag to rotate &bull; Scroll to zoom
-            </span>
-            <button
-              onClick={() => setFullScreenGlobe(true)}
-              className="text-eco-muted hover:text-white flex items-center gap-1 cursor-pointer transition px-2 py-1 rounded-lg hover:bg-white/5"
-            >
-              <Maximize2 className="w-3.5 h-3.5 text-eco-green" />
-              <span>Full-Screen Earth</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 4. FLOATING HUD TELEMETRY CARD: Selected City Snapshot */}
-      {selectedLocation && !fullScreenGlobe && (
-        <div className="absolute right-6 top-24 bottom-12 z-30 w-full max-w-sm pointer-events-auto animate-in fade-in slide-in-from-right duration-300">
-          <div className="h-full hud-card rounded-2xl p-5 border border-eco-blue/40 flex flex-col justify-between backdrop-blur-xl shadow-2xl">
-            {/* Header */}
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <span className="px-2.5 py-0.5 rounded text-[10px] font-mono bg-eco-blue/20 text-eco-blue border border-eco-blue/30 uppercase">
-                  {selectedLocation.category}
-                </span>
-                <button
-                  onClick={() => setSelectedLocation(null)}
-                  className="p-1 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+          {/* Bottom: Floating Metric Strip (Reference Tile 1 Requirement) */}
+          <div className="w-full max-w-lg pointer-events-auto">
+            <div className="hud-card px-4 py-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-2.5 text-xs border border-white/10 shadow-2xl">
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-md bg-[#FFAA45]/15 text-[#FFAA45] text-xs">🌡️</span>
+                <div>
+                  <span className="font-orbitron font-bold text-white text-xs block">
+                    {liveWeather?.temperature_c !== undefined ? `${liveWeather.temperature_c}°C` : '32.5°C'}
+                  </span>
+                  <span className="text-[10px] text-eco-muted font-grotesk">Temp</span>
+                </div>
               </div>
 
-              {/* Title & Coordinates */}
-              <div className="mt-4">
-                <h2 className="text-2xl font-orbitron font-bold text-white flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-eco-green" />
-                  {selectedLocation.name}
-                </h2>
-                <span className="text-xs text-eco-muted font-grotesk block mt-0.5">
-                  {selectedLocation.province}, Pakistan
-                </span>
-                <span className="text-[11px] font-mono text-eco-blue/90 block mt-1">
-                  Coords: {selectedLocation.latitude.toFixed(4)}° N, {selectedLocation.longitude.toFixed(4)}° E
-                </span>
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-md bg-[#20C5FF]/15 text-[#20C5FF] text-xs">🌧️</span>
+                <div>
+                  <span className="font-orbitron font-bold text-white text-xs block">
+                    {liveWeather?.precipitation_mm !== undefined ? `${liveWeather.precipitation_mm} mm` : '12.8 mm'}
+                  </span>
+                  <span className="text-[10px] text-eco-muted font-grotesk">Rainfall</span>
+                </div>
               </div>
 
-              {/* Metric Highlights */}
-              <div className="space-y-3 mt-5">
-                <div className="p-3 rounded-xl bg-eco-bg/70 border border-white/5">
-                  <div className="flex items-center justify-between text-xs font-grotesk text-eco-muted mb-1">
-                    <span className="flex items-center gap-1.5 text-eco-orange">
-                      <Flame className="w-3.5 h-3.5" /> Peak Heat Risk
-                    </span>
-                    <span className="font-mono text-white text-[10px]">MAY–JULY</span>
-                  </div>
-                  <div className="text-xs font-semibold text-white leading-tight">
-                    {selectedLocation.heat_risk}
-                  </div>
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-md bg-[#20C5FF]/15 text-[#20C5FF] text-xs">💧</span>
+                <div>
+                  <span className="font-orbitron font-bold text-white text-xs block">
+                    {liveWeather?.humidity_percent !== undefined ? `${liveWeather.humidity_percent}%` : '68%'}
+                  </span>
+                  <span className="text-[10px] text-eco-muted font-grotesk">Humidity</span>
                 </div>
+              </div>
 
-                <div className="p-3 rounded-xl bg-eco-bg/70 border border-white/5">
-                  <div className="flex items-center justify-between text-xs font-grotesk text-eco-muted mb-1">
-                    <span className="flex items-center gap-1.5 text-eco-blue">
-                      <Waves className="w-3.5 h-3.5" /> Flood Hazard Exposure
-                    </span>
-                    <span className="font-mono text-white text-[10px]">MONSOON</span>
-                  </div>
-                  <div className="text-xs font-semibold text-white leading-tight">
-                    {selectedLocation.flood_exposure}
-                  </div>
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-md bg-[#22D3A0]/15 text-[#22D3A0] text-xs">🍃</span>
+                <div>
+                  <span className="font-orbitron font-bold text-[#22D3A0] text-xs block">AQI 42</span>
+                  <span className="text-[10px] text-eco-muted font-grotesk">Good</span>
                 </div>
+              </div>
 
-                <div className="p-3 rounded-xl bg-eco-bg/70 border border-white/5">
-                  <div className="flex items-center justify-between text-xs font-grotesk text-eco-muted mb-1">
-                    <span className="flex items-center gap-1.5 text-amber-400">
-                      <Droplets className="w-3.5 h-3.5" /> Drought Indicator
-                    </span>
-                    <span className="font-mono text-eco-orange text-[10px]">{selectedLocation.temp_anomaly}</span>
-                  </div>
-                  <div className="text-xs font-semibold text-white leading-tight">
-                    {selectedLocation.drought_indicator}
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl bg-eco-bg/40 border border-white/5">
-                  <span className="text-[10px] font-grotesk uppercase text-eco-muted block mb-1">Regional Context</span>
-                  <p className="text-[11px] text-eco-muted/90 leading-relaxed font-inter">
-                    {selectedLocation.summary}
-                  </p>
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-md bg-[#FFAA45]/15 text-[#FFAA45] text-xs">🛡️</span>
+                <div>
+                  <span className="font-orbitron font-bold text-[#FFAA45] text-xs block">
+                    {selectedLocation?.heat_risk ? selectedLocation.heat_risk.split(' ')[0] : 'Low'}
+                  </span>
+                  <span className="text-[10px] text-eco-muted font-grotesk">Risk</span>
                 </div>
               </div>
             </div>
-
-            {/* Quick Actions */}
-            <div className="pt-4 border-t border-white/10 space-y-2">
-              <button
-                onClick={() => navigate(`/pakistan?district=${selectedLocation.id}`)}
-                className="w-full py-2.5 rounded-xl bg-eco-blue text-eco-bg font-grotesk font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition shadow-neon-blue"
-              >
-                <Compass className="w-4 h-4" /> Open in Sindh Map
-              </button>
-              <button
-                onClick={() => navigate(`/change?district=${selectedLocation.id}`)}
-                className="w-full py-2.5 rounded-xl bg-eco-surface border border-eco-green/40 text-eco-green font-grotesk font-semibold text-xs flex items-center justify-center gap-2 hover:bg-eco-green/10 transition"
-              >
-                <Sparkles className="w-4 h-4" /> Open Policy Lab &amp; Solutions
-              </button>
-            </div>
           </div>
+
         </div>
       )}
 

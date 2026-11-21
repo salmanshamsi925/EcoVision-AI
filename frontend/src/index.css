@@ -1,71 +1,86 @@
 @import "tailwindcss";
 
 @theme {
-  --color-eco-bg: #07111F;
-  --color-eco-surface: #0D1B2A;
-  --color-eco-blue: #22B8FF;
-  --color-eco-green: #35D39A;
-  --color-eco-orange: #FF9F43;
-  --color-eco-red: #FF5555;
-  --color-eco-text: #F5F7FA;
-  --color-eco-muted: #A8B4C5;
+  --color-eco-bg: #06111F;
+  --color-eco-surface: #0B1B2D;
+  --color-eco-card: #10243A;
+  --color-eco-elevated: #142B42;
+  --color-eco-blue: #20C5FF;
+  --color-eco-green: #22D3A0;
+  --color-eco-accent: #168BFF;
+  --color-eco-orange: #FFAA45;
+  --color-eco-red: #FF5D63;
+  --color-eco-text: #F8FAFC;
+  --color-eco-muted: #A8B7C9;
 
   --font-inter: 'Inter', sans-serif;
   --font-grotesk: 'Space Grotesk', sans-serif;
   --font-orbitron: 'Orbitron', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 :root {
-  --primary-bg: #07111F;
-  --secondary-bg: #0D1B2A;
-  --primary-blue: #22B8FF;
-  --eco-green: #35D39A;
-  --warn-orange: #FF9F43;
-  --danger-red: #FF5555;
-  --text-primary: #F5F7FA;
-  --text-muted: #A8B4C5;
+  --primary-bg: #06111F;
+  --secondary-bg: #0B1B2D;
+  --card-bg: #10243A;
+  --elevated-surface: #142B42;
+  --primary-blue: #20C5FF;
+  --eco-green: #22D3A0;
+  --warn-orange: #FFAA45;
+  --danger-red: #FF5D63;
+  --text-primary: #F8FAFC;
+  --text-muted: #A8B7C9;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #07111F;
-  color: #F5F7FA;
+  background-color: #06111F;
+  color: #F8FAFC;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
 }
 
 /* Custom futuristic scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #07111F;
+  background: #06111F;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0D1B2A;
-  border: 1px solid rgba(34, 184, 255, 0.3);
+  background: #10243A;
+  border: 1px solid rgba(32, 197, 255, 0.25);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #22B8FF;
+  background: #20C5FF;
 }
 
-/* Futuristic HUD border glow utility */
+/* Futuristic Glassmorphism HUD Card utility */
 .hud-card {
-  background: rgba(13, 27, 42, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(34, 184, 255, 0.2);
-  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5), 0 0 12px 0 rgba(34, 184, 255, 0.1);
+  background: rgba(16, 36, 58, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(32, 197, 255, 0.18);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5), 0 0 16px 0 rgba(32, 197, 255, 0.08);
 }
 
 .hud-card:hover {
-  border-color: rgba(34, 184, 255, 0.4);
-  box-shadow: 0 8px 32px -1px rgba(0, 0, 0, 0.6), 0 0 20px 0 rgba(34, 184, 255, 0.2);
+  border-color: rgba(32, 197, 255, 0.35);
+  box-shadow: 0 8px 32px -1px rgba(0, 0, 0, 0.6), 0 0 24px 0 rgba(32, 197, 255, 0.15);
+}
+
+.hud-card-elevated {
+  background: rgba(20, 43, 66, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 211, 160, 0.25);
+  box-shadow: 0 8px 32px -2px rgba(0, 0, 0, 0.6), 0 0 20px 0 rgba(34, 211, 160, 0.1);
 }
 
 /* ── Leaflet map dark theme overrides ─────────────────────────────────────── */

@@ -176,6 +176,36 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
     globeGroup.add(atmosphereMesh);
 
+    // 4b. Luminous Emerald Highlight for Pakistan & Sindh (Tile 1 Reference Requirement)
+    const pakistanCenter = latLonToVector3(29.2, 69.2, GLOBE_RADIUS * 1.006);
+    const pakHighlightGeom = new THREE.CircleGeometry(0.52, 32);
+    const pakHighlightMat = new THREE.MeshBasicMaterial({
+      color: 0x22d3a0,
+      transparent: true,
+      opacity: 0.38,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+    const pakHighlightMesh = new THREE.Mesh(pakHighlightGeom, pakHighlightMat);
+    pakHighlightMesh.position.copy(pakistanCenter);
+    pakHighlightMesh.lookAt(0, 0, 0);
+    globeGroup.add(pakHighlightMesh);
+
+    const pakRingGeom = new THREE.RingGeometry(0.48, 0.54, 32);
+    const pakRingMat = new THREE.MeshBasicMaterial({
+      color: 0x20c5ff,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+    const pakRingMesh = new THREE.Mesh(pakRingGeom, pakRingMat);
+    pakRingMesh.position.copy(pakistanCenter);
+    pakRingMesh.lookAt(0, 0, 0);
+    globeGroup.add(pakRingMesh);
+
     // 5. Starfield Background
     const starCount = reducedMotion ? 1200 : 3500;
     const starGeometry = new THREE.BufferGeometry();
