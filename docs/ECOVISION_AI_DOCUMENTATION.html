@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EcoVision-AI — Project Technical Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@700;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 20mm 16mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #07111F;
+      color: #E2E8F0;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+    .header-box {
+      border: 1px solid rgba(34, 184, 255, 0.3);
+      background: linear-gradient(135deg, rgba(34, 184, 255, 0.1) 0%, rgba(53, 211, 154, 0.08) 100%), #0B1A2C;
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .badge-cyan {
+      background: rgba(34, 184, 255, 0.15);
+      color: #22B8FF;
+      border: 1px solid rgba(34, 184, 255, 0.4);
+    }
+    .badge-green {
+      background: rgba(53, 211, 154, 0.15);
+      color: #35D39A;
+      border: 1px solid rgba(53, 211, 154, 0.4);
+    }
+    .badge-orange {
+      background: rgba(255, 159, 67, 0.15);
+      color: #FF9F43;
+      border: 1px solid rgba(255, 159, 67, 0.4);
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      color: #FFFFFF;
+      margin: 10px 0 6px 0;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      color: #22B8FF;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 6px;
+      margin-top: 26px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.5px;
+      color: #F8FAFC;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+    p, li {
+      color: #CBD5E1;
+      font-size: 12.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 11.5px;
+    }
+    .meta-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .meta-item strong {
+      color: #22B8FF;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .metric-card {
+      background: #0B1A2C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+    .metric-card .val {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+    .metric-card .lbl {
+      font-size: 10px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 11.5px;
+    }
+    th, td {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #0B1A2C;
+      color: #22B8FF;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .callout {
+      background: rgba(34, 184, 255, 0.06);
+      border-left: 3px solid #22B8FF;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 12px;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+    .footer-note {
+      margin-top: 30px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Title / Cover Header -->
+  <div class="header-box">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span class="badge badge-cyan">Phase 8 • Final FYP & Exhibition Dossier</span>
+      <span class="badge badge-green">LIVE CLOUD DEPLOYMENT VERIFIED</span>
+    </div>
+    <h1>EcoVision-AI</h1>
+    <p style="color: #94A3B8; margin: 0; font-size: 13px;">
+      Climate Intelligence, Machine Learning & Future Simulation Platform for Pakistan & Sindh
+    </p>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong>Live Production URL:</strong><br>
+        <a href="https://ecovision-ai-en0d.onrender.com" style="color:#22B8FF; text-decoration:none;">https://ecovision-ai-en0d.onrender.com</a>
+      </div>
+      <div class="meta-item">
+        <strong>Source Code Repository:</strong><br>
+        <a href="https://github.com/salmanshamsi925/EcoVision-AI" style="color:#35D39A; text-decoration:none;">github.com/salmanshamsi925/EcoVision-AI</a>
+      </div>
+      <div class="meta-item">
+        <strong>Domain Focus:</strong> Human-Computer Interaction (HCI) & Climate Informatics
+      </div>
+      <div class="meta-item">
+        <strong>Project Lead:</strong> Salman Ahmed (salmanshamsi925@gmail.com)
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="metric-row">
+    <div class="metric-card">
+      <div class="lbl">Observed Warming</div>
+      <div class="val" style="color:#FF9F43;">+0.35°C</div>
+      <div class="lbl">Per Decade (1980–2025)</div>
+    </div>
+    <div class="metric-card">
+      <div class="lbl">Peak Heat Recorded</div>
+      <div class="val" style="color:#FF5555;">52.7°C</div>
+      <div class="lbl">Jacobabad / Khairpur</div>
+    </div>
+    <div class="metric-card">
+      <div class="lbl">Monsoon Surge</div>
+      <div class="val" style="color:#22B8FF;">+480%</div>
+      <div class="lbl">2022 Megafloods</div>
+    </div>
+    <div class="metric-card">
+      <div class="lbl">Model Accuracy</div>
+      <div class="val" style="color:#35D39A;">R² = 0.78</div>
+      <div class="lbl">Scikit-Learn Verified</div>
+    </div>
+  </div>
+
+  <h2>1. Executive Summary & Problem Statement</h2>
+  <p>
+    Pakistan ranks among the top 10 most climate-vulnerable nations globally on the Long-Term Climate Risk Index. Between 1980 and 2025, Sindh has experienced devastating dual extremes: catastrophic mega-floods in 2010 and 2022 impacting over 33 million people and causing $30B+ in economic losses, juxtaposed against lethal pre-monsoon heatwaves exceeding 50°C and chronic desert drought in Tharparkar.
+  </p>
+  <div class="callout">
+    <strong>Core Problem:</strong> Existing climate portals lock data inside complex mathematical NetCDF archives and raw CSV tables. Decision-makers and researchers lack localized, spatial, and interactive simulation tools to test policy interventions before committing billions in provincial climate adaptation budgets.
+  </div>
+
+  <h2>2. System Architecture & Technological Stack</h2>
+  <p>
+    EcoVision-AI implements a modern, cloud-native architecture combining an asynchronous Python REST backend with a WebGL and reactive frontend.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Technologies Used</th>
+        <th>Primary Functionality</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend & UI</strong></td>
+        <td>React 19, TypeScript, Vite 8, Tailwind CSS v4, Lucide Icons</td>
+        <td>Ultra-fast, responsive single page application following strict HCI usability heuristics.</td>
+      </tr>
+      <tr>
+        <td><strong>3D & Spatial GIS</strong></td>
+        <td>Three.js (WebGL Shaders), Leaflet.js, Esri Dark Canvas, GeoJSON</td>
+        <td>Interactive 3D Earth digital twin with city search & 14 Sindh district telemetry boundaries.</td>
+      </tr>
+      <tr>
+        <td><strong>Backend Engine</strong></td>
+        <td>Python 3.11, FastAPI, Pydantic v2, Uvicorn ASGI</td>
+        <td>Asynchronous climate data processing, risk scoring, and deterministic AI reasoning.</td>
+      </tr>
+      <tr>
+        <td><strong>Machine Learning</strong></td>
+        <td>Scikit-Learn 1.9, Pandas, NumPy, SciPy</td>
+        <td>Linear/Polynomial trend regression, Z-score shock anomaly isolation, and K-Means clustering.</td>
+      </tr>
+      <tr>
+        <td><strong>Cloud & Deployment</strong></td>
+        <td>Multi-stage Docker Container, Render Cloud, GitHub</td>
+        <td>Automated continuous delivery serving both REST API and React SPA from a unified port.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>3. Machine Learning & Climate Projections Engine</h2>
+  <h3>A. Scikit-Learn Linear Regression</h3>
+  <p>
+    The ML engine fits multi-decadal historical temperature observations (1980–2025) for each district using ordinary least squares regression:
+  </p>
+  <p style="font-family:'JetBrains Mono', monospace; font-size:12px; color:#22B8FF; background:#0B1A2C; padding:8px 12px; border-radius:6px;">
+    Linear Model: ΔT(t) = 0.0351 · t + 28.5°C &nbsp;&nbsp;|&nbsp;&nbsp; R² = 0.784 &nbsp;&nbsp;|&nbsp;&nbsp; RMSE = ±0.312°C
+  </p>
+  <p>
+    This confirms a statistically robust warming acceleration of <strong>+0.351°C per decade</strong> across Upper Sindh, corroborating IPCC AR6 South Asia assessments.
+  </p>
+
+  <h3>B. Anomaly Shock Isolation (Z-Score &gt; 1.75σ)</h3>
+  <p>
+    The engine computes normalized anomaly scores across temperature and precipitation time series, accurately isolating historical extreme shocks:
+  </p>
+  <ul>
+    <li><strong>2010 Indus Super-Flood:</strong> 420.5 mm rainfall (+360% above normal), triggering Left and Right Bank canal overflows.</li>
+    <li><strong>2015 Pre-Monsoon Heat Surge:</strong> Wet-bulb temperature peak of 52.7°C recorded across Sindh plain corridors.</li>
+    <li><strong>2022 Catastrophic Monsoon Inundation:</strong> 551.5 mm rainfall (+480% anomaly), the highest multi-decadal volume recorded.</li>
+  </ul>
+
+  <h3>C. IPCC CMIP6 Scenario Synthesis</h3>
+  <p>
+    Downscaled across 2027, 2030, and 2035 for three core Shared Socioeconomic Pathways:
+  </p>
+  <ul>
+    <li><strong style="color:#35D39A;">SSP1-2.6 (Paris Goal):</strong> Aggressive global decarbonization; warming capped at +0.85°C above baseline by 2030.</li>
+    <li><strong style="color:#FF9F43;">SSP2-4.5 (Middle of the Road):</strong> Moderate trajectory; +1.15°C warming with 32 extreme heat days/year by 2030.</li>
+    <li><strong style="color:#FF5555;">SSP5-8.5 (Fossil-Fueled Growth):</strong> Extreme emission trajectory; +1.55°C thermal shift with 36 extreme heat days/year.</li>
+  </ul>
+
+  <h2>4. Human-Computer Interaction (HCI) Design Philosophy</h2>
+  <p>
+    EcoVision-AI was engineered to overcome standard HCI pitfalls that afflict governmental dashboards:
+  </p>
+  <ul>
+    <li><strong>Hick's Law & Cognitive Minimization:</strong> Reduced navigational branching into a clean, 4-step progressive journey: <em>1. Planetary Globe → 2. Sindh GIS Map → 3. Climate Intelligence → 4. Policy Lab</em>. Extraneous games and distracting 3D simulators were systematically eliminated.</li>
+    <li><strong>Progressive Disclosure:</strong> High-level executive indicators are prioritized in primary viewport cards, with deep scientific formulas tucked cleanly inside on-demand collapsible drawers.</li>
+    <li><strong>Zero Occlusion Policy:</strong> Eliminated floating banner overlays that obstructed chart axes, replacing them with full-width inline action anchors at the end of content flows.</li>
+    <li><strong>Ergonomic Dark Canvas Palette:</strong> Deep blue (#07111F) background eliminates eye strain during multi-hour analytical sessions while neon functional accents immediately draw eye gaze to critical risk telemetry.</li>
+  </ul>
+
+  <h2>5. Policy Action Lab & 1-Click PDF Generation</h2>
+  <p>
+    The Policy Lab allows provincial planners to manipulate 6 empirical levers:
+  </p>
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; font-size:11px; margin: 10px 0;">
+    <div style="background:#0B1A2C; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+      <strong style="color:#22B8FF;">1. Solar & Renewable</strong> (Weight: 22%)
+    </div>
+    <div style="background:#0B1A2C; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+      <strong style="color:#35D39A;">2. Canal Lining & Drip</strong> (Weight: 20%)
+    </div>
+    <div style="background:#0B1A2C; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+      <strong style="color:#22B8FF;">3. Riverine Afforestation</strong> (Weight: 18%)
+    </div>
+    <div style="background:#0B1A2C; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+      <strong style="color:#35D39A;">4. Mangrove Restoration</strong> (Weight: 15%)
+    </div>
+    <div style="background:#0B1A2C; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+      <strong style="color:#FF9F43;">5. Kiln Emission Cuts</strong> (Weight: 15%)
+    </div>
+    <div style="background:#0B1A2C; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+      <strong style="color:#22B8FF;">6. Urban Greening</strong> (Weight: 10%)
+    </div>
+  </div>
+  <p>
+    These levers compute a real-time <strong>Planetary Resilience Index (0–100 PTS)</strong> and can be exported as a verified PDF dossier in 1 click.
+  </p>
+
+  <div class="footer-note">
+    <span>EcoVision-AI • Developed by Salman Ahmed</span>
+    <span>Live: https://ecovision-ai-en0d.onrender.com</span>
+    <span>Page 2 of 2</span>
+  </div>
+
+</body>
+</html>

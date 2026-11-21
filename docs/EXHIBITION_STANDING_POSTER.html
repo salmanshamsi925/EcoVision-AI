@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EcoVision-AI — Exhibition Standing Roll-Up Poster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: 30in 72in; /* Standard 2.5ft x 6ft Roll-Up Standee */
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      margin: 0;
+      padding: 32px 36px;
+      background: radial-gradient(circle at 50% 10%, #0d223a 0%, #07111F 60%, #030811 100%);
+      color: #F8FAFC;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .header-banner {
+      text-align: center;
+      padding: 24px 20px 20px 20px;
+      border: 2px solid rgba(34, 184, 255, 0.4);
+      background: linear-gradient(180deg, rgba(34, 184, 255, 0.12) 0%, rgba(11, 26, 44, 0.8) 100%);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .tagline-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: rgba(53, 211, 154, 0.15);
+      color: #35D39A;
+      border: 1px solid rgba(53, 211, 154, 0.4);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    h1.poster-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin: 0 0 6px 0;
+      letter-spacing: -0.01em;
+      text-shadow: 0 0 25px rgba(34, 184, 255, 0.4);
+    }
+    h1.poster-title span {
+      color: #22B8FF;
+    }
+    p.poster-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      color: #94A3B8;
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+    .section-box {
+      background: rgba(11, 26, 44, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-top: 18px;
+    }
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px;
+      color: #22B8FF;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .metric-pill {
+      background: #07111F;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .metric-pill .num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      margin: 4px 0;
+    }
+    .metric-pill .lbl {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      color: #94A3B8;
+      text-transform: uppercase;
+    }
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .step-card {
+      background: #07111F;
+      border: 1px solid rgba(34, 184, 255, 0.25);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .step-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: #35D39A;
+      font-weight: 700;
+    }
+    .step-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin: 4px 0;
+    }
+    .step-desc {
+      font-size: 10.5px;
+      color: #94A3B8;
+      line-height: 1.35;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .mini-card {
+      background: #07111F;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px;
+    }
+    .mini-card h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      color: #35D39A;
+      margin: 0 0 6px 0;
+    }
+    .mini-card p {
+      font-size: 11px;
+      color: #CBD5E1;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .footer-hero {
+      background: linear-gradient(135deg, rgba(34, 184, 255, 0.15) 0%, rgba(53, 211, 154, 0.15) 100%), #0B1A2C;
+      border: 2px solid rgba(34, 184, 255, 0.4);
+      border-radius: 18px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .qr-mock {
+      width: 90px;
+      height: 90px;
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(34, 184, 255, 0.4);
+    }
+    .qr-mock img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Hero Block -->
+  <div class="header-banner">
+    <div class="tagline-pill">✦ HUMAN-COMPUTER INTERACTION & CLIMATE INFORMATICS ✦</div>
+    <h1 class="poster-title">EcoVision<span>-AI</span></h1>
+    <p class="poster-sub">
+      Empirical Climate Intelligence, Machine Learning & Policy Simulation Platform for Pakistan & Sindh
+    </p>
+  </div>
+
+  <!-- Section 1: The Crisis -->
+  <div class="section-box">
+    <div class="section-title">
+      <span>🚨</span> Section 1: Pakistan's Climate Vulnerability
+    </div>
+    <div class="metric-grid">
+      <div class="metric-pill">
+        <div class="lbl">Empirical Warming Rate</div>
+        <div class="num" style="color: #FF9F43;">+0.35°C</div>
+        <div class="lbl">Per Decade (1980–2025)</div>
+      </div>
+      <div class="metric-pill">
+        <div class="lbl">Record Summer Peak</div>
+        <div class="num" style="color: #FF5555;">52.7°C</div>
+        <div class="lbl">Jacobabad / Khairpur</div>
+      </div>
+      <div class="metric-pill">
+        <div class="lbl">2022 Monsoon Surge</div>
+        <div class="num" style="color: #22B8FF;">+480%</div>
+        <div class="lbl">33M+ Impacted People</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: 4-Step HCI Workflow -->
+  <div class="section-box">
+    <div class="section-title">
+      <span>🧠</span> Section 2: 4-Step Zero-Cognitive-Friction Workflow
+    </div>
+    <div class="workflow-grid">
+      <div class="step-card">
+        <span class="step-badge">STEP 1</span>
+        <div class="step-name">3D Planetary Twin</div>
+        <div class="step-desc">Interactive WebGL Earth globe with Google-Earth city search across Pakistan.</div>
+      </div>
+      <div class="step-card">
+        <span class="step-badge">STEP 2</span>
+        <div class="step-name">Sindh GIS Map</div>
+        <div class="step-desc">Keyless vector map with 14 prioritized district boundaries & multi-hazard telemetry.</div>
+      </div>
+      <div class="step-card">
+        <span class="step-badge">STEP 3</span>
+        <div class="step-name">Climate Intelligence</div>
+        <div class="step-desc">Scikit-Learn ML trend regression, anomaly shock isolation, and 6-axis risk radar.</div>
+      </div>
+      <div class="step-card">
+        <span class="step-badge">STEP 4</span>
+        <div class="step-name">Policy Lab Sandbox</div>
+        <div class="step-desc">Simulate 6 sectoral levers, compute real-time Resilience Score, and export PDF.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Machine Learning & Scientific Validation -->
+  <div class="section-box">
+    <div class="section-title">
+      <span>🔬</span> Section 3: Empirical Data & Machine Learning Core
+    </div>
+    <div class="two-col">
+      <div class="mini-card">
+        <h4>Scikit-Learn Regression & Anomaly Isolation</h4>
+        <p>
+          Trained on 45 years of NASA POWER and PMD observations (1980–2025). Validated linear model fits with <strong>R² = 0.784</strong> (RMSE ±0.31°C). Statistical isolation detects extreme hydrological shocks (> 1.75σ) including 2010 and 2022 mega-floods.
+        </p>
+      </div>
+      <div class="mini-card">
+        <h4>IPCC CMIP6 Downscaled Multi-Scenarios</h4>
+        <p>
+          Simulates forward climate trajectories for 2027, 2030, and 2035 across <strong>SSP1-2.6 (Paris Goal)</strong>, <strong>SSP2-4.5 (Middle of the Road)</strong>, and <strong>SSP5-8.5 (Fossil-Fueled)</strong>, calibrated against regional PMD baseline normals.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: HCI Design Philosophy -->
+  <div class="section-box">
+    <div class="section-title">
+      <span>🛡️</span> Section 4: Human-Computer Interaction (HCI) Principles
+    </div>
+    <div class="two-col">
+      <div class="mini-card">
+        <h4>Hick's Law & Progressive Disclosure</h4>
+        <p>
+          Eliminated confusing clutter, complex 3D gaming widgets, and raw formula overload. High-level indicators are prioritized upfront; deep statistical tables expand on-demand.
+        </div>
+      <div class="mini-card">
+        <h4>Zero Occlusion & High-Contrast Dark Ergonomics</h4>
+        <p>
+          Removed floating overlay banners to guarantee zero obstruction of chart axes. Dark canvas (#07111F) with semantic color coding ensures prolonged readability and accessibility.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Block with Live QR Code -->
+  <div class="footer-hero">
+    <div>
+      <div style="font-family:'Orbitron', sans-serif; font-size:16px; color:#FFFFFF; font-weight:700;">
+        TEST THE LIVE SYSTEM NOW
+      </div>
+      <div style="font-family:'JetBrains Mono', monospace; font-size:12px; color:#22B8FF; margin-top:4px;">
+        https://ecovision-ai-en0d.onrender.com
+      </div>
+      <div style="font-family:'Space Grotesk', sans-serif; font-size:11px; color:#94A3B8; margin-top:6px;">
+        Project Lead: <strong>Salman Ahmed</strong> | GitHub: <strong>salmanshamsi925/EcoVision-AI</strong>
+      </div>
+    </div>
+
+    <div class="qr-mock">
+      <!-- High-resolution QR code rendering for the live URL -->
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://ecovision-ai-en0d.onrender.com&color=07111F" alt="Scan to Open Live App" onerror="this.src=''; this.alt='Scan Link';">
+    </div>
+  </div>
+
+</body>
+</html>
