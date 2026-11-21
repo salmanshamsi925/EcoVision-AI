@@ -59,13 +59,13 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     cameraRef.current = camera;
-    camera.position.set(0, 1.2, 5.8);
+    camera.position.set(0, 0, 7.2);
 
     // Dynamic Camera View Offset: On desktop (>=1024px), shifts the 3D origin (Earth)
-    // cleanly to the RIGHT half of the viewport (~72% screen width), giving hero text full breathing room on the left!
+    // cleanly to the RIGHT half of the viewport (~68% screen width), giving hero text full breathing room on the left!
     const updateCameraViewOffset = (w: number, h: number) => {
       if (w >= 1024) {
-        camera.setViewOffset(w, h, -w * 0.22, 0, w, h);
+        camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
       } else {
         camera.clearViewOffset();
       }
@@ -406,7 +406,7 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     targetQuat.current.setFromUnitVectors(localPoint, cameraDir);
 
     cameraStartPos.current.copy(cameraRef.current.position);
-    cameraEndPos.current.set(0, 0.8, 5.2);
+    cameraEndPos.current.set(0, 0, 6.2);
 
     rotProgress.current = 0;
     isRotating.current = true;
