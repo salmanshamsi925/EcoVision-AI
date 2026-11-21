@@ -313,49 +313,70 @@ export const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. CINEMATIC HERO & ACTION BUTTONS (Glassmorphic High-Contrast Card for Mobile & Desktop) */}
+      {/* Interactive Mobile Touch & Spin Hint */}
+      {!fullScreenGlobe && !selectedLocation && (
+        <div className="md:hidden absolute top-28 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+          <div className="px-3 py-1 rounded-full bg-[#07111F]/70 border border-eco-blue/30 backdrop-blur-md text-[10px] font-mono text-eco-blue flex items-center gap-1.5 shadow-lg animate-pulse">
+            <span>✨ Drag Earth to rotate & explore</span>
+          </div>
+        </div>
+      )}
+
+      {/* 3. CINEMATIC HERO & ACTION BUTTONS (Mobile Bottom-Docked / Desktop Left-Hero) */}
       {!fullScreenGlobe && !selectedLocation && (
         <>
-          <div className="absolute left-4 right-4 sm:left-6 md:left-12 sm:right-auto top-28 z-20 max-w-xl pointer-events-auto">
-            <div className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#07111F]/85 backdrop-blur-xl border border-white/10 shadow-2xl space-y-3.5">
-              {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-eco-blue/15 border border-eco-blue/35">
-                <span className="w-2 h-2 rounded-full bg-eco-green animate-pulse" />
-                <span className="font-grotesk text-[11px] tracking-wider text-eco-blue uppercase font-bold">
-                  Pakistan Climate Command • Live
-                </span>
+          <div className="absolute left-3 right-3 bottom-3 sm:bottom-4 md:bottom-auto md:top-28 md:left-12 md:right-auto z-20 md:max-w-xl pointer-events-auto transition-all duration-300">
+            <div className="p-4 sm:p-5 md:p-7 rounded-2xl md:rounded-3xl bg-[#07111F]/88 backdrop-blur-xl border border-white/10 shadow-2xl space-y-2.5 sm:space-y-3.5">
+              {/* Header row: Status Pill + Mobile Full-Screen Earth Trigger */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-eco-blue/15 border border-eco-blue/35">
+                  <span className="w-2 h-2 rounded-full bg-eco-green animate-pulse" />
+                  <span className="font-grotesk text-[10px] sm:text-[11px] tracking-wider text-eco-blue uppercase font-bold">
+                    Pakistan Climate Command • Live
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => setFullScreenGlobe(true)}
+                  className="md:hidden flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono text-eco-green transition cursor-pointer"
+                  title="Hide cards to spin full Earth"
+                >
+                  <Maximize2 className="w-3 h-3 text-eco-green" />
+                  <span>Full Earth</span>
+                </button>
               </div>
 
               {/* High-Contrast Hero Headline */}
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
-                THE FUTURE IS IN <br />
+              <h1 className="text-xl sm:text-3xl md:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
+                THE FUTURE IS IN{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-eco-blue via-eco-green to-cyan-300">
                   YOUR HANDS
                 </span>
               </h1>
 
-              {/* Crisp, Highly Readable Subtitle */}
-              <p className="text-xs sm:text-sm text-slate-200 font-inter leading-relaxed max-w-lg">
+              {/* Crisp Subtitle */}
+              <p className="text-[11px] sm:text-xs md:text-sm text-slate-200 font-inter leading-relaxed max-w-lg hidden sm:block">
                 One Planet. Two Possible Futures. One Choice. Explore realistic near-term climate projection timelines for Pakistan &amp; Sindh.
               </p>
 
               {/* Action Buttons */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+              <div className="pt-1 flex flex-row gap-2">
                 <button
                   onClick={handleEnterExperience}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                  className="flex-1 px-4 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
                 >
-                  <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
-                  <span>{isEnteringExperience ? 'ROTATING TO PAKISTAN...' : 'ENTER THE EXPERIENCE'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <Globe className={`w-3.5 h-3.5 ${isEnteringExperience ? 'animate-spin' : ''}`} />
+                  <span>{isEnteringExperience ? 'ROTATING...' : 'ENTER EXPERIENCE'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
                 <button
                   onClick={() => navigate('/pakistan')}
-                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white/[0.06] border border-white/15 text-white font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-white/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer"
+                  className="px-3.5 py-2.5 sm:py-3 rounded-xl bg-white/[0.06] border border-white/15 text-white font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-white/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer whitespace-nowrap"
                 >
-                  <Compass className="w-4 h-4 text-eco-green" />
-                  <span>Explore Sindh &amp; Pakistan</span>
+                  <Compass className="w-3.5 h-3.5 text-eco-green" />
+                  <span className="hidden sm:inline">Explore Sindh</span>
+                  <span className="sm:hidden">Map</span>
                 </button>
               </div>
             </div>
