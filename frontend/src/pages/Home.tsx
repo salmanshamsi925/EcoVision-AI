@@ -219,9 +219,12 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-64px)] overflow-hidden bg-[#07111F]">
-      {/* 1. INTERACTIVE 3D EARTH CANVAS (Background Layer) */}
-      <div className="absolute inset-0 z-0">
+    <div
+      id="home-scroll-container"
+      className="relative w-full h-[calc(100vh-64px)] overflow-y-auto overflow-x-hidden bg-[#07111F] scroll-smooth"
+    >
+      {/* 1. FIXED 3D EARTH CANVAS (Pinned in the background) */}
+      <div className="fixed inset-0 top-16 z-0 pointer-events-auto">
         <EarthGlobe
           selectedLocation={selectedLocation}
           flyToTrigger={flyToTrigger}
@@ -230,7 +233,7 @@ export const Home: React.FC = () => {
       </div>
 
       {/* 2. FLOATING TOP HUD: Google Earth-Style City Search Bar */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4 pointer-events-auto">
+      <div className="sticky top-3 z-30 w-full max-w-2xl mx-auto px-4 pointer-events-auto">
         <div className="relative">
           <div className="hud-card rounded-2xl flex items-center px-4 py-2.5 border border-eco-blue/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-eco-blue focus-within:shadow-neon-blue">
             <Search className="w-5 h-5 text-eco-blue shrink-0 mr-3" />
@@ -313,74 +316,73 @@ export const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Interactive Mobile Touch & Spin Hint */}
-      {!fullScreenGlobe && !selectedLocation && (
-        <div className="md:hidden absolute top-28 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <div className="px-3 py-1 rounded-full bg-[#07111F]/70 border border-eco-blue/30 backdrop-blur-md text-[10px] font-mono text-eco-blue flex items-center gap-1.5 shadow-lg animate-pulse">
-            <span>✨ Drag Earth to rotate & explore</span>
-          </div>
-        </div>
-      )}
-
-      {/* 3. CINEMATIC HERO & ACTION BUTTONS (Mobile Bottom-Docked / Desktop Left-Hero) */}
+      {/* 3. ORIGINAL CINEMATIC HERO (Exact Visual Aesthetic as Requested) */}
       {!fullScreenGlobe && !selectedLocation && (
         <>
-          <div className="absolute left-3 right-3 bottom-3 sm:bottom-4 md:bottom-auto md:top-28 md:left-12 md:right-auto z-20 md:max-w-xl pointer-events-auto transition-all duration-300">
-            <div className="p-4 sm:p-5 md:p-7 rounded-2xl md:rounded-3xl bg-[#07111F]/88 backdrop-blur-xl border border-white/10 shadow-2xl space-y-2.5 sm:space-y-3.5">
-              {/* Header row: Status Pill + Mobile Full-Screen Earth Trigger */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-eco-blue/15 border border-eco-blue/35">
-                  <span className="w-2 h-2 rounded-full bg-eco-green animate-pulse" />
-                  <span className="font-grotesk text-[10px] sm:text-[11px] tracking-wider text-eco-blue uppercase font-bold">
-                    Pakistan Climate Command • Live
-                  </span>
-                </div>
+          <div className="relative z-20 max-w-xl mt-6 sm:mt-10 md:mt-12 px-6 md:px-12 pointer-events-auto">
+            {/* Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-eco-surface/90 border border-eco-blue/30 backdrop-blur-md mb-4 shadow-lg pointer-events-auto">
+              <span className="w-2.5 h-2.5 rounded-full bg-eco-green animate-pulse" />
+              <span className="font-grotesk text-xs tracking-wider text-eco-blue uppercase font-bold">
+                3D Planetary Digital Twin Active
+              </span>
+            </div>
 
-                <button
-                  onClick={() => setFullScreenGlobe(true)}
-                  className="md:hidden flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono text-eco-green transition cursor-pointer"
-                  title="Hide cards to spin full Earth"
-                >
-                  <Maximize2 className="w-3 h-3 text-eco-green" />
-                  <span>Full Earth</span>
-                </button>
-              </div>
+            {/* Headline with Strong Drop Shadow */}
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+              THE FUTURE IS IN <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-eco-blue via-eco-green to-cyan-300">
+                YOUR HANDS
+              </span>
+            </h1>
 
-              {/* High-Contrast Hero Headline */}
-              <h1 className="text-xl sm:text-3xl md:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
-                THE FUTURE IS IN{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-eco-blue via-eco-green to-cyan-300">
-                  YOUR HANDS
-                </span>
-              </h1>
+            {/* Description */}
+            <p className="mt-3 text-sm md:text-base text-slate-100 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-lg">
+              One Planet. Two Possible Futures. One Choice. Explore realistic near-term climate projection timelines for Pakistan &amp; Sindh.
+            </p>
 
-              {/* Crisp Subtitle */}
-              <p className="text-[11px] sm:text-xs md:text-sm text-slate-200 font-inter leading-relaxed max-w-lg hidden sm:block">
-                One Planet. Two Possible Futures. One Choice. Explore realistic near-term climate projection timelines for Pakistan &amp; Sindh.
-              </p>
+            {/* Action Buttons */}
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 pointer-events-auto">
+              <button
+                onClick={handleEnterExperience}
+                className="px-7 py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-sm flex items-center justify-center gap-2 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+              >
+                <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
+                <span>{isEnteringExperience ? 'ROTATING TO PAKISTAN...' : 'ENTER THE EXPERIENCE'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
 
-              {/* Action Buttons */}
-              <div className="pt-1 flex flex-row gap-2">
-                <button
-                  onClick={handleEnterExperience}
-                  className="flex-1 px-4 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
-                >
-                  <Globe className={`w-3.5 h-3.5 ${isEnteringExperience ? 'animate-spin' : ''}`} />
-                  <span>{isEnteringExperience ? 'ROTATING...' : 'ENTER EXPERIENCE'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+              <button
+                onClick={() => navigate('/pakistan')}
+                className="px-6 py-3 rounded-xl bg-eco-surface/90 border border-eco-blue/40 text-eco-blue font-grotesk font-semibold text-sm flex items-center justify-center gap-2 hover:bg-eco-blue/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer"
+              >
+                <Compass className="w-4 h-4 text-eco-green" />
+                <span>Explore Sindh &amp; Pakistan</span>
+              </button>
+            </div>
 
-                <button
-                  onClick={() => navigate('/pakistan')}
-                  className="px-3.5 py-2.5 sm:py-3 rounded-xl bg-white/[0.06] border border-white/15 text-white font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-white/10 hover:border-eco-blue transition backdrop-blur-md cursor-pointer whitespace-nowrap"
-                >
-                  <Compass className="w-3.5 h-3.5 text-eco-green" />
-                  <span className="hidden sm:inline">Explore Sindh</span>
-                  <span className="sm:hidden">Map</span>
-                </button>
-              </div>
+            {/* Bouncing Scroll Indicator to guide user */}
+            <div className="mt-8 sm:mt-12 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#07111F]/70 border border-eco-blue/30 backdrop-blur-md text-xs font-mono text-eco-blue animate-bounce shadow-lg">
+              <span>↓ Scroll down to view &amp; rotate full 3D Earth</span>
             </div>
           </div>
+
+          {/* 4. SCROLLED SECTION: Open Viewport to View & Rotate Full 3D Earth Comfortably */}
+          <div className="h-[70vh] sm:h-[80vh] w-full flex items-end justify-center pb-8 pointer-events-none">
+            <div className="px-4 py-2 rounded-full bg-[#07111F]/85 border border-eco-blue/40 backdrop-blur-md text-xs font-mono text-eco-blue pointer-events-auto shadow-2xl flex items-center gap-3">
+              <span>✨ 3D Earth Mode: Drag to rotate • Pinch to zoom</span>
+              <button
+                onClick={() => {
+                  document.getElementById('home-scroll-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="text-white hover:text-eco-green font-bold underline cursor-pointer ml-1"
+              >
+                Back to Top ↑
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
           {/* Right-Side Floating Planetary Telemetry Card (Desktop Composition Balance) */}
           <div className="hidden xl:flex flex-col gap-3 absolute top-28 right-8 z-20 w-80 pointer-events-auto">
