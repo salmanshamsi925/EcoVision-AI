@@ -342,7 +342,7 @@ export const Home: React.FC = () => {
             </p>
 
             {/* Action Buttons */}
-            <div className="mt-6 flex flex-col sm:flex-row gap-3 pointer-events-auto">
+            <div className="mt-6 flex flex-wrap gap-3 pointer-events-auto">
               <button
                 onClick={handleEnterExperience}
                 className="px-7 py-3 rounded-xl bg-gradient-to-r from-eco-blue to-cyan-500 text-eco-bg font-grotesk font-bold text-sm flex items-center justify-center gap-2 shadow-neon-blue hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
@@ -359,23 +359,42 @@ export const Home: React.FC = () => {
                 <Compass className="w-4 h-4 text-eco-green" />
                 <span>Explore Sindh &amp; Pakistan</span>
               </button>
+
+              {/* Instant Full-Screen Globe Button */}
+              <button
+                onClick={() => setFullScreenGlobe(true)}
+                className="px-4 py-3 rounded-xl bg-eco-surface/80 border border-white/10 text-white font-grotesk font-semibold text-xs flex items-center justify-center gap-1.5 hover:border-eco-green hover:text-eco-green transition backdrop-blur-md cursor-pointer"
+                title="Hide text and view full rotating 3D Earth"
+              >
+                <Maximize2 className="w-4 h-4 text-eco-green" />
+                <span>Rotate 3D Earth</span>
+              </button>
             </div>
 
-            {/* Bouncing Scroll Indicator to guide user */}
-            <div className="mt-8 sm:mt-12 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#07111F]/70 border border-eco-blue/30 backdrop-blur-md text-xs font-mono text-eco-blue animate-bounce shadow-lg">
+            {/* Clickable Scroll Indicator to guide user */}
+            <button
+              onClick={() => {
+                document.getElementById('earth-focus-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="mt-6 sm:mt-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#07111F]/80 border border-eco-blue/40 hover:border-eco-blue backdrop-blur-md text-xs font-grotesk text-eco-blue hover:text-white transition shadow-lg cursor-pointer animate-pulse"
+            >
               <span>↓ Scroll down to view &amp; rotate full 3D Earth</span>
-            </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-eco-blue/20 text-eco-blue">Tap to Scroll</span>
+            </button>
           </div>
 
           {/* 4. SCROLLED SECTION: Open Viewport to View & Rotate Full 3D Earth Comfortably */}
-          <div className="h-[70vh] sm:h-[80vh] w-full flex items-end justify-center pb-8 pointer-events-none">
-            <div className="px-4 py-2 rounded-full bg-[#07111F]/85 border border-eco-blue/40 backdrop-blur-md text-xs font-mono text-eco-blue pointer-events-auto shadow-2xl flex items-center gap-3">
-              <span>✨ 3D Earth Mode: Drag to rotate • Pinch to zoom</span>
+          <div id="earth-focus-section" className="h-[85vh] sm:h-[90vh] w-full flex items-end justify-center pb-8 pointer-events-none">
+            <div className="px-5 py-2.5 rounded-full bg-[#07111F]/90 border border-eco-blue/50 backdrop-blur-md text-xs font-mono text-eco-blue pointer-events-auto shadow-2xl flex items-center gap-3">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-eco-green animate-pulse" />
+                3D Earth Inspection Mode: Drag to rotate • Pinch to zoom
+              </span>
               <button
                 onClick={() => {
                   document.getElementById('home-scroll-container')?.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="text-white hover:text-eco-green font-bold underline cursor-pointer ml-1"
+                className="text-white hover:text-eco-green font-bold underline cursor-pointer ml-2 bg-eco-blue/20 px-2.5 py-1 rounded-full border border-eco-blue/40"
               >
                 Back to Top ↑
               </button>
@@ -560,13 +579,16 @@ export const Home: React.FC = () => {
 
       {/* Instruction pill when in full-screen globe mode */}
       {fullScreenGlobe && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 px-4 py-2 rounded-full bg-eco-surface/90 border border-eco-blue/40 backdrop-blur-md text-xs font-mono text-eco-blue pointer-events-auto flex items-center gap-2">
-          <span>Click & drag to rotate globe • Scroll to zoom</span>
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 px-5 py-2.5 rounded-full bg-[#07111F]/90 border border-eco-green/50 backdrop-blur-md text-xs font-mono text-eco-green pointer-events-auto flex items-center gap-3 shadow-2xl">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-eco-green animate-pulse" />
+            3D Earth Free-Fly Active
+          </span>
           <button
             onClick={() => setFullScreenGlobe(false)}
-            className="text-white hover:text-eco-green font-bold ml-2 underline"
+            className="text-white hover:text-eco-blue font-bold px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer flex items-center gap-1"
           >
-            Show HUD
+            <span>✕ Show Text &amp; Menu</span>
           </button>
         </div>
       )}

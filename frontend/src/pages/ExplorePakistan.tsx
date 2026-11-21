@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { MapPin, BarChart2, X, ArrowRight } from 'lucide-react';
+import { MapPin, BarChart2, X, ArrowRight, Radio } from 'lucide-react';
 import { PakistanSindhMap } from '../maps/PakistanSindhMap';
 import { useActiveLocation } from '../context/LocationContext';
+import { API_BASE } from '../config/api';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -32,6 +33,18 @@ export const ExplorePakistan: React.FC = () => {
   const initialDistrict = searchParams.get('district') || activeLocation?.id || 'khairpur';
 
   const [selectedDistrict, setSelectedDistrict] = useState<DistrictData | null>(null);
+  const [liveWeather, setLiveWeather] = useState<any>(null);
+
+  useEffect(() => {
+    if (!selectedDistrict?.id) {
+      setLiveWeather(null);
+      return;
+    }
+    fetch(`${API_BASE}/api/climate/live?district=${selectedDistrict.id}`)
+      .then((res) => res.json())
+      .then((data) => setLiveWeather(data))
+      .catch(() => setLiveWeather(null));
+  }, [selectedDistrict?.id]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]" style={{ background: '#07111F' }}>
@@ -69,6 +82,30 @@ export const ExplorePakistan: React.FC = () => {
                   <X className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Real-Time Live Satellite Telemetry */}
+              {liveWeather && (
+                <div className="mx-4 my-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-emerald-400">
+                    <span className="flex items-center gap-1 font-bold">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      LIVE METEOROLOGY
+                    </span>
+                    <span>{liveWeather.condition_summary}</span>
+                  </div>
+                  <div className="mt-1 flex items-baseline justify-between">
+                    <span className="text-xl font-orbitron font-bold text-white">
+                      {liveWeather.temperature_c}°C
+                    </span>
+                    <span className="text-[10px] font-mono text-eco-muted">
+                      Wind: {liveWeather.wind_speed_kmh} km/h
+                    </span>
+                  </div>
+                  <div className="text-[9px] text-eco-muted/70 font-mono mt-0.5">
+                    Feels: {liveWeather.apparent_temp_c}°C • RH: {liveWeather.relative_humidity_pct}% • {liveWeather.source}
+                  </div>
+                </div>
+              )}
 
               {/* Metrics */}
               <div className="p-4 border-b border-white/10 grid grid-cols-2 gap-2">

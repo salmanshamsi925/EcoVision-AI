@@ -37,6 +37,8 @@ export const ClimateIntelligence: React.FC = () => {
   const [riskData, setRiskData] = useState<any>(null);
   const [scenarioData, setScenarioData] = useState<any>(null);
   const [mlData, setMlData] = useState<any>(null);
+  const [deepLearningData, setDeepLearningData] = useState<any>(null);
+  const [liveFeed, setLiveFeed] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,14 +60,18 @@ export const ClimateIntelligence: React.FC = () => {
       fetch(`${BASE}/api/climate/summary?district=${currentDistrict}`).then(r => r.json()),
       fetch(`${BASE}/api/climate/risks?district=${currentDistrict}`).then(r => r.json()),
       fetch(`${BASE}/api/climate/scenarios?district=${currentDistrict}`).then(r => r.json()),
-      fetch(`${BASE}/api/climate/ml-analysis?district=${currentDistrict}`).then(r => r.json())
+      fetch(`${BASE}/api/climate/ml-analysis?district=${currentDistrict}`).then(r => r.json()),
+      fetch(`${BASE}/api/climate/deep-learning?district=${currentDistrict}`).then(r => r.json()).catch(() => null),
+      fetch(`${BASE}/api/climate/live?district=${currentDistrict}`).then(r => r.json()).catch(() => null)
     ])
-      .then(([hist, sum, risk, scen, ml]) => {
+      .then(([hist, sum, risk, scen, ml, dl, live]) => {
         setHistoricalData(hist);
         setSummaryData(sum);
         setRiskData(risk);
         setScenarioData(scen);
         setMlData(ml);
+        setDeepLearningData(dl);
+        setLiveFeed(live);
         setLoading(false);
       })
       .catch((err) => {
@@ -131,6 +137,17 @@ export const ClimateIntelligence: React.FC = () => {
             </select>
             <ChevronDown className="w-3.5 h-3.5 text-eco-blue absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
+
+          {/* Live Open-Meteo Satellite Feed Pill */}
+          {liveFeed && (
+            <div className="px-2.5 py-1.5 rounded-xl text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="font-bold">LIVE TELEMETRY:</span>
+              <span className="text-white font-bold">{liveFeed.temperature_c}°C</span>
+              <span className="text-emerald-300/80 hidden sm:inline">({liveFeed.condition_summary})</span>
+              <span className="text-eco-muted hidden md:inline">• {liveFeed.source}</span>
+            </div>
+          )}
 
           <span className="px-2.5 py-1.5 rounded-xl text-[10px] font-mono bg-eco-green/10 text-eco-green border border-eco-green/20 flex items-center gap-1">
             <Database className="w-3 h-3" /> NASA POWER / PMD Validated
@@ -320,6 +337,7 @@ export const ClimateIntelligence: React.FC = () => {
                 clustering={mlData.kmeans_clustering}
                 scientificInterpretation={mlData.scientific_interpretation}
                 districtName={summaryData.district_name}
+                deepLearning={deepLearningData}
               />
             )}
           </div>
