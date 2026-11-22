@@ -18,12 +18,12 @@ function AppLayout() {
   const isFullScreenApp = ['/', '/pakistan', '/assistant', '/gpt'].includes(location.pathname);
 
   return (
-    <div className="min-h-screen bg-[#06111F] text-[#F8FAFC] flex flex-col font-inter selection:bg-[#20C5FF] selection:text-[#06111F]">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#06111F] text-[#F8FAFC] flex flex-col font-inter selection:bg-[#20C5FF] selection:text-[#06111F]">
       {/* Futuristic Command Header */}
       <NavBar />
 
       {/* Dynamic Route Viewport */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col w-full max-w-full overflow-x-hidden">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pakistan" element={<ExplorePakistan />} />

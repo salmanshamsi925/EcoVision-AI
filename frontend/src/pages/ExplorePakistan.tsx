@@ -84,7 +84,7 @@ export const ExplorePakistan: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-64px)] lg:h-[calc(100vh-68px)] bg-[#06111F] text-slate-100 overflow-hidden font-inter">
+    <div className="flex flex-col w-full max-w-full h-[calc(100dvh-64px)] lg:h-[calc(100vh-68px)] bg-[#06111F] text-slate-100 overflow-x-hidden overflow-y-auto lg:overflow-hidden font-inter">
       {/* ── Mobile Navigation Tabs (Visible only on < lg screens) ── */}
       <div className="lg:hidden flex items-center justify-between p-2 bg-[#0B1B2D] border-b border-white/10 shrink-0 z-20 gap-1.5">
         <button

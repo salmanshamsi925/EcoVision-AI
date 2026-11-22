@@ -243,10 +243,10 @@ export const Home: React.FC = () => {
   return (
     <div
       id="home-container"
-      className="relative w-full h-[calc(100dvh-64px)] overflow-hidden bg-[#07111F] select-none"
+      className="relative w-full max-w-full h-[calc(100dvh-56px)] sm:h-[calc(100dvh-64px)] overflow-x-hidden overflow-y-auto lg:overflow-hidden bg-[#07111F] select-none"
     >
       {/* 1. FIXED 3D EARTH CANVAS (Pinned in the background, scaled & positioned on the right) */}
-      <div className="fixed inset-0 top-16 z-0 pointer-events-auto">
+      <div className="fixed inset-0 top-14 sm:top-16 z-0 pointer-events-auto max-w-full overflow-hidden">
         <EarthGlobe
           selectedLocation={selectedLocation}
           flyToTrigger={flyToTrigger}
@@ -256,7 +256,7 @@ export const Home: React.FC = () => {
 
       {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Clear Upper Earth View + Sleek Bottom Hero matching Tile 6) */}
       {!fullScreenGlobe && (
-        <div className="relative z-20 w-full lg:w-1/2 h-full flex flex-col justify-end lg:justify-between p-4 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-4 lg:pb-8">
+        <div className="relative z-20 w-full max-w-full lg:w-1/2 min-h-full flex flex-col justify-end lg:justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-3 lg:pb-8 box-border min-w-0 overflow-x-hidden">
           
           {/* Top: Google Earth-Style City Search Bar & Quick Chips (Desktop only to keep mobile 100% clean & focused on 3D Earth) */}
           <div className="hidden lg:block w-full max-w-lg pointer-events-auto">
@@ -348,17 +348,17 @@ export const Home: React.FC = () => {
           </div>
 
           {/* Bottom Hero Briefing & Action CTAs (Pinned cleanly to bottom on mobile, matching Tile 6) */}
-          <div className="w-full max-w-lg pointer-events-auto space-y-3 sm:space-y-4">
+          <div className="w-full max-w-full lg:max-w-lg pointer-events-auto space-y-2.5 sm:space-y-4 min-w-0">
             {/* Small Label Pill */}
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/30 backdrop-blur-md shadow-lg">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#22D3A0] animate-pulse" />
-              <span className="font-grotesk text-[9px] sm:text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/30 backdrop-blur-md shadow-lg max-w-full">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#22D3A0] animate-pulse shrink-0" />
+              <span className="font-grotesk text-[9px] sm:text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold truncate">
                 Pakistan Climate Command &bull; Live Intelligence
               </span>
             </div>
 
             {/* Headline with Cyan to Emerald Gradient */}
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] break-words">
               THE FUTURE IS IN <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#20C5FF] via-[#22D3A0] to-[#22D3A0]">
                 YOUR HANDS
@@ -371,75 +371,64 @@ export const Home: React.FC = () => {
             </p>
 
             {/* Action Buttons matching Tile 1 & Tile 6 */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 w-full max-w-full">
               <button
                 onClick={handleEnterExperience}
-                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer min-w-0"
               >
-                <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
-                <span>{isEnteringExperience ? 'Rotating to Pakistan...' : 'Enter Experience'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <Globe className={`w-3.5 h-3.5 ${isEnteringExperience ? 'animate-spin' : ''} shrink-0`} />
+                <span className="truncate">{isEnteringExperience ? 'Rotating...' : 'Enter Experience'}</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
               </button>
 
               <button
                 onClick={() => navigate('/pakistan')}
-                className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#20C5FF]/10 hover:border-[#20C5FF] transition backdrop-blur-md cursor-pointer"
+                className="px-4 py-2.5 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-[#20C5FF]/10 transition backdrop-blur-md cursor-pointer shrink-0"
               >
-                <Compass className="w-4 h-4 text-[#22D3A0]" />
-                <span className="hidden xs:inline">Explore Pakistan</span>
-                <span className="xs:hidden">Map</span>
+                <Compass className="w-3.5 h-3.5 text-[#22D3A0]" />
+                <span>Map</span>
               </button>
             </div>
 
-            {/* Floating Metric Strip (Reference Tile 1 & Tile 6 Requirement) */}
-            <div className="w-full pointer-events-auto">
-              <div className="hud-card px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center justify-between text-xs border border-white/10 shadow-2xl overflow-x-auto scrollbar-none gap-2">
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  <span className="text-xs">🌡️</span>
-                  <div>
-                    <span className="font-orbitron font-bold text-white text-[10px] sm:text-xs block">
-                      {liveWeather?.temperature_c !== undefined ? `${liveWeather.temperature_c}°C` : '32.5°C'}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Temp</span>
-                  </div>
+            {/* Floating Metric Strip (Grid-based 5 items, 100% fitted without horizontal scroll) */}
+            <div className="w-full max-w-full pointer-events-auto min-w-0">
+              <div className="hud-card px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-xl grid grid-cols-5 items-center justify-between text-xs border border-white/10 shadow-2xl w-full max-w-full gap-1 text-center">
+                <div className="flex flex-col items-center justify-center min-w-0">
+                  <span className="text-[11px] leading-none mb-0.5">🌡️</span>
+                  <span className="font-orbitron font-bold text-white text-[9.5px] xs:text-[11px] truncate w-full">
+                    {liveWeather?.temperature_c !== undefined ? `${liveWeather.temperature_c}°C` : '28.7°C'}
+                  </span>
+                  <span className="text-[7.5px] xs:text-[9px] text-eco-muted font-grotesk truncate w-full">Temp</span>
                 </div>
 
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  <span className="text-xs">🌧️</span>
-                  <div>
-                    <span className="font-orbitron font-bold text-white text-[10px] sm:text-xs block">
-                      {liveWeather?.precipitation_mm !== undefined ? `${liveWeather.precipitation_mm} mm` : '12.8 mm'}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Rainfall</span>
-                  </div>
+                <div className="flex flex-col items-center justify-center min-w-0">
+                  <span className="text-[11px] leading-none mb-0.5">🌧️</span>
+                  <span className="font-orbitron font-bold text-white text-[9.5px] xs:text-[11px] truncate w-full">
+                    {liveWeather?.precipitation_mm !== undefined ? `${liveWeather.precipitation_mm}mm` : '0 mm'}
+                  </span>
+                  <span className="text-[7.5px] xs:text-[9px] text-eco-muted font-grotesk truncate w-full">Rain</span>
                 </div>
 
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  <span className="text-xs">💧</span>
-                  <div>
-                    <span className="font-orbitron font-bold text-white text-[10px] sm:text-xs block">
-                      {liveWeather?.humidity_percent !== undefined ? `${liveWeather.humidity_percent}%` : '68%'}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Humidity</span>
-                  </div>
+                <div className="flex flex-col items-center justify-center min-w-0">
+                  <span className="text-[11px] leading-none mb-0.5">💧</span>
+                  <span className="font-orbitron font-bold text-white text-[9.5px] xs:text-[11px] truncate w-full">
+                    {liveWeather?.humidity_percent !== undefined ? `${liveWeather.humidity_percent}%` : '36%'}
+                  </span>
+                  <span className="text-[7.5px] xs:text-[9px] text-eco-muted font-grotesk truncate w-full">Humidity</span>
                 </div>
 
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  <span className="text-xs">🍃</span>
-                  <div>
-                    <span className="font-orbitron font-bold text-[#22D3A0] text-[10px] sm:text-xs block">AQI 42</span>
-                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Good</span>
-                  </div>
+                <div className="flex flex-col items-center justify-center min-w-0">
+                  <span className="text-[11px] leading-none mb-0.5">🍃</span>
+                  <span className="font-orbitron font-bold text-[#22D3A0] text-[9.5px] xs:text-[11px] truncate w-full">AQI 42</span>
+                  <span className="text-[7.5px] xs:text-[9px] text-eco-muted font-grotesk truncate w-full">Good</span>
                 </div>
 
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  <span className="text-xs">🛡️</span>
-                  <div>
-                    <span className="font-orbitron font-bold text-[#FFAA45] text-[10px] sm:text-xs block">
-                      {selectedLocation?.heat_risk ? selectedLocation.heat_risk.split(' ')[0] : 'Low'}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Risk</span>
-                  </div>
+                <div className="flex flex-col items-center justify-center min-w-0">
+                  <span className="text-[11px] leading-none mb-0.5">🛡️</span>
+                  <span className="font-orbitron font-bold text-[#FFAA45] text-[9.5px] xs:text-[11px] truncate w-full">
+                    {selectedLocation?.heat_risk ? selectedLocation.heat_risk.split(' ')[0] : 'Low'}
+                  </span>
+                  <span className="text-[7.5px] xs:text-[9px] text-eco-muted font-grotesk truncate w-full">Risk</span>
                 </div>
               </div>
             </div>

@@ -98,6 +98,9 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.maxWidth = '100%';
+    renderer.domElement.style.maxHeight = '100%';
+    renderer.domElement.style.display = 'block';
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
     currentMount.appendChild(renderer.domElement);
@@ -438,8 +441,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
   }, [selectedLocation, flyToTrigger]);
 
   return (
-    <div className="relative w-full h-full select-none">
-      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+    <div className="relative w-full max-w-full h-full select-none overflow-hidden">
+      <div ref={mountRef} className="w-full max-w-full h-full cursor-grab active:cursor-grabbing overflow-hidden" />
     </div>
   );
 };

@@ -143,7 +143,7 @@ export const ClimateGPT: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-64px)] lg:h-[calc(100vh-64px)] bg-[#06111F] text-slate-100 overflow-hidden font-inter">
+    <div className="flex flex-col w-full max-w-full h-[calc(100dvh-64px)] lg:h-[calc(100vh-64px)] bg-[#06111F] text-slate-100 overflow-x-hidden overflow-y-auto lg:overflow-hidden font-inter">
       {/* ── Mobile View Tabs (HCI Optimized for phone touch targets) ── */}
       <div className="lg:hidden flex items-center justify-around bg-[#0B1B2D] border-b border-white/10 px-3 py-2 shrink-0 z-20">
         <button

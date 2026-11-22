@@ -27,9 +27,9 @@ export const NavBar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 bg-[#06111F]/90 backdrop-blur-xl border-b border-white/[0.08]">
-      <div className="w-full max-w-[1500px] mx-auto px-4 lg:px-6">
-        <div className="flex items-center justify-between h-16 gap-3">
+    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden bg-[#06111F]/90 backdrop-blur-xl border-b border-white/[0.08]">
+      <div className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
           
           {/* ── Brand Logo & Tagline ───────────────────────────────── */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
