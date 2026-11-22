@@ -254,13 +254,13 @@ export const Home: React.FC = () => {
         />
       </div>
 
-      {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Sleek Top Search + Bottom Hero matching Tile 6) */}
+      {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Clear Upper Earth View + Sleek Bottom Hero matching Tile 6) */}
       {!fullScreenGlobe && (
-        <div className="relative z-20 w-full lg:w-1/2 h-full flex flex-col justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-3 lg:pb-8">
+        <div className="relative z-20 w-full lg:w-1/2 h-full flex flex-col justify-end lg:justify-between p-4 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-4 lg:pb-8">
           
-          {/* Top: Google Earth-Style City Search Bar & Quick Chips */}
-          <div className="w-full max-w-lg pointer-events-auto">
-            <div className="hud-card rounded-2xl flex items-center px-3.5 py-2 border border-[#20C5FF]/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-neon-blue">
+          {/* Top: Google Earth-Style City Search Bar & Quick Chips (Desktop only to keep mobile 100% clean & focused on 3D Earth) */}
+          <div className="hidden lg:block w-full max-w-lg pointer-events-auto">
+            <div className="hud-card rounded-2xl flex items-center px-4 py-2.5 border border-[#20C5FF]/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-neon-blue">
               <Search className="w-4 h-4 text-[#20C5FF] shrink-0 mr-2.5" />
               <input
                 type="text"

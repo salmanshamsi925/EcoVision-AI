@@ -59,26 +59,47 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     cameraRef.current = camera;
-    camera.position.set(0, 0, 7.2);
 
-    // Dynamic Camera View Offset:
-    // - On desktop (>=1024px): shifts Earth to the RIGHT half (-w * 0.18), giving hero cockpit full breathing room on left.
-    // - On mobile (<1024px): shifts Earth into the UPPER portion (h * 0.14) so the glowing globe is unobstructed (Tile 6).
-    const updateCameraViewOffset = (w: number, h: number) => {
+    // Helper: calculate ideal camera Z distance based on screen dimensions
+    const getBaseCameraZ = (w: number, h: number) => {
+      if (w >= 1024) return 7.2;
+      const aspect = w / h;
+      // Target visible width = 5.2 (Earth diameter 4.0 gives ~77% coverage with space all around)
+      const halfFovRad = (45 * Math.PI) / 360;
+      const reqZ = 2.6 / (Math.tan(halfFovRad) * aspect);
+      return Math.max(9.0, Math.min(15.0, reqZ));
+    };
+
+    // Dynamic Camera View & Distance Config:
+    // - On desktop (>=1024px): shifts Earth to the RIGHT half (-w * 0.18), giving hero cockpit breathing room on left.
+    // - On mobile (<1024px): scales distance to fit 100% inside screen width and frames in upper portion (Tile 6).
+    const updateCameraConfig = (w: number, h: number) => {
+      camera.aspect = w / h;
+      const targetZ = getBaseCameraZ(w, h);
+      camera.position.set(0, 0, targetZ);
+
       if (w >= 1024) {
         camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
+        if (controlsRef.current) {
+          controlsRef.current.minDistance = 2.4;
+          controlsRef.current.maxDistance = 14.0;
+        }
       } else {
-        camera.setViewOffset(w, h, 0, h * 0.14, w, h);
+        camera.setViewOffset(w, h, 0, h * 0.10, w, h);
+        if (controlsRef.current) {
+          controlsRef.current.minDistance = 4.0;
+          controlsRef.current.maxDistance = 18.0;
+        }
       }
       camera.updateProjectionMatrix();
     };
-    updateCameraViewOffset(width, height);
+    updateCameraConfig(width, height);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.05;
     currentMount.appendChild(renderer.domElement);
 
     // 2. OrbitControls
@@ -124,13 +145,13 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     const earthMaterial = new THREE.MeshPhongMaterial({
       map: realDayTexture || procDay,
       bumpMap: realNormalTexture,
-      bumpScale: 0.04,
+      bumpScale: 0.03,
       specularMap: realSpecularTexture || procSpec,
-      specular: new THREE.Color(0x60a5fa),
-      shininess: 30,
+      specular: new THREE.Color(0x38bdf8),
+      shininess: 16,
       emissiveMap: procNight,
-      emissive: new THREE.Color(0x0c1e3d),
-      emissiveIntensity: 0.25,
+      emissive: new THREE.Color(0x06111f),
+      emissiveIntensity: 0.2,
     });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
     globeGroup.add(earthMesh);
@@ -177,36 +198,6 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
     globeGroup.add(atmosphereMesh);
 
-    // 4b. Luminous Emerald Highlight for Pakistan & Sindh (Tile 1 Reference Requirement)
-    const pakistanCenter = latLonToVector3(29.2, 69.2, GLOBE_RADIUS * 1.006);
-    const pakHighlightGeom = new THREE.CircleGeometry(0.52, 32);
-    const pakHighlightMat = new THREE.MeshBasicMaterial({
-      color: 0x22d3a0,
-      transparent: true,
-      opacity: 0.38,
-      blending: THREE.AdditiveBlending,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-    });
-    const pakHighlightMesh = new THREE.Mesh(pakHighlightGeom, pakHighlightMat);
-    pakHighlightMesh.position.copy(pakistanCenter);
-    pakHighlightMesh.lookAt(0, 0, 0);
-    globeGroup.add(pakHighlightMesh);
-
-    const pakRingGeom = new THREE.RingGeometry(0.48, 0.54, 32);
-    const pakRingMat = new THREE.MeshBasicMaterial({
-      color: 0x20c5ff,
-      transparent: true,
-      opacity: 0.65,
-      blending: THREE.AdditiveBlending,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-    });
-    const pakRingMesh = new THREE.Mesh(pakRingGeom, pakRingMat);
-    pakRingMesh.position.copy(pakistanCenter);
-    pakRingMesh.lookAt(0, 0, 0);
-    globeGroup.add(pakRingMesh);
-
     // 5. Starfield Background
     const starCount = reducedMotion ? 1200 : 3500;
     const starGeometry = new THREE.BufferGeometry();
@@ -250,24 +241,24 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     const starField = new THREE.Points(starGeometry, starMaterial);
     scene.add(starField);
 
-    // 6. Multi-angle Lighting Rig (100% Crisp, Bright, Edge-to-Edge Illumination)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
+    // 6. Multi-angle Cinematic Lighting Rig (Balanced, Realistic, Non-blinding)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e3a5f, 1.4);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x06111f, 0.75);
     scene.add(hemiLight);
 
-    // Camera-attached headlight: User-facing hemisphere is ALWAYS brightly and evenly illuminated
-    const cameraHeadlight = new THREE.DirectionalLight(0xffffff, 2.2);
+    // Front fill headlight: gentle soft fill, NO harsh specular over-saturation
+    const cameraHeadlight = new THREE.DirectionalLight(0xffffff, 0.6);
     cameraHeadlight.position.set(0, 0, 1);
     camera.add(cameraHeadlight);
     scene.add(camera);
 
-    const sunLight = new THREE.DirectionalLight(0xfff8ee, 1.6);
+    const sunLight = new THREE.DirectionalLight(0xfff8ee, 1.4);
     sunLight.position.set(12, 6, 10);
     scene.add(sunLight);
 
-    const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
+    const rimLight = new THREE.DirectionalLight(0x20c5ff, 1.1);
     rimLight.position.set(-12, -4, -8);
     scene.add(rimLight);
 
@@ -335,8 +326,7 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
       if (!currentMount) return;
       const w = currentMount.clientWidth;
       const h = currentMount.clientHeight;
-      camera.aspect = w / h;
-      updateCameraViewOffset(w, h);
+      updateCameraConfig(w, h);
       renderer.setSize(w, h);
       controls.target.set(0, 0, 0);
     };
@@ -437,7 +427,11 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     targetQuat.current.setFromUnitVectors(localPoint, cameraDir);
 
     cameraStartPos.current.copy(cameraRef.current.position);
-    cameraEndPos.current.set(0, 0, 6.2);
+    const isMobile = window.innerWidth < 1024;
+    const aspect = window.innerWidth / window.innerHeight;
+    const reqZ = 2.6 / (Math.tan((45 * Math.PI) / 360) * aspect);
+    const targetZ = isMobile ? Math.max(9.0, Math.min(15.0, reqZ)) : 6.2;
+    cameraEndPos.current.set(0, 0, targetZ);
 
     rotProgress.current = 0;
     isRotating.current = true;
