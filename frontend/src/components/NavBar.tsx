@@ -73,20 +73,20 @@ export const NavBar: React.FC = () => {
             {/* Live Indicator Pill */}
             <div 
               title="Real-Time Open-Meteo Satellite Feed Synchronized"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22D3A0]/10 border border-[#22D3A0]/25 text-[11px] font-mono text-[#22D3A0] shrink-0 shadow-sm"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#22D3A0]/10 border border-[#22D3A0]/25 text-[10px] sm:text-[11px] font-mono text-[#22D3A0] shrink-0 shadow-sm"
             >
-              <span className="w-2 h-2 rounded-full bg-[#22D3A0] animate-pulse" />
-              <span className="font-bold">Live</span>
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#22D3A0] animate-pulse" />
+              <span className="font-bold hidden xs:inline">Live</span>
             </div>
 
             {/* Country / Location Selector Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setLocationDropdownOpen(!locationDropdownOpen)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#10243A] border border-white/10 text-xs font-grotesk text-white hover:border-[#20C5FF]/40 transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#10243A] border border-white/10 text-xs font-grotesk text-white hover:border-[#20C5FF]/40 transition-all cursor-pointer shadow-sm"
               >
                 <MapPin className="w-3.5 h-3.5 text-[#20C5FF]" />
-                <span className="font-medium">{activeLocation?.name || 'Pakistan'}</span>
+                <span className="font-medium text-xs max-w-[85px] sm:max-w-none truncate">{activeLocation?.name || 'Pakistan'}</span>
                 <ChevronDown className="w-3 h-3 text-eco-muted" />
               </button>
 

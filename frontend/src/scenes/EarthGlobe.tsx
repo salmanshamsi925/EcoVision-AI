@@ -61,13 +61,14 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     cameraRef.current = camera;
     camera.position.set(0, 0, 7.2);
 
-    // Dynamic Camera View Offset: On desktop (>=1024px), shifts the 3D origin (Earth)
-    // cleanly to the RIGHT half of the viewport (~68% screen width), giving hero text full breathing room on the left!
+    // Dynamic Camera View Offset:
+    // - On desktop (>=1024px): shifts Earth to the RIGHT half (-w * 0.18), giving hero cockpit full breathing room on left.
+    // - On mobile (<1024px): shifts Earth into the UPPER portion (h * 0.14) so the glowing globe is unobstructed (Tile 6).
     const updateCameraViewOffset = (w: number, h: number) => {
       if (w >= 1024) {
         camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
       } else {
-        camera.clearViewOffset();
+        camera.setViewOffset(w, h, 0, h * 0.14, w, h);
       }
       camera.updateProjectionMatrix();
     };

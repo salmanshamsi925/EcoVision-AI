@@ -243,7 +243,7 @@ export const Home: React.FC = () => {
   return (
     <div
       id="home-container"
-      className="relative w-full min-h-[calc(100dvh-64px)] lg:h-[calc(100vh-64px)] overflow-y-auto lg:overflow-hidden bg-[#07111F] select-none"
+      className="relative w-full h-[calc(100dvh-64px)] overflow-hidden bg-[#07111F] select-none"
     >
       {/* 1. FIXED 3D EARTH CANVAS (Pinned in the background, scaled & positioned on the right) */}
       <div className="fixed inset-0 top-16 z-0 pointer-events-auto">
@@ -254,14 +254,14 @@ export const Home: React.FC = () => {
         />
       </div>
 
-      {/* 2. LEFT COCKPIT COLUMN (Contains Search, Hero Text, Action CTAs, and Status) */}
+      {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Sleek Top Search + Bottom Hero matching Tile 6) */}
       {!fullScreenGlobe && (
-        <div className="relative z-20 w-full lg:w-1/2 min-h-[calc(100dvh-64px)] lg:h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 lg:pl-12 gap-5 lg:gap-0 pointer-events-none pb-20 lg:pb-8">
+        <div className="relative z-20 w-full lg:w-1/2 h-full flex flex-col justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-3 lg:pb-8">
           
           {/* Top: Google Earth-Style City Search Bar & Quick Chips */}
           <div className="w-full max-w-lg pointer-events-auto">
-            <div className="hud-card rounded-2xl flex items-center px-4 py-2.5 border border-[#20C5FF]/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-neon-blue">
-              <Search className="w-4 h-4 text-[#20C5FF] shrink-0 mr-3" />
+            <div className="hud-card rounded-2xl flex items-center px-3.5 py-2 border border-[#20C5FF]/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-neon-blue">
+              <Search className="w-4 h-4 text-[#20C5FF] shrink-0 mr-2.5" />
               <input
                 type="text"
                 value={searchQuery}
@@ -286,21 +286,21 @@ export const Home: React.FC = () => {
                     const first = filteredLocations[0] || locations[0];
                     if (first) handleSelectCity(first);
                   }}
-                  className="w-7 h-7 rounded-xl bg-[#20C5FF]/20 hover:bg-[#20C5FF] text-[#20C5FF] hover:text-[#06111F] flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  className="w-6 h-6 rounded-lg bg-[#20C5FF]/20 hover:bg-[#20C5FF] text-[#20C5FF] hover:text-[#06111F] flex items-center justify-center transition-all cursor-pointer shrink-0"
                 >
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3 h-3" />
                 </button>
               )}
             </div>
 
             {/* Autocomplete Dropdown */}
             {searchFocused && filteredLocations.length > 0 && (
-              <div className="absolute top-16 left-4 sm:left-6 lg:left-12 right-4 sm:right-auto sm:w-[480px] bg-[#0B1B2D]/98 border border-[#20C5FF]/40 rounded-xl overflow-hidden shadow-2xl backdrop-blur-xl max-h-64 overflow-y-auto z-40">
+              <div className="absolute top-14 left-3 sm:left-6 lg:left-12 right-3 sm:right-auto sm:w-[480px] bg-[#0B1B2D]/98 border border-[#20C5FF]/40 rounded-xl overflow-hidden shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-40">
                 {filteredLocations.map((loc) => (
                   <button
                     key={loc.id}
                     onClick={() => handleSelectCity(loc)}
-                    className="w-full px-4 py-3 text-left hover:bg-[#20C5FF]/15 border-b border-white/5 flex items-center justify-between transition group"
+                    className="w-full px-3.5 py-2.5 text-left hover:bg-[#20C5FF]/15 border-b border-white/5 flex items-center justify-between transition group"
                   >
                     <div className="flex items-center gap-2.5">
                       <MapPin className="w-4 h-4 text-[#22D3A0] group-hover:text-[#20C5FF] transition" />
@@ -326,8 +326,8 @@ export const Home: React.FC = () => {
               </div>
             )}
 
-            {/* Quick-Select City Chips matching Reference Tile 1 */}
-            <div className="flex items-center gap-1.5 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
+            {/* Quick-Select City Chips (Hidden on small mobile screens to prevent clutter) */}
+            <div className="hidden sm:flex items-center gap-1.5 mt-2 overflow-x-auto pb-0.5 scrollbar-none">
               {['Khairpur', 'Karachi', 'Sukkur', 'Larkana', 'Islamabad'].map((cityName) => (
                 <button
                   key={cityName}
@@ -347,34 +347,34 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Middle: Mission Hero Briefing & Action CTAs */}
-          <div className="w-full max-w-lg pointer-events-auto my-auto py-2 bg-[#06111F]/50 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none rounded-3xl p-3 lg:p-0">
+          {/* Bottom Hero Briefing & Action CTAs (Pinned cleanly to bottom on mobile, matching Tile 6) */}
+          <div className="w-full max-w-lg pointer-events-auto space-y-3 sm:space-y-4">
             {/* Small Label Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10243A] border border-[#20C5FF]/30 backdrop-blur-md mb-3 shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-[#22D3A0] animate-pulse" />
-              <span className="font-grotesk text-[10px] sm:text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/30 backdrop-blur-md shadow-lg">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#22D3A0] animate-pulse" />
+              <span className="font-grotesk text-[9px] sm:text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold">
                 Pakistan Climate Command &bull; Live Intelligence
               </span>
             </div>
 
             {/* Headline with Cyan to Emerald Gradient */}
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
               THE FUTURE IS IN <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#20C5FF] via-[#22D3A0] to-[#22D3A0]">
                 YOUR HANDS
               </span>
             </h1>
 
-            {/* Subtitle matching Tile 1 */}
-            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-slate-200 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-md">
+            {/* Subtitle (Hidden on small mobile screens to keep view 100% clean and fit-screen) */}
+            <p className="hidden sm:block text-xs sm:text-sm text-slate-200 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-md">
               Smart Climate Intelligence for Pakistan &amp; Sindh Powered by AI, GIS and Real-Time Data. Explore verified near-term climate projection timelines.
             </p>
 
             {/* Action Buttons matching Tile 1 & Tile 6 */}
-            <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={handleEnterExperience}
-                className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
               >
                 <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
                 <span>{isEnteringExperience ? 'Rotating to Pakistan...' : 'Enter Experience'}</span>
@@ -383,81 +383,74 @@ export const Home: React.FC = () => {
 
               <button
                 onClick={() => navigate('/pakistan')}
-                className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#20C5FF]/10 hover:border-[#20C5FF] transition backdrop-blur-md cursor-pointer"
+                className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#20C5FF]/10 hover:border-[#20C5FF] transition backdrop-blur-md cursor-pointer"
               >
                 <Compass className="w-4 h-4 text-[#22D3A0]" />
-                <span>Explore Pakistan</span>
+                <span className="hidden xs:inline">Explore Pakistan</span>
+                <span className="xs:hidden">Map</span>
               </button>
             </div>
 
-            {/* Mobile-only button to inspect 3D Earth without UI */}
-            <button
-              onClick={() => setFullScreenGlobe(true)}
-              className="lg:hidden mt-3 w-full py-2 px-3 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-mono text-[11px] flex items-center justify-center gap-1.5 transition"
-            >
-              <Globe className="w-3.5 h-3.5 text-primary-cyan" />
-              <span>Rotate 3D Earth Full-Screen</span>
-            </button>
-          </div>
-
-          {/* Bottom: Floating Metric Strip (Reference Tile 1 Requirement) */}
-          <div className="w-full max-w-lg pointer-events-auto">
-            <div className="hud-card px-3 sm:px-4 py-2.5 rounded-2xl grid grid-cols-3 sm:flex sm:flex-wrap items-center justify-between gap-2 text-xs border border-white/10 shadow-2xl">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="p-1 rounded-md bg-[#FFAA45]/15 text-[#FFAA45] text-xs">🌡️</span>
-                <div>
-                  <span className="font-orbitron font-bold text-white text-[11px] sm:text-xs block">
-                    {liveWeather?.temperature_c !== undefined ? `${liveWeather.temperature_c}°C` : '32.5°C'}
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Temp</span>
+            {/* Floating Metric Strip (Reference Tile 1 & Tile 6 Requirement) */}
+            <div className="w-full pointer-events-auto">
+              <div className="hud-card px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center justify-between text-xs border border-white/10 shadow-2xl overflow-x-auto scrollbar-none gap-2">
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  <span className="text-xs">🌡️</span>
+                  <div>
+                    <span className="font-orbitron font-bold text-white text-[10px] sm:text-xs block">
+                      {liveWeather?.temperature_c !== undefined ? `${liveWeather.temperature_c}°C` : '32.5°C'}
+                    </span>
+                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Temp</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="p-1 rounded-md bg-[#20C5FF]/15 text-[#20C5FF] text-xs">🌧️</span>
-                <div>
-                  <span className="font-orbitron font-bold text-white text-[11px] sm:text-xs block">
-                    {liveWeather?.precipitation_mm !== undefined ? `${liveWeather.precipitation_mm} mm` : '12.8 mm'}
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Rainfall</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  <span className="text-xs">🌧️</span>
+                  <div>
+                    <span className="font-orbitron font-bold text-white text-[10px] sm:text-xs block">
+                      {liveWeather?.precipitation_mm !== undefined ? `${liveWeather.precipitation_mm} mm` : '12.8 mm'}
+                    </span>
+                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Rainfall</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="p-1 rounded-md bg-[#20C5FF]/15 text-[#20C5FF] text-xs">💧</span>
-                <div>
-                  <span className="font-orbitron font-bold text-white text-[11px] sm:text-xs block">
-                    {liveWeather?.humidity_percent !== undefined ? `${liveWeather.humidity_percent}%` : '68%'}
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Humidity</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  <span className="text-xs">💧</span>
+                  <div>
+                    <span className="font-orbitron font-bold text-white text-[10px] sm:text-xs block">
+                      {liveWeather?.humidity_percent !== undefined ? `${liveWeather.humidity_percent}%` : '68%'}
+                    </span>
+                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Humidity</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="p-1 rounded-md bg-[#22D3A0]/15 text-[#22D3A0] text-xs">🍃</span>
-                <div>
-                  <span className="font-orbitron font-bold text-[#22D3A0] text-[11px] sm:text-xs block">AQI 42</span>
-                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Good</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  <span className="text-xs">🍃</span>
+                  <div>
+                    <span className="font-orbitron font-bold text-[#22D3A0] text-[10px] sm:text-xs block">AQI 42</span>
+                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Good</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="p-1 rounded-md bg-[#FFAA45]/15 text-[#FFAA45] text-xs">🛡️</span>
-                <div>
-                  <span className="font-orbitron font-bold text-[#FFAA45] text-[11px] sm:text-xs block">
-                    {selectedLocation?.heat_risk ? selectedLocation.heat_risk.split(' ')[0] : 'Low'}
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Risk</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  <span className="text-xs">🛡️</span>
+                  <div>
+                    <span className="font-orbitron font-bold text-[#FFAA45] text-[10px] sm:text-xs block">
+                      {selectedLocation?.heat_risk ? selectedLocation.heat_risk.split(' ')[0] : 'Low'}
+                    </span>
+                    <span className="text-[8px] sm:text-[9px] text-eco-muted font-grotesk">Risk</span>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
 
         </div>
       )}
 
-      {/* 5. FLOATING BOTTOM-RIGHT CONTROLS: Sound, Reduced Motion, Full-Screen Globe */}
-      <div className="absolute right-6 bottom-6 z-30 flex items-center gap-2.5 pointer-events-auto">
+      {/* 5. FLOATING BOTTOM-RIGHT CONTROLS: Sound, Reduced Motion, Full-Screen Globe (Desktop only) */}
+      <div className="hidden lg:flex absolute right-6 bottom-6 z-30 items-center gap-2.5 pointer-events-auto">
         {/* Ambient Sound Synthesizer */}
         <button
           onClick={handleAudioToggle}
