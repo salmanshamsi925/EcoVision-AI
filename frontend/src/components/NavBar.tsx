@@ -27,19 +27,19 @@ export const NavBar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden bg-[#06111F]/90 backdrop-blur-xl border-b border-white/[0.08]">
-      <div className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6">
-        <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
+    <header className="sticky top-0 z-50 w-full bg-[#06111F]/95 backdrop-blur-xl border-b border-white/[0.08]">
+      <div className="w-full max-w-[1500px] mx-auto px-2.5 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-2">
           
           {/* ── Brand Logo & Tagline ───────────────────────────────── */}
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#20C5FF] to-[#22D3A0] p-0.5 shadow-lg shadow-[#20C5FF]/20 group-hover:shadow-[#20C5FF]/40 transition-all duration-300 shrink-0">
+          <Link to="/" className="flex items-center gap-2 group shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#20C5FF] to-[#22D3A0] p-0.5 shadow-lg shadow-[#20C5FF]/20 group-hover:shadow-[#20C5FF]/40 transition-all duration-300 shrink-0">
               <div className="w-full h-full bg-[#06111F] rounded-[9px] flex items-center justify-center">
                 <Globe2 className="w-4 h-4 text-[#20C5FF] group-hover:text-[#22D3A0] transition-colors" />
               </div>
             </div>
             <div className="whitespace-nowrap">
-              <span className="font-orbitron font-bold text-base tracking-wide text-white">
+              <span className="font-orbitron font-bold text-sm sm:text-base tracking-wide text-white">
                 EcoVision<span className="text-[#20C5FF]">-AI</span>
               </span>
               <span className="hidden sm:block text-[9.5px] font-grotesk tracking-wide text-eco-muted/80">
@@ -68,26 +68,26 @@ export const NavBar: React.FC = () => {
             })}
           </nav>
 
-          {/* ── Right-Side Controls (Live Badge & Location Dropdown) ── */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          {/* ── Right-Side Controls (Live Badge, Location Dropdown & Mobile Hamburger) ── */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Live Indicator Pill */}
             <div 
               title="Real-Time Open-Meteo Satellite Feed Synchronized"
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#22D3A0]/10 border border-[#22D3A0]/25 text-[10px] sm:text-[11px] font-mono text-[#22D3A0] shrink-0 shadow-sm"
+              className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#22D3A0]/10 border border-[#22D3A0]/25 text-[10px] sm:text-[11px] font-mono text-[#22D3A0] shrink-0 shadow-sm"
             >
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#22D3A0] animate-pulse" />
-              <span className="font-bold hidden xs:inline">Live</span>
+              <span className="font-bold hidden sm:inline">Live</span>
             </div>
 
             {/* Country / Location Selector Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setLocationDropdownOpen(!locationDropdownOpen)}
-                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#10243A] border border-white/10 text-xs font-grotesk text-white hover:border-[#20C5FF]/40 transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#10243A] border border-white/10 text-xs font-grotesk text-white hover:border-[#20C5FF]/40 transition-all cursor-pointer shadow-sm"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#20C5FF]" />
-                <span className="font-medium text-xs max-w-[85px] sm:max-w-none truncate">{activeLocation?.name || 'Pakistan'}</span>
-                <ChevronDown className="w-3 h-3 text-eco-muted" />
+                <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#20C5FF] shrink-0" />
+                <span className="font-medium text-[11px] sm:text-xs max-w-[65px] xs:max-w-[85px] sm:max-w-none truncate">{activeLocation?.name || 'Pakistan'}</span>
+                <ChevronDown className="w-3 h-3 text-eco-muted shrink-0" />
               </button>
 
               {locationDropdownOpen && (
@@ -116,13 +116,13 @@ export const NavBar: React.FC = () => {
               )}
             </div>
 
-            {/* Responsive Mobile Drawer Button */}
+            {/* Responsive Mobile Drawer Button (Fully framed, never cut off) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-[#10243A] border border-white/10 text-eco-muted hover:text-white transition shrink-0"
+              className="lg:hidden p-1.5 sm:p-2 rounded-xl bg-[#10243A] border border-white/15 text-white hover:text-[#20C5FF] hover:border-[#20C5FF]/40 transition shrink-0 flex items-center justify-center shadow-sm"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[#20C5FF]" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
