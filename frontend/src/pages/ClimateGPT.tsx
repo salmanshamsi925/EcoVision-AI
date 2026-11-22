@@ -72,6 +72,7 @@ export const ClimateGPT: React.FC = () => {
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'chat' | 'questions' | 'district'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -142,12 +143,53 @@ export const ClimateGPT: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-68px)] bg-[#06111F] text-slate-100 overflow-hidden font-inter">
+    <div className="flex flex-col h-[calc(100dvh-64px)] lg:h-[calc(100vh-64px)] bg-[#06111F] text-slate-100 overflow-hidden font-inter">
+      {/* ── Mobile View Tabs (HCI Optimized for phone touch targets) ── */}
+      <div className="lg:hidden flex items-center justify-around bg-[#0B1B2D] border-b border-white/10 px-3 py-2 shrink-0 z-20">
+        <button
+          onClick={() => setMobileTab('chat')}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-space transition ${
+            mobileTab === 'chat'
+              ? 'bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-bold shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Bot className="w-3.5 h-3.5" />
+          <span>AI Chat</span>
+        </button>
+        <button
+          onClick={() => setMobileTab('questions')}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-space transition ${
+            mobileTab === 'questions'
+              ? 'bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-bold shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Questions</span>
+        </button>
+        <button
+          onClick={() => setMobileTab('district')}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-space transition ${
+            mobileTab === 'district'
+              ? 'bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-bold shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <MapPin className="w-3.5 h-3.5" />
+          <span>{districtName}</span>
+        </button>
+      </div>
+
       {/* ── 3-Column ClimateGPT Layout (Tile 5) ── */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
 
         {/* ── Left Column: ClimateGPT Branding & Popular Questions (w-72 xl:w-80) ── */}
-        <div className="w-full lg:w-72 xl:w-80 bg-[#0B1B2D]/95 backdrop-blur-xl border-r border-white/10 p-5 flex flex-col justify-between shrink-0">
+        <div
+          className={`w-full lg:w-72 xl:w-80 bg-[#0B1B2D]/95 backdrop-blur-xl border-r border-white/10 p-5 flex-col justify-between shrink-0 overflow-y-auto ${
+            mobileTab === 'questions' ? 'flex' : 'hidden lg:flex'
+          }`}
+        >
           <div>
             {/* Header / Brand */}
             <div className="flex items-center gap-2.5 mb-1">
@@ -167,7 +209,10 @@ export const ClimateGPT: React.FC = () => {
                 {POPULAR_QUESTIONS.map((q) => (
                   <button
                     key={q}
-                    onClick={() => handleSend(q)}
+                    onClick={() => {
+                      handleSend(q);
+                      setMobileTab('chat');
+                    }}
                     className="w-full text-left px-3.5 py-2.5 rounded-xl bg-[#10243A]/80 hover:bg-[#142B42] border border-white/10 hover:border-primary-cyan/40 text-xs text-slate-200 transition flex items-center justify-between group shadow-sm"
                   >
                     <span>{q}</span>
@@ -186,7 +231,11 @@ export const ClimateGPT: React.FC = () => {
         </div>
 
         {/* ── Center Column: Interactive Chat Stream (Flexible) ── */}
-        <div className="flex-1 flex flex-col bg-[#06111F] relative overflow-hidden">
+        <div
+          className={`flex-1 flex-col bg-[#06111F] relative overflow-hidden ${
+            mobileTab === 'chat' ? 'flex' : 'hidden lg:flex'
+          }`}
+        >
           {/* Messages Container */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {messages.map((m) => (
@@ -285,7 +334,11 @@ export const ClimateGPT: React.FC = () => {
         </div>
 
         {/* ── Right Column: Selected District Overview (w-72 xl:w-80) ── */}
-        <div className="w-full lg:w-72 xl:w-80 bg-[#0B1B2D]/95 backdrop-blur-xl border-l border-white/10 p-5 flex flex-col gap-4 shrink-0">
+        <div
+          className={`w-full lg:w-72 xl:w-80 bg-[#0B1B2D]/95 backdrop-blur-xl border-l border-white/10 p-5 flex-col gap-4 shrink-0 overflow-y-auto ${
+            mobileTab === 'district' ? 'flex' : 'hidden lg:flex'
+          }`}
+        >
           <div>
             <h3 className="font-space font-bold text-white text-base">
               {districtName} Overview

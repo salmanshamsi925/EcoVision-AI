@@ -95,7 +95,7 @@ export const NavBar: React.FC = () => {
                   <div className="px-2.5 py-1 text-[10px] font-mono text-eco-muted uppercase tracking-wider border-b border-white/5 mb-1">
                     Select Focus District
                   </div>
-                  {allLocations.slice(0, 8).map((loc) => (
+                  {Object.values(allLocations).slice(0, 8).map((loc) => (
                     <button
                       key={loc.id}
                       onClick={() => {

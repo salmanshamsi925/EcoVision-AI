@@ -49,6 +49,9 @@ export const ExplorePakistan: React.FC = () => {
     DISTRICT_DATA[districtParam.toLowerCase()] || DISTRICT_DATA['khairpur']
   );
 
+  // Mobile navigation tab: 'map', 'layers', or 'details'
+  const [mobileTab, setMobileTab] = useState<'map' | 'layers' | 'details'>('map');
+
   // GIS Layer Controls State
   const [activeOverlay, setActiveOverlay] = useState<OverlayType>('temperature');
   const [showBoundaries, setShowBoundaries] = useState<boolean>(true);
@@ -81,13 +84,47 @@ export const ExplorePakistan: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-68px)] bg-[#06111F] text-slate-100 overflow-hidden font-inter">
-      {/* ── 3-Column GIS Interface ── */}
+    <div className="flex flex-col h-[calc(100dvh-64px)] lg:h-[calc(100vh-68px)] bg-[#06111F] text-slate-100 overflow-hidden font-inter">
+      {/* ── Mobile Navigation Tabs (Visible only on < lg screens) ── */}
+      <div className="lg:hidden flex items-center justify-between p-2 bg-[#0B1B2D] border-b border-white/10 shrink-0 z-20 gap-1.5">
+        <button
+          onClick={() => setMobileTab('map')}
+          className={`flex-1 py-1.5 rounded-lg text-xs font-space font-medium flex items-center justify-center gap-1.5 transition ${
+            mobileTab === 'map' ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Globe className="w-3.5 h-3.5" />
+          <span>Interactive Map</span>
+        </button>
+        <button
+          onClick={() => setMobileTab('layers')}
+          className={`flex-1 py-1.5 rounded-lg text-xs font-space font-medium flex items-center justify-center gap-1.5 transition ${
+            mobileTab === 'layers' ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Layers className="w-3.5 h-3.5" />
+          <span>Layers &amp; Search</span>
+        </button>
+        <button
+          onClick={() => setMobileTab('details')}
+          className={`flex-1 py-1.5 rounded-lg text-xs font-space font-medium flex items-center justify-center gap-1.5 transition ${
+            mobileTab === 'details' ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <MapPin className="w-3.5 h-3.5" />
+          <span>District Data</span>
+        </button>
+      </div>
+
+      {/* ── 3-Column GIS Interface (Desktop side-by-side, Mobile single-tab view) ── */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
 
         {/* ── Left Column: GIS Layers & Search ── */}
-        <div className="w-full lg:w-72 xl:w-80 bg-[#0B1B2D]/95 backdrop-blur-xl border-r border-white/10 p-4 flex flex-col gap-4 overflow-y-auto z-10 shrink-0">
-          
+        <div
+          className={`w-full lg:w-72 xl:w-80 bg-[#0B1B2D]/95 backdrop-blur-xl border-r border-white/10 p-4 flex flex-col gap-4 overflow-y-auto z-10 shrink-0 ${
+            mobileTab === 'layers' ? 'flex flex-1' : 'hidden lg:flex'
+          }`}
+        >
           {/* GIS Layers Card */}
           <div className="bg-[#10243A]/80 border border-white/10 rounded-2xl p-4 shadow-xl">
             <div className="flex items-center gap-2 mb-3 pb-2 border-b border-white/10">
@@ -215,7 +252,10 @@ export const ExplorePakistan: React.FC = () => {
               {(searchQuery ? filteredDistricts : Object.values(DISTRICT_DATA)).map((d) => (
                 <button
                   key={d.id}
-                  onClick={() => handleDistrictPick(d.id)}
+                  onClick={() => {
+                    handleDistrictPick(d.id);
+                    setMobileTab('map');
+                  }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition text-left ${
                     selectedDistrict?.id === d.id
                       ? 'bg-gradient-to-r from-primary-cyan/20 to-emerald-green/10 border border-primary-cyan/40 text-primary-cyan font-bold'
@@ -234,7 +274,11 @@ export const ExplorePakistan: React.FC = () => {
         </div>
 
         {/* ── Center Column: Interactive Map Canvas ── */}
-        <div className="flex-1 relative min-h-[380px] lg:min-h-0 bg-[#06111F]">
+        <div
+          className={`flex-1 relative min-h-[350px] lg:min-h-0 bg-[#06111F] ${
+            mobileTab === 'map' ? 'flex flex-col h-full' : 'hidden lg:flex'
+          }`}
+        >
           <PakistanSindhMap
             initialDistrict={selectedDistrict?.id}
             selectedDistrictId={selectedDistrict?.id}
@@ -245,16 +289,39 @@ export const ExplorePakistan: React.FC = () => {
           />
 
           {/* Compass / Map Legend Bar Overlay */}
-          <div className="absolute top-4 right-4 z-[500] bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-lg">
+          <div className="absolute top-3 right-3 z-[500] bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-2.5 py-1 flex items-center gap-2 shadow-lg">
             <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse" />
-            <span className="text-[11px] font-mono text-emerald-green font-semibold">
-              ACTIVE OVERLAY: {activeOverlay.toUpperCase()}
+            <span className="text-[10px] font-mono text-emerald-green font-semibold">
+              OVERLAY: {activeOverlay.toUpperCase()}
             </span>
           </div>
+
+          {/* Mobile Bottom Quick-Action Bar */}
+          {selectedDistrict && (
+            <div className="lg:hidden absolute bottom-3 left-3 right-3 z-[500] bg-[#10243A]/95 border border-primary-cyan/40 backdrop-blur-xl rounded-2xl p-3 flex items-center justify-between shadow-2xl">
+              <div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Selected District</span>
+                <div className="font-space font-bold text-white text-sm">
+                  {selectedDistrict.name} • {selectedDistrict.temp_c}°C
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileTab('details')}
+                className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center gap-1 shadow-md"
+              >
+                <span>Full Telemetry</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* ── Right Column: Selected District Information ── */}
-        <div className="w-full lg:w-80 xl:w-88 bg-[#0B1B2D]/95 backdrop-blur-xl border-l border-white/10 p-5 flex flex-col gap-4 overflow-y-auto z-10 shrink-0">
+        <div
+          className={`w-full lg:w-80 xl:w-88 bg-[#0B1B2D]/95 backdrop-blur-xl border-l border-white/10 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto z-10 shrink-0 ${
+            mobileTab === 'details' ? 'flex flex-1' : 'hidden lg:flex'
+          }`}
+        >
           {selectedDistrict ? (
             <>
               {/* District Name Header */}
@@ -277,7 +344,6 @@ export const ExplorePakistan: React.FC = () => {
                   alt={selectedDistrict.name}
                   className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                   onError={(e) => {
-                    // Fallback to Khairpur image if any URL fails
                     (e.target as HTMLImageElement).src = DISTRICT_IMAGES['khairpur'];
                   }}
                 />

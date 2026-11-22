@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useActiveLocation } from '../context/LocationContext';
 import { API_BASE } from '../config/api';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface StructuredAIResponse {
   title: string;
@@ -47,6 +47,7 @@ const QUICK_CHIPS = [
 ];
 
 export const ClimateGPTDrawer: React.FC = () => {
+  const routerLocation = useLocation();
   const { activeLocation } = useActiveLocation();
   const districtName = activeLocation?.name || 'Khairpur';
 
@@ -54,6 +55,11 @@ export const ClimateGPTDrawer: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Do not render floating trigger if already on full-page assistant
+  if (routerLocation.pathname === '/assistant' || routerLocation.pathname === '/gpt') {
+    return null;
+  }
 
   const [messages, setMessages] = useState<Message[]>([
     {

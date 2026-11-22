@@ -243,7 +243,7 @@ export const Home: React.FC = () => {
   return (
     <div
       id="home-container"
-      className="relative w-full h-[calc(100vh-64px)] overflow-hidden bg-[#07111F] select-none"
+      className="relative w-full min-h-[calc(100dvh-64px)] lg:h-[calc(100vh-64px)] overflow-y-auto lg:overflow-hidden bg-[#07111F] select-none"
     >
       {/* 1. FIXED 3D EARTH CANVAS (Pinned in the background, scaled & positioned on the right) */}
       <div className="fixed inset-0 top-16 z-0 pointer-events-auto">
@@ -256,7 +256,7 @@ export const Home: React.FC = () => {
 
       {/* 2. LEFT COCKPIT COLUMN (Contains Search, Hero Text, Action CTAs, and Status) */}
       {!fullScreenGlobe && (
-        <div className="relative z-20 w-full lg:w-1/2 h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none">
+        <div className="relative z-20 w-full lg:w-1/2 min-h-[calc(100dvh-64px)] lg:h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 lg:pl-12 gap-5 lg:gap-0 pointer-events-none pb-20 lg:pb-8">
           
           {/* Top: Google Earth-Style City Search Bar & Quick Chips */}
           <div className="w-full max-w-lg pointer-events-auto">
@@ -348,17 +348,17 @@ export const Home: React.FC = () => {
           </div>
 
           {/* Middle: Mission Hero Briefing & Action CTAs */}
-          <div className="w-full max-w-lg pointer-events-auto my-auto py-2">
+          <div className="w-full max-w-lg pointer-events-auto my-auto py-2 bg-[#06111F]/50 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none rounded-3xl p-3 lg:p-0">
             {/* Small Label Pill */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10243A] border border-[#20C5FF]/30 backdrop-blur-md mb-3 shadow-lg">
               <span className="w-2 h-2 rounded-full bg-[#22D3A0] animate-pulse" />
-              <span className="font-grotesk text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold">
+              <span className="font-grotesk text-[10px] sm:text-[10.5px] tracking-wider text-[#20C5FF] uppercase font-bold">
                 Pakistan Climate Command &bull; Live Intelligence
               </span>
             </div>
 
             {/* Headline with Cyan to Emerald Gradient */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-orbitron font-extrabold text-white tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
               THE FUTURE IS IN <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#20C5FF] via-[#22D3A0] to-[#22D3A0]">
                 YOUR HANDS
@@ -366,15 +366,15 @@ export const Home: React.FC = () => {
             </h1>
 
             {/* Subtitle matching Tile 1 */}
-            <p className="mt-3 text-xs sm:text-sm text-slate-200 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-md">
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-slate-200 font-inter leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-md">
               Smart Climate Intelligence for Pakistan &amp; Sindh Powered by AI, GIS and Real-Time Data. Explore verified near-term climate projection timelines.
             </p>
 
-            {/* Action Buttons matching Tile 1 */}
-            <div className="mt-5 flex flex-col sm:flex-row gap-3">
+            {/* Action Buttons matching Tile 1 & Tile 6 */}
+            <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
               <button
                 onClick={handleEnterExperience}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer"
               >
                 <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''}`} />
                 <span>{isEnteringExperience ? 'Rotating to Pakistan...' : 'Enter Experience'}</span>
@@ -383,62 +383,71 @@ export const Home: React.FC = () => {
 
               <button
                 onClick={() => navigate('/pakistan')}
-                className="px-5 py-3 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#20C5FF]/10 hover:border-[#20C5FF] transition backdrop-blur-md cursor-pointer"
+                className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-[#20C5FF]/10 hover:border-[#20C5FF] transition backdrop-blur-md cursor-pointer"
               >
                 <Compass className="w-4 h-4 text-[#22D3A0]" />
                 <span>Explore Pakistan</span>
               </button>
             </div>
+
+            {/* Mobile-only button to inspect 3D Earth without UI */}
+            <button
+              onClick={() => setFullScreenGlobe(true)}
+              className="lg:hidden mt-3 w-full py-2 px-3 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-mono text-[11px] flex items-center justify-center gap-1.5 transition"
+            >
+              <Globe className="w-3.5 h-3.5 text-primary-cyan" />
+              <span>Rotate 3D Earth Full-Screen</span>
+            </button>
           </div>
 
           {/* Bottom: Floating Metric Strip (Reference Tile 1 Requirement) */}
           <div className="w-full max-w-lg pointer-events-auto">
-            <div className="hud-card px-4 py-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-2.5 text-xs border border-white/10 shadow-2xl">
-              <div className="flex items-center gap-2">
+            <div className="hud-card px-3 sm:px-4 py-2.5 rounded-2xl grid grid-cols-3 sm:flex sm:flex-wrap items-center justify-between gap-2 text-xs border border-white/10 shadow-2xl">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="p-1 rounded-md bg-[#FFAA45]/15 text-[#FFAA45] text-xs">🌡️</span>
                 <div>
-                  <span className="font-orbitron font-bold text-white text-xs block">
+                  <span className="font-orbitron font-bold text-white text-[11px] sm:text-xs block">
                     {liveWeather?.temperature_c !== undefined ? `${liveWeather.temperature_c}°C` : '32.5°C'}
                   </span>
-                  <span className="text-[10px] text-eco-muted font-grotesk">Temp</span>
+                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Temp</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="p-1 rounded-md bg-[#20C5FF]/15 text-[#20C5FF] text-xs">🌧️</span>
                 <div>
-                  <span className="font-orbitron font-bold text-white text-xs block">
+                  <span className="font-orbitron font-bold text-white text-[11px] sm:text-xs block">
                     {liveWeather?.precipitation_mm !== undefined ? `${liveWeather.precipitation_mm} mm` : '12.8 mm'}
                   </span>
-                  <span className="text-[10px] text-eco-muted font-grotesk">Rainfall</span>
+                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Rainfall</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="p-1 rounded-md bg-[#20C5FF]/15 text-[#20C5FF] text-xs">💧</span>
                 <div>
-                  <span className="font-orbitron font-bold text-white text-xs block">
+                  <span className="font-orbitron font-bold text-white text-[11px] sm:text-xs block">
                     {liveWeather?.humidity_percent !== undefined ? `${liveWeather.humidity_percent}%` : '68%'}
                   </span>
-                  <span className="text-[10px] text-eco-muted font-grotesk">Humidity</span>
+                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Humidity</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="p-1 rounded-md bg-[#22D3A0]/15 text-[#22D3A0] text-xs">🍃</span>
                 <div>
-                  <span className="font-orbitron font-bold text-[#22D3A0] text-xs block">AQI 42</span>
-                  <span className="text-[10px] text-eco-muted font-grotesk">Good</span>
+                  <span className="font-orbitron font-bold text-[#22D3A0] text-[11px] sm:text-xs block">AQI 42</span>
+                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Good</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="p-1 rounded-md bg-[#FFAA45]/15 text-[#FFAA45] text-xs">🛡️</span>
                 <div>
-                  <span className="font-orbitron font-bold text-[#FFAA45] text-xs block">
+                  <span className="font-orbitron font-bold text-[#FFAA45] text-[11px] sm:text-xs block">
                     {selectedLocation?.heat_risk ? selectedLocation.heat_risk.split(' ')[0] : 'Low'}
                   </span>
-                  <span className="text-[10px] text-eco-muted font-grotesk">Risk</span>
+                  <span className="text-[9px] sm:text-[10px] text-eco-muted font-grotesk">Risk</span>
                 </div>
               </div>
             </div>
