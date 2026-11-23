@@ -3,6 +3,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useActiveLocation } from '../context/LocationContext';
 import { API_BASE } from '../config/api';
+import pakistanGeoFallback from '../data/pakistan_provinces.json';
+import sindhGeoFallback from '../data/sindh_districts.json';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,6 +34,7 @@ interface PakistanSindhMapProps {
   overlay?: OverlayType;
   basemap?: 'dark' | 'satellite';
   showBoundaries?: boolean;
+  isTabActive?: boolean;
 }
 
 type ViewMode = 'pakistan' | 'sindh';
@@ -222,6 +225,7 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   overlay = 'temperature',
   basemap = 'satellite',
   showBoundaries = true,
+  isTabActive = true,
 }) => {
   const { setActiveLocationId } = useActiveLocation();
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -232,10 +236,10 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   const markerRef = useRef<L.Marker | null>(null);
 
   const [viewMode, setViewMode] = useState<ViewMode>('sindh');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pakistanGeo, setPakistanGeo] = useState<GeoJSON.FeatureCollection | null>(null);
-  const [sindhGeo, setSindhGeo] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [pakistanGeo, setPakistanGeo] = useState<GeoJSON.FeatureCollection | null>(pakistanGeoFallback as unknown as GeoJSON.FeatureCollection);
+  const [sindhGeo, setSindhGeo] = useState<GeoJSON.FeatureCollection | null>(sindhGeoFallback as unknown as GeoJSON.FeatureCollection);
 
   const activeOverlayRef = useRef<OverlayType>(overlay);
   activeOverlayRef.current = overlay;
@@ -243,22 +247,19 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   const showBoundariesRef = useRef<boolean>(showBoundaries);
   showBoundariesRef.current = showBoundaries;
 
-  // ── Fetch GeoJSON Data ──────────────────────────────────────────────────
+  // ── Fetch fresh GeoJSON Data in background (bundled fallback active immediately) ─
   useEffect(() => {
     const BASE = API_BASE;
     Promise.all([
-      fetch(`${BASE}/api/geography/pakistan`).then(r => r.json()),
-      fetch(`${BASE}/api/geography/sindh`).then(r => r.json()),
+      fetch(`${BASE}/api/geography/pakistan`).then(r => r.ok ? r.json() : null),
+      fetch(`${BASE}/api/geography/sindh`).then(r => r.ok ? r.json() : null),
     ])
       .then(([pak, sindh]) => {
-        setPakistanGeo(pak);
-        setSindhGeo(sindh);
-        setLoading(false);
+        if (pak) setPakistanGeo(pak);
+        if (sindh) setSindhGeo(sindh);
       })
       .catch(err => {
-        console.error('GeoJSON fetch error:', err);
-        setError('Could not load geographic boundaries.');
-        setLoading(false);
+        console.warn('Using bundled local GeoJSON boundaries fallback:', err);
       });
   }, []);
 
@@ -290,11 +291,42 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     mapRef.current = map;
+
+    // Ensure Leaflet recalculates dimensions immediately and after flex layout settles
+    const triggerInvalidate = () => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize();
+      }
+    };
+    requestAnimationFrame(triggerInvalidate);
+    const t1 = setTimeout(triggerInvalidate, 120);
+    const t2 = setTimeout(triggerInvalidate, 400);
+
+    const handleResize = () => {
+      triggerInvalidate();
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
     return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
       map.remove();
       mapRef.current = null;
     };
   }, []);
+
+  // Invalidate map size when mobile tab switches to map
+  useEffect(() => {
+    if (isTabActive && mapRef.current) {
+      const trigger = () => mapRef.current?.invalidateSize();
+      requestAnimationFrame(trigger);
+      const t = setTimeout(trigger, 80);
+      return () => clearTimeout(t);
+    }
+  }, [isTabActive]);
 
   // ── Handle Basemap Switch (Satellite vs Dark) ───────────────────────────
   useEffect(() => {
@@ -469,7 +501,7 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
       {/* ── Map Canvas ── */}
       <div
         ref={mapContainerRef}
-        className="w-full h-full min-h-[500px]"
+        className="w-full h-full min-h-[350px] lg:min-h-0 flex-1"
         style={{ background: '#06111F' }}
       />
 

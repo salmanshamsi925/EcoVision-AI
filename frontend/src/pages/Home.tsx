@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Search, 
   MapPin, 
@@ -217,7 +217,14 @@ export const Home: React.FC = () => {
     setAudioActive(active);
   };
 
-  const handleEnterExperience = () => {
+  const isNavigatingRef = useRef(false);
+
+  const handleEnterExperience = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
     setIsEnteringExperience(true);
     setSelectedLocation({
       id: 'pakistan',
@@ -234,10 +241,12 @@ export const Home: React.FC = () => {
     });
     setFlyToTrigger((prev) => prev + 1);
 
-    // Google Earth cinematic rotation spins globe to Pakistan for 1.2s, then opens GIS map
+    // Immediate & tactile navigation transition: 180ms on mobile, 650ms on desktop
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+    const delay = isMobile ? 180 : 650;
     setTimeout(() => {
       navigate('/pakistan');
-    }, 1200);
+    }, delay);
   };
 
   return (
@@ -371,23 +380,25 @@ export const Home: React.FC = () => {
             </p>
 
             {/* Action Buttons matching Tile 1 & Tile 6 */}
-            <div className="flex items-center gap-2 w-full max-w-full">
+            <div className="flex items-center gap-2.5 w-full max-w-full relative z-30 pointer-events-auto touch-manipulation">
               <button
+                type="button"
                 onClick={handleEnterExperience}
-                className="flex-1 py-2.5 px-4 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-[#22D3A0]/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 cursor-pointer min-w-0"
+                onTouchEnd={handleEnterExperience}
+                className="flex-1 min-h-[46px] py-2.5 px-4 rounded-full bg-gradient-to-r from-[#22D3A0] to-[#20C5FF] text-[#06111F] font-grotesk font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#22D3A0]/30 hover:opacity-95 active:scale-95 active:brightness-110 transition-all cursor-pointer min-w-0 touch-manipulation select-none"
               >
-                <Globe className={`w-3.5 h-3.5 ${isEnteringExperience ? 'animate-spin' : ''} shrink-0`} />
-                <span className="truncate">{isEnteringExperience ? 'Rotating...' : 'Enter Experience'}</span>
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                <Globe className={`w-4 h-4 ${isEnteringExperience ? 'animate-spin' : ''} shrink-0`} />
+                <span className="truncate">{isEnteringExperience ? 'Entering...' : 'Enter Experience'}</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </button>
 
-              <button
-                onClick={() => navigate('/pakistan')}
-                className="px-4 py-2.5 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/40 text-[#20C5FF] font-grotesk font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-[#20C5FF]/10 transition backdrop-blur-md cursor-pointer shrink-0"
+              <Link
+                to="/pakistan"
+                className="min-h-[46px] px-5 py-2.5 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/50 text-[#20C5FF] font-grotesk font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#20C5FF]/10 active:scale-95 transition backdrop-blur-md cursor-pointer shrink-0 touch-manipulation select-none no-underline shadow-md"
               >
-                <Compass className="w-3.5 h-3.5 text-[#22D3A0]" />
+                <Compass className="w-4 h-4 text-[#22D3A0]" />
                 <span>Map</span>
-              </button>
+              </Link>
             </div>
 
             {/* Floating Metric Strip (Grid-based 5 items, 100% fitted without horizontal scroll) */}

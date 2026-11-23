@@ -84,35 +84,41 @@ export const ExplorePakistan: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col w-full max-w-full h-[calc(100dvh-64px)] lg:h-[calc(100vh-68px)] bg-[#06111F] text-slate-100 overflow-x-hidden overflow-y-auto lg:overflow-hidden font-inter">
+    <div className="flex flex-col w-full max-w-full h-[calc(100dvh-56px)] sm:h-[calc(100dvh-64px)] bg-[#06111F] text-slate-100 overflow-x-hidden overflow-y-auto lg:overflow-hidden font-inter">
       {/* ── Mobile Navigation Tabs (Visible only on < lg screens) ── */}
       <div className="lg:hidden flex items-center justify-between p-2 bg-[#0B1B2D] border-b border-white/10 shrink-0 z-20 gap-1.5">
         <button
-          onClick={() => setMobileTab('map')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-space font-medium flex items-center justify-center gap-1.5 transition ${
-            mobileTab === 'map' ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+          type="button"
+          onClick={() => {
+            setMobileTab('map');
+            window.dispatchEvent(new Event('resize'));
+          }}
+          className={`flex-1 min-h-[42px] py-2 px-1 rounded-xl text-xs font-space font-medium flex items-center justify-center gap-1.5 transition touch-manipulation cursor-pointer ${
+            mobileTab === 'map' ? 'bg-[#20C5FF] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/20' : 'text-slate-400 hover:text-white bg-white/5'
           }`}
         >
-          <Globe className="w-3.5 h-3.5" />
-          <span>Interactive Map</span>
+          <Globe className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">Interactive Map</span>
         </button>
         <button
+          type="button"
           onClick={() => setMobileTab('layers')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-space font-medium flex items-center justify-center gap-1.5 transition ${
-            mobileTab === 'layers' ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+          className={`flex-1 min-h-[42px] py-2 px-1 rounded-xl text-xs font-space font-medium flex items-center justify-center gap-1.5 transition touch-manipulation cursor-pointer ${
+            mobileTab === 'layers' ? 'bg-[#20C5FF] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/20' : 'text-slate-400 hover:text-white bg-white/5'
           }`}
         >
-          <Layers className="w-3.5 h-3.5" />
-          <span>Layers &amp; Search</span>
+          <Layers className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">Layers &amp; Search</span>
         </button>
         <button
+          type="button"
           onClick={() => setMobileTab('details')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-space font-medium flex items-center justify-center gap-1.5 transition ${
-            mobileTab === 'details' ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm' : 'text-slate-400 hover:text-white'
+          className={`flex-1 min-h-[42px] py-2 px-1 rounded-xl text-xs font-space font-medium flex items-center justify-center gap-1.5 transition touch-manipulation cursor-pointer ${
+            mobileTab === 'details' ? 'bg-[#20C5FF] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/20' : 'text-slate-400 hover:text-white bg-white/5'
           }`}
         >
-          <MapPin className="w-3.5 h-3.5" />
-          <span>District Data</span>
+          <MapPin className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">District Data</span>
         </button>
       </div>
 
@@ -286,6 +292,7 @@ export const ExplorePakistan: React.FC = () => {
             overlay={activeOverlay}
             basemap={isSatellite ? 'satellite' : 'dark'}
             showBoundaries={showBoundaries}
+            isTabActive={mobileTab === 'map'}
           />
 
           {/* Compass / Map Legend Bar Overlay */}
