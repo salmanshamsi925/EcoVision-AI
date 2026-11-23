@@ -12,6 +12,7 @@ import {
   Wind,
   Droplets,
   ArrowRight,
+  ArrowLeft,
   Flame,
   AlertTriangle,
   Eye
@@ -84,40 +85,48 @@ export const ExplorePakistan: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col w-full max-w-full h-[calc(100dvh-56px)] sm:h-[calc(100dvh-64px)] bg-[#06111F] text-slate-100 overflow-x-hidden overflow-y-auto lg:overflow-hidden font-inter">
-      {/* ── Mobile Navigation Tabs (Visible only on < lg screens) ── */}
-      <div className="lg:hidden flex items-center justify-between p-2 bg-[#0B1B2D] border-b border-white/10 shrink-0 z-20 gap-1.5">
+    <div className={`flex flex-col w-full max-w-full h-[calc(100dvh-56px)] sm:h-[calc(100dvh-64px)] bg-[#06111F] text-slate-100 overflow-x-hidden ${mobileTab === 'map' ? 'overflow-hidden' : 'overflow-y-auto'} lg:overflow-hidden font-inter`}>
+      {/* ── Mobile Navigation Tabs (Sleek 3-Pill Switcher) ── */}
+      <div className="lg:hidden flex items-center justify-between p-2 bg-[#0B1B2D]/95 backdrop-blur-xl border-b border-white/10 shrink-0 z-20 gap-1.5">
         <button
           type="button"
           onClick={() => {
             setMobileTab('map');
             window.dispatchEvent(new Event('resize'));
           }}
-          className={`flex-1 min-h-[42px] py-2 px-1 rounded-xl text-xs font-space font-medium flex items-center justify-center gap-1.5 transition touch-manipulation cursor-pointer ${
-            mobileTab === 'map' ? 'bg-[#20C5FF] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/20' : 'text-slate-400 hover:text-white bg-white/5'
+          className={`flex-1 h-10 px-2 rounded-xl text-xs font-grotesk font-semibold flex items-center justify-center gap-1.5 transition-all touch-manipulation cursor-pointer ${
+            mobileTab === 'map'
+              ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/25 border-transparent'
+              : 'bg-[#10243A]/80 text-slate-300 hover:text-white border border-white/10'
           }`}
         >
-          <Globe className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Interactive Map</span>
+          <Globe className={`w-3.5 h-3.5 shrink-0 ${mobileTab === 'map' ? 'text-[#06111F]' : 'text-[#20C5FF]'}`} />
+          <span className="truncate">GIS Map</span>
         </button>
+
         <button
           type="button"
           onClick={() => setMobileTab('layers')}
-          className={`flex-1 min-h-[42px] py-2 px-1 rounded-xl text-xs font-space font-medium flex items-center justify-center gap-1.5 transition touch-manipulation cursor-pointer ${
-            mobileTab === 'layers' ? 'bg-[#20C5FF] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/20' : 'text-slate-400 hover:text-white bg-white/5'
+          className={`flex-1 h-10 px-2 rounded-xl text-xs font-grotesk font-semibold flex items-center justify-center gap-1.5 transition-all touch-manipulation cursor-pointer ${
+            mobileTab === 'layers'
+              ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/25 border-transparent'
+              : 'bg-[#10243A]/80 text-slate-300 hover:text-white border border-white/10'
           }`}
         >
-          <Layers className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Layers &amp; Search</span>
+          <Layers className={`w-3.5 h-3.5 shrink-0 ${mobileTab === 'layers' ? 'text-[#06111F]' : 'text-[#20C5FF]'}`} />
+          <span className="truncate">Layers</span>
         </button>
+
         <button
           type="button"
           onClick={() => setMobileTab('details')}
-          className={`flex-1 min-h-[42px] py-2 px-1 rounded-xl text-xs font-space font-medium flex items-center justify-center gap-1.5 transition touch-manipulation cursor-pointer ${
-            mobileTab === 'details' ? 'bg-[#20C5FF] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/20' : 'text-slate-400 hover:text-white bg-white/5'
+          className={`flex-1 h-10 px-2 rounded-xl text-xs font-grotesk font-semibold flex items-center justify-center gap-1.5 transition-all touch-manipulation cursor-pointer ${
+            mobileTab === 'details'
+              ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/25 border-transparent'
+              : 'bg-[#10243A]/80 text-slate-300 hover:text-white border border-white/10'
           }`}
         >
-          <MapPin className="w-3.5 h-3.5 shrink-0" />
+          <MapPin className={`w-3.5 h-3.5 shrink-0 ${mobileTab === 'details' ? 'text-[#06111F]' : 'text-[#22D3A0]'}`} />
           <span className="truncate">District Data</span>
         </button>
       </div>
@@ -305,19 +314,20 @@ export const ExplorePakistan: React.FC = () => {
 
           {/* Mobile Bottom Quick-Action Bar */}
           {selectedDistrict && (
-            <div className="lg:hidden absolute bottom-3 left-3 right-3 z-[500] bg-[#10243A]/95 border border-primary-cyan/40 backdrop-blur-xl rounded-2xl p-3 flex items-center justify-between shadow-2xl">
-              <div>
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Selected District</span>
-                <div className="font-space font-bold text-white text-sm">
-                  {selectedDistrict.name} • {selectedDistrict.temp_c}°C
+            <div className="lg:hidden absolute bottom-3 left-3 right-3 z-30 bg-[#0B1B2D]/95 border border-[#20C5FF]/40 backdrop-blur-xl rounded-2xl px-3.5 py-2.5 flex items-center justify-between shadow-2xl gap-2">
+              <div className="min-w-0 flex-1">
+                <span className="text-[9.5px] font-mono text-[#20C5FF] uppercase tracking-wider block">Selected District</span>
+                <div className="font-grotesk font-bold text-white text-sm truncate">
+                  {selectedDistrict.name} <span className="text-[#22D3A0] font-mono font-semibold ml-1">({selectedDistrict.temp_c}°C)</span>
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setMobileTab('details')}
-                className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center gap-1 shadow-md"
+                className="shrink-0 h-10 px-3.5 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-grotesk font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-[#20C5FF]/30 active:scale-95 transition-all touch-manipulation cursor-pointer"
               >
                 <span>Full Telemetry</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
               </button>
             </div>
           )}
@@ -331,6 +341,21 @@ export const ExplorePakistan: React.FC = () => {
         >
           {selectedDistrict ? (
             <>
+              {/* Mobile Back to Map button */}
+              <div className="lg:hidden flex items-center justify-between pb-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileTab('map');
+                    window.dispatchEvent(new Event('resize'));
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#10243A] border border-[#20C5FF]/30 text-xs text-[#20C5FF] font-grotesk font-semibold active:scale-95 transition"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Interactive Map</span>
+                </button>
+              </div>
+
               {/* District Name Header */}
               <div>
                 <span className="text-[10px] font-space text-slate-400 uppercase tracking-widest">
