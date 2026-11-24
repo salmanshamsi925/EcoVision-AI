@@ -107,6 +107,13 @@ html, body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
+/* Hide Leaflet zoom controls on touch/mobile screens to prevent blocking map labels & polygons */
+@media (max-width: 1023px) {
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+}
+
 .leaflet-top.leaflet-left {
   top: 10px !important;
   left: 10px !important;

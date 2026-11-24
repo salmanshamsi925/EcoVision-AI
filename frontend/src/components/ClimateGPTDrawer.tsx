@@ -56,12 +56,12 @@ export const ClimateGPTDrawer: React.FC = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Do not render floating trigger on full-page assistant or on mobile home screen (where it overlaps metric strip)
+  // Do not render floating trigger on full-page assistant or on mobile screens where bottom cockpit cards exist
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
   if (
     routerLocation.pathname === '/assistant' ||
     routerLocation.pathname === '/gpt' ||
-    (routerLocation.pathname === '/' && isMobile)
+    ((routerLocation.pathname === '/' || routerLocation.pathname === '/pakistan') && isMobile)
   ) {
     return null;
   }

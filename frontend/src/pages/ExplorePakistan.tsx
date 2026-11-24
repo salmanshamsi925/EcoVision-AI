@@ -305,9 +305,9 @@ export const ExplorePakistan: React.FC = () => {
           />
 
           {/* Compass / Map Legend Bar Overlay */}
-          <div className="absolute top-3 right-3 z-[500] bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-2.5 py-1 flex items-center gap-2 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse" />
-            <span className="text-[10px] font-mono text-emerald-green font-semibold">
+          <div className="absolute top-2.5 right-2.5 z-20 bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-2.5 py-1 flex items-center gap-2 shadow-lg pointer-events-none select-none">
+            <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse shrink-0" />
+            <span className="text-[10px] font-mono text-emerald-green font-semibold uppercase tracking-wider select-none">
               OVERLAY: {activeOverlay.toUpperCase()}
             </span>
           </div>

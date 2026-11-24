@@ -361,20 +361,19 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
     const customIcon = L.divIcon({
       className: 'custom-gis-pin',
       html: `
-        <div style="position:relative;display:flex;flex-direction:column;align-items:center;transform:translate(-50%, -100%);pointer-events:none;">
-          <div style="background:#10243A;border:1px solid #20C5FF;box-shadow:0 0 15px rgba(32,197,255,0.6);border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:6px;white-space:nowrap;">
-            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#20C5FF;animation:pulse 1.5s infinite;"></span>
-            <span style="color:#FFFFFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.02em;">${name}</span>
+        <div style="position:relative;display:flex;flex-direction:column;align-items:center;transform:translate(-50%, -100%);pointer-events:none;user-select:none;-webkit-user-select:none;">
+          <div style="background:#10243A;border:1px solid #20C5FF;box-shadow:0 0 15px rgba(32,197,255,0.7);border-radius:20px;padding:3px 8px;display:flex;align-items:center;gap:5px;white-space:nowrap;">
+            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#22D3A0;animation:pulse 1.5s infinite;"></span>
+            <span style="color:#FFFFFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.02em;">${name}</span>
           </div>
-          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #20C5FF;margin-top:-1px;"></div>
-          <div style="width:8px;height:4px;border-radius:50%;background:rgba(32,197,255,0.4);filter:blur(1px);margin-top:2px;"></div>
+          <div style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #20C5FF;margin-top:-1px;"></div>
         </div>
       `,
-      iconSize: [120, 40],
-      iconAnchor: [60, 40],
+      iconSize: [110, 32],
+      iconAnchor: [55, 32],
     });
 
-    const marker = L.marker([lat, lon], { icon: customIcon }).addTo(mapRef.current);
+    const marker = L.marker([lat, lon], { icon: customIcon, interactive: false }).addTo(mapRef.current);
     markerRef.current = marker;
   }, []);
 
@@ -459,7 +458,12 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
         });
         lyr.on('click', function () {
           const bounds = (lyr as L.Polygon).getBounds();
-          mapRef.current?.flyToBounds(bounds, { padding: [50, 50], duration: 1.0 });
+          const isMobile = window.innerWidth < 1024;
+          mapRef.current?.flyToBounds(bounds, {
+            paddingTopLeft: isMobile ? [15, 45] : [50, 50],
+            paddingBottomRight: isMobile ? [15, 85] : [50, 50],
+            duration: 1.0
+          });
           if (distData) {
             placeMarker(distData.lat, distData.lon, distData.name);
             setActiveLocationId(distData.id);
@@ -490,7 +494,10 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
       Object.values(DISTRICT_DATA).find(d => d.name.toLowerCase().replace(/\s+/g, '') === normalized);
 
     if (distData) {
-      mapRef.current.flyTo([distData.lat, distData.lon], 8.5, { duration: 1.2 });
+      const isMobile = window.innerWidth < 1024;
+      // On mobile, offset center slightly north so bottom card doesn't cover it
+      const targetLat = isMobile ? distData.lat - 0.20 : distData.lat;
+      mapRef.current.flyTo([targetLat, distData.lon], isMobile ? 8.2 : 8.5, { duration: 1.2 });
       placeMarker(distData.lat, distData.lon, distData.name);
       onDistrictSelect?.(distData);
     }
