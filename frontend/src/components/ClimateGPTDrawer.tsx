@@ -22,6 +22,8 @@ import { Link, useLocation } from 'react-router-dom';
 
 interface StructuredAIResponse {
   title: string;
+  answer?: string;
+  topic_id?: string;
   empirical_facts: string;
   scenario_projections: string;
   recommendations: string[];
@@ -43,6 +45,8 @@ const QUICK_CHIPS = [
   'Heatwave risk in Sindh',
   '2022 Indus flood causes',
   'Tharparkar me qahat kyu ata hai?',
+  'Khairpur me kitni garmi hoti hai?',
+  'Canal lining se kitna paani bachega?',
   'سندھ میں نہری پانی کی بچت'
 ];
 
@@ -230,45 +234,66 @@ export const ClimateGPTDrawer: React.FC = () => {
                       : 'bg-white/[0.03] border border-white/10 text-white space-y-2'
                   }`}
                 >
-                  {m.text && <p className="font-inter leading-relaxed">{m.text}</p>}
+                  {m.text && <p className="font-inter leading-relaxed text-xs">{m.text}</p>}
 
                   {m.structured && (
                     <div className="space-y-2 text-[11px]">
-                      <div className="font-orbitron font-bold text-eco-blue text-xs pb-1 border-b border-white/10">
-                        {m.structured.title}
-                      </div>
+                      {m.structured.title && (
+                        <div className="font-space font-bold text-[#20C5FF] text-xs pb-1 border-b border-white/10 flex items-center justify-between">
+                          <span>{m.structured.title}</span>
+                          <span className="text-[9.5px] font-mono text-emerald-400 font-semibold">{m.structured.matched_district}</span>
+                        </div>
+                      )}
 
-                      <div className="p-2 rounded-lg bg-white/[0.02] border border-white/5 space-y-0.5">
-                        <span className="font-grotesk font-bold uppercase tracking-wider text-eco-orange text-[9px] flex items-center gap-1">
-                          <ShieldAlert className="w-2.5 h-2.5" /> Empirical Reality
-                        </span>
-                        <p className="text-white/90 leading-tight">{m.structured.empirical_facts}</p>
-                      </div>
+                      {/* Primary direct natural-language answer */}
+                      {m.structured.answer && (
+                        <p className="font-inter text-xs text-slate-100 leading-relaxed whitespace-pre-line bg-white/[0.04] p-2.5 rounded-xl border border-white/10">
+                          {m.structured.answer}
+                        </p>
+                      )}
 
-                      <div className="p-2 rounded-lg bg-sky-500/[0.04] border border-sky-500/20 space-y-0.5">
-                        <span className="font-grotesk font-bold uppercase tracking-wider text-sky-400 text-[9px] flex items-center gap-1">
-                          CMIP6 Projection (2030–2035)
-                        </span>
-                        <p className="text-white/90 leading-tight">{m.structured.scenario_projections}</p>
-                      </div>
+                      {/* Structured scientific takeaways (for deep climate queries) */}
+                      {m.structured.topic_id !== 'greeting' && m.structured.topic_id !== 'identity' && (
+                        <>
+                          {m.structured.empirical_facts && (
+                            <div className="p-2 rounded-lg bg-white/[0.02] border border-white/5 space-y-0.5">
+                              <span className="font-grotesk font-bold uppercase tracking-wider text-[#FFAA45] text-[9px] flex items-center gap-1">
+                                <ShieldAlert className="w-2.5 h-2.5" /> Empirical Reality (NASA / PMD)
+                              </span>
+                              <p className="text-slate-300 leading-tight">{m.structured.empirical_facts}</p>
+                            </div>
+                          )}
 
-                      <div className="p-2 rounded-lg bg-emerald-500/[0.04] border border-emerald-500/20 space-y-1">
-                        <span className="font-grotesk font-bold uppercase tracking-wider text-eco-green text-[9px] flex items-center gap-1">
-                          <Lightbulb className="w-2.5 h-2.5" /> Key Adaptations
-                        </span>
-                        <ul className="space-y-1 text-white/90">
-                          {m.structured.recommendations.slice(0, 2).map((rec, i) => (
-                            <li key={i} className="flex items-start gap-1.5">
-                              <CheckCircle2 className="w-3 h-3 text-eco-green shrink-0 mt-0.5" />
-                              <span>{rec}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                          {m.structured.scenario_projections && (
+                            <div className="p-2 rounded-lg bg-sky-500/[0.04] border border-sky-500/20 space-y-0.5">
+                              <span className="font-grotesk font-bold uppercase tracking-wider text-[#20C5FF] text-[9px] flex items-center gap-1">
+                                CMIP6 Projection (2030–2040)
+                              </span>
+                              <p className="text-slate-300 leading-tight">{m.structured.scenario_projections}</p>
+                            </div>
+                          )}
 
-                      <div className="text-[9px] font-mono text-eco-muted pt-1 flex justify-between">
-                        <span>{m.structured.sources[0]}</span>
-                        <span className="text-eco-green">Confidence: 94%</span>
+                          {m.structured.recommendations && m.structured.recommendations.length > 0 && (
+                            <div className="p-2 rounded-lg bg-emerald-500/[0.04] border border-emerald-500/20 space-y-1">
+                              <span className="font-grotesk font-bold uppercase tracking-wider text-[#22D3A0] text-[9px] flex items-center gap-1">
+                                <Lightbulb className="w-2.5 h-2.5" /> Key Adaptations &amp; Solutions
+                              </span>
+                              <ul className="space-y-1 text-slate-300">
+                                {m.structured.recommendations.slice(0, 3).map((rec, i) => (
+                                  <li key={i} className="flex items-start gap-1.5">
+                                    <CheckCircle2 className="w-3 h-3 text-[#22D3A0] shrink-0 mt-0.5" />
+                                    <span>{rec}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      <div className="text-[9px] font-mono text-slate-400 pt-1 flex justify-between items-center border-t border-white/5">
+                        <span className="truncate max-w-[200px]">{m.structured.sources?.[0] || 'NASA POWER / PMD'}</span>
+                        <span className="text-[#22D3A0] font-semibold">Confidence: {Math.round((m.structured.confidence_score || 0.95) * 100)}%</span>
                       </div>
                     </div>
                   )}

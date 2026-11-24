@@ -29,10 +29,12 @@ interface Message {
 }
 
 const POPULAR_QUESTIONS = [
-  'Climate risk in Khairpur?',
-  'Future projections for Sindh?',
-  'How to reduce drought?',
-  "Pakistan's flood risk?",
+  'Heatwave risk in Sindh?',
+  '2022 Indus flood causes?',
+  'Tharparkar me qahat kyu ata hai?',
+  'Khairpur me kitni garmi hoti hai?',
+  'Canal lining se kitna paani bachega?',
+  'سندھ میں نہری پانی کی بچت'
 ];
 
 const DISTRICT_IMAGES: Record<string, string> = {
