@@ -265,7 +265,7 @@ export const Home: React.FC = () => {
 
       {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Clear Upper Earth View + Sleek Bottom Hero matching Tile 6) */}
       {!fullScreenGlobe && (
-        <div className="relative z-20 w-full max-w-full lg:w-1/2 min-h-full flex flex-col justify-end lg:justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-3 lg:pb-8 box-border min-w-0 overflow-x-hidden">
+        <div className="relative z-20 w-full max-w-full lg:w-1/2 min-h-full flex flex-col justify-end lg:justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-6 sm:pb-8 lg:pb-8 box-border min-w-0 overflow-x-hidden">
           
           {/* Top: Google Earth-Style City Search Bar & Quick Chips (Desktop only to keep mobile 100% clean & focused on 3D Earth) */}
           <div className="hidden lg:block w-full max-w-lg pointer-events-auto">
@@ -357,7 +357,7 @@ export const Home: React.FC = () => {
           </div>
 
           {/* Bottom Hero Briefing & Action CTAs (Pinned cleanly to bottom on mobile, matching Tile 6) */}
-          <div className="w-full max-w-full lg:max-w-lg pointer-events-auto space-y-2.5 sm:space-y-4 min-w-0">
+          <div className="w-full max-w-full lg:max-w-lg pointer-events-auto space-y-3 sm:space-y-4 min-w-0">
             {/* Small Label Pill */}
             <div className="inline-flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#10243A]/90 border border-[#20C5FF]/30 backdrop-blur-md shadow-lg max-w-full">
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#22D3A0] animate-pulse shrink-0" />

@@ -85,7 +85,7 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
           controlsRef.current.maxDistance = 14.0;
         }
       } else {
-        camera.setViewOffset(w, h, 0, h * 0.10, w, h);
+        camera.setViewOffset(w, h, 0, h * 0.21, w, h);
         if (controlsRef.current) {
           controlsRef.current.minDistance = 4.0;
           controlsRef.current.maxDistance = 18.0;
