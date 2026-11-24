@@ -325,7 +325,39 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
       resizeObserver?.disconnect();
-      map.remove();
+      try {
+        if (provinceLayers.current) {
+          provinceLayers.current.remove();
+          provinceLayers.current = null;
+        }
+      } catch (e) {
+        // Safe catch layer removal
+      }
+      try {
+        if (districtLayers.current) {
+          districtLayers.current.remove();
+          districtLayers.current = null;
+        }
+      } catch (e) {
+        // Safe catch layer removal
+      }
+      try {
+        if (markerRef.current) {
+          markerRef.current.remove();
+          markerRef.current = null;
+        }
+      } catch (e) {
+        // Safe catch marker removal
+      }
+      try {
+        if (mapRef.current) {
+          mapRef.current.stop();
+          mapRef.current.off();
+          mapRef.current.remove();
+        }
+      } catch (err) {
+        console.warn('Leaflet cleanup safe caught:', err);
+      }
       mapRef.current = null;
     };
   }, []);
@@ -371,7 +403,10 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   const placeMarker = useCallback((lat: number, lon: number, name: string) => {
     if (!mapRef.current) return;
     if (markerRef.current) {
-      markerRef.current.remove();
+      try {
+        markerRef.current.remove();
+      } catch (e) {}
+      markerRef.current = null;
     }
 
     const customIcon = L.divIcon({
@@ -425,7 +460,12 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   // ── Render Province Layer (Pakistan view) ──────────────────────────────
   useEffect(() => {
     if (!mapRef.current || !pakistanGeo) return;
-    if (provinceLayers.current) provinceLayers.current.remove();
+    if (provinceLayers.current) {
+      try {
+        provinceLayers.current.remove();
+      } catch (e) {}
+      provinceLayers.current = null;
+    }
 
     const layer = L.geoJSON(pakistanGeo as GeoJSON.GeoJsonObject, {
       style: styleProvince,
@@ -453,7 +493,12 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
   // ── Render District Layer (Sindh Choropleth) ───────────────────────────
   useEffect(() => {
     if (!mapRef.current || !sindhGeo) return;
-    if (districtLayers.current) districtLayers.current.remove();
+    if (districtLayers.current) {
+      try {
+        districtLayers.current.remove();
+      } catch (e) {}
+      districtLayers.current = null;
+    }
 
     const layer = L.geoJSON(sindhGeo as GeoJSON.GeoJsonObject, {
       style: styleDistrict,

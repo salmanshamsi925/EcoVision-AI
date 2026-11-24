@@ -80,6 +80,54 @@ export const DEFAULT_LOCATIONS: Record<string, LocationInfo> = {
     drought_index: 'Low to Moderate', flood_exposure: 'Extreme (Coastal & Cyclone Delta)',
     heat_risk: 'High', challenges: ['Seawater intrusion', 'Cyclone vulnerability', 'Agricultural inundation'],
     source: 'NASA POWER / NDMA Pakistan'
+  },
+  thatta: {
+    id: 'thatta', name: 'Thatta', province: 'Sindh',
+    lat: 24.7461, lon: 67.9224,
+    temp_c: 26.5, rainfall_mm: 183,
+    drought_index: 'Moderate', flood_exposure: 'Extreme (Indus Delta & Coastal)',
+    heat_risk: 'High', challenges: ['Indus delta shrinkage', 'Mangrove deforestation', 'Freshwater–saltwater interface shift'],
+    source: 'NASA POWER / IUCN Pakistan'
+  },
+  mirpurkhas: {
+    id: 'mirpurkhas', name: 'Mirpur Khas', province: 'Sindh',
+    lat: 25.5270, lon: 69.0167,
+    temp_c: 27.0, rainfall_mm: 135,
+    drought_index: 'High', flood_exposure: 'High (Nara Canal overflow)',
+    heat_risk: 'Very High', challenges: ['Mango orchard heat stress', 'Nara canal salinity', 'Reduced cotton yields'],
+    source: 'NASA POWER / PMD Sindh'
+  },
+  dadu: {
+    id: 'dadu', name: 'Dadu', province: 'Sindh',
+    lat: 26.7319, lon: 67.7764,
+    temp_c: 27.9, rainfall_mm: 78,
+    drought_index: 'Very High', flood_exposure: 'High (Hill torrent & Indus right bank)',
+    heat_risk: 'Very High', challenges: ['Hill torrent devastation', 'Water scarcity paradox', 'Kirthar hills erosion'],
+    source: 'NASA POWER / World Bank'
+  },
+  shaheedbenazirababad: {
+    id: 'shaheedbenazirababad', name: 'Shaheed Benazirabad', province: 'Sindh',
+    lat: 26.2442, lon: 68.3880,
+    temp_c: 27.8, rainfall_mm: 95,
+    drought_index: 'High', flood_exposure: 'High (Indus right bank & internal drainage)',
+    heat_risk: 'Very High', challenges: ['Cotton crop failure due to heat', 'Indus barrage water allocation disputes'],
+    source: 'NASA POWER / PMD Sindh'
+  },
+  sanghar: {
+    id: 'sanghar', name: 'Sanghar', province: 'Sindh',
+    lat: 26.0478, lon: 68.9505,
+    temp_c: 27.3, rainfall_mm: 115,
+    drought_index: 'High', flood_exposure: 'Moderate (Internal drainage challenges)',
+    heat_risk: 'Very High', challenges: ['Wheat & cotton stress', 'Saline groundwater', 'Irrigation system deterioration'],
+    source: 'NASA POWER / PMD Sindh'
+  },
+  jamshoro: {
+    id: 'jamshoro', name: 'Jamshoro', province: 'Sindh',
+    lat: 25.4344, lon: 68.2774,
+    temp_c: 27.6, rainfall_mm: 142,
+    drought_index: 'Moderate', flood_exposure: 'High (Indus riverine)',
+    heat_risk: 'Very High', challenges: ['Thar coal power environmental impact', 'Indus river bank erosion', 'Industrial pollution nexus'],
+    source: 'NASA POWER / PMD Sindh'
   }
 };
 

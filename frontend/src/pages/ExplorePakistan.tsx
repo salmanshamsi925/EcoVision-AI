@@ -564,7 +564,15 @@ export const ExplorePakistan: React.FC = () => {
 
               {/* Detailed Report Action Button */}
               <button
-                onClick={() => navigate(`/intelligence?district=${selectedDistrict.id}`)}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (selectedDistrict?.id) {
+                    setActiveLocationId(selectedDistrict.id);
+                    navigate(`/intelligence?district=${encodeURIComponent(selectedDistrict.id)}`);
+                  }
+                }}
                 className="w-full mt-auto py-3 px-4 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-grotesk font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#20C5FF]/30 active:scale-95 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition cursor-pointer"
               >
                 <span>View Detailed Report</span>

@@ -139,10 +139,15 @@ export const ClimateIntelligence: React.FC = () => {
   const navigate = useNavigate();
   const { activeLocation, setActiveLocationId } = useActiveLocation();
 
-  const districtParam = searchParams.get('district') || activeLocation?.id || 'khairpur';
+  const districtParam = (searchParams.get('district') || activeLocation?.id || 'khairpur').toLowerCase();
   const [currentDistrict, setCurrentDistrict] = useState(districtParam);
 
   const districtDisplayName = currentDistrict.charAt(0).toUpperCase() + currentDistrict.slice(1);
+
+  // Scroll to top on route entry
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, []);
 
   // Tab switcher for Historical Climate Trends (Temperature, Rainfall, Humidity)
   const [historicalTab, setHistoricalTab] = useState<'temperature' | 'rainfall' | 'humidity'>('temperature');
@@ -162,7 +167,7 @@ export const ClimateIntelligence: React.FC = () => {
 
   // Sync state if URL changes
   useEffect(() => {
-    const p = searchParams.get('district');
+    const p = searchParams.get('district')?.toLowerCase();
     if (p && p !== currentDistrict) {
       setCurrentDistrict(p);
       const name = p.charAt(0).toUpperCase() + p.slice(1);
