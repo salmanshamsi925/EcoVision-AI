@@ -235,20 +235,20 @@ export const ClimateIntelligence: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#06111F] text-slate-100 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 pb-20 font-inter">
+    <div className="min-h-screen bg-[#06111F] text-slate-100 p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-4 sm:space-y-6 pb-20 font-inter w-full max-w-full overflow-x-hidden box-border">
       {/* ── Top Header ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-space font-bold text-white tracking-tight">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10 w-full min-w-0">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-space font-bold text-white tracking-tight truncate">
             Climate Intelligence
           </h1>
-          <p className="text-slate-400 text-sm font-inter mt-0.5">
+          <p className="text-slate-400 text-sm font-inter mt-0.5 truncate">
             Analyze. Forecast. Plan.
           </p>
         </div>
 
         {/* Live Data Badge & District Dropdown */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           {/* Live Data Badge */}
           <div className="px-3 py-1.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-green border border-emerald-500/30 flex items-center gap-2 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse shrink-0" />
@@ -275,7 +275,7 @@ export const ClimateIntelligence: React.FC = () => {
       </div>
 
       {/* ── Executive Dashboard Navigation Bar (Horizontal HUD Filter) ── */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sticky top-0 z-30 bg-[#06111F]/95 backdrop-blur-xl py-2 -mx-2 px-2 border-b border-white/5">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sticky top-0 z-30 bg-[#06111F]/95 backdrop-blur-xl py-2 px-0.5 border-b border-white/5 w-full max-w-full box-border">
         {[
           { id: 'all', label: 'All Overview', icon: BarChart3 },
           { id: 'historical', label: 'Historical Trends', icon: TrendingUp },
@@ -302,91 +302,91 @@ export const ClimateIntelligence: React.FC = () => {
         })}
       </div>
 
-      {/* ── 4 KPI Cards (Compact 2x2 on Mobile, 4-col on Desktop) ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+      {/* ── 4 KPI Cards (Compact 2x2 on Mobile, 4-col on Desktop - 100% Responsive) ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full max-w-full min-w-0 box-border">
         {/* Card 1: Mean Warming Rate */}
-        <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-[#20C5FF]/30 transition-all">
-          <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate">
+        <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-[#20C5FF]/30 transition-all">
+          <div className="flex items-center justify-between gap-1 w-full min-w-0">
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
               Mean Warming Rate
             </span>
-            <div className="text-xl sm:text-3xl font-space font-bold text-white mt-0.5 sm:mt-1 truncate">
-              +{summaryData?.warming_rate_per_decade || '0.35'}°C
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-warning-orange shrink-0">
+              <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-[9.5px] sm:text-[11px] text-warning-orange font-mono mt-0.5 block truncate">
-              Rise / decade (ML)
-            </span>
           </div>
-          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-warning-orange shrink-0 self-end sm:self-auto">
-            <Flame className="w-4 h-4 sm:w-6 sm:h-6" />
+          <div className="text-lg sm:text-2xl lg:text-3xl font-space font-bold text-white mt-1 sm:mt-1.5 truncate">
+            +{summaryData?.warming_rate_per_decade || '0.35'}°C
           </div>
+          <span className="text-[9px] sm:text-[11px] text-warning-orange font-mono mt-0.5 sm:mt-1 block truncate">
+            Rise / decade (ML)
+          </span>
         </div>
 
         {/* Card 2: Since 1980 */}
-        <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-[#22D3A0]/30 transition-all">
-          <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate">
+        <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-[#22D3A0]/30 transition-all">
+          <div className="flex items-center justify-between gap-1 w-full min-w-0">
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
               Since 1980 Warming
             </span>
-            <div className="text-xl sm:text-3xl font-space font-bold text-emerald-green mt-0.5 sm:mt-1 truncate">
-              +{summaryData?.observed_warming_since_1980 || '1.31'}°C
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-green shrink-0">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-[9.5px] sm:text-[11px] text-emerald-green font-mono mt-0.5 block truncate">
-              Observed anomaly
-            </span>
           </div>
-          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-green shrink-0 self-end sm:self-auto">
-            <Calendar className="w-4 h-4 sm:w-6 sm:h-6" />
+          <div className="text-lg sm:text-2xl lg:text-3xl font-space font-bold text-emerald-green mt-1 sm:mt-1.5 truncate">
+            +{summaryData?.observed_warming_since_1980 || '1.31'}°C
           </div>
+          <span className="text-[9px] sm:text-[11px] text-emerald-green font-mono mt-0.5 sm:mt-1 block truncate">
+            Observed anomaly
+          </span>
         </div>
 
         {/* Card 3: Record Summer */}
-        <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-amber-400/30 transition-all">
-          <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate">
+        <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-amber-400/30 transition-all">
+          <div className="flex items-center justify-between gap-1 w-full min-w-0">
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
               Record Summer Peak
             </span>
-            <div className="text-xl sm:text-3xl font-space font-bold text-amber-400 mt-0.5 sm:mt-1 truncate">
-              {summaryData?.record_max_temp || '52.7'}°C
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+              <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-[9.5px] sm:text-[11px] text-amber-300 font-mono mt-0.5 block truncate">
-              Year {summaryData?.record_max_temp_year || '2015'} heatwave
-            </span>
           </div>
-          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0 self-end sm:self-auto">
-            <Sun className="w-4 h-4 sm:w-6 sm:h-6" />
+          <div className="text-lg sm:text-2xl lg:text-3xl font-space font-bold text-amber-400 mt-1 sm:mt-1.5 truncate">
+            {summaryData?.record_max_temp || '52.7'}°C
           </div>
+          <span className="text-[9px] sm:text-[11px] text-amber-300 font-mono mt-0.5 sm:mt-1 block truncate">
+            Year {summaryData?.record_max_temp_year || '2015'} heatwave
+          </span>
         </div>
 
         {/* Card 4: 2022 Monsoon */}
-        <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-[#20C5FF]/30 transition-all">
-          <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate">
+        <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-[#20C5FF]/30 transition-all">
+          <div className="flex items-center justify-between gap-1 w-full min-w-0">
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
               2022 Monsoon Flood
             </span>
-            <div className="text-xl sm:text-3xl font-space font-bold text-primary-cyan mt-0.5 sm:mt-1 truncate">
-              {summaryData?.record_flood_rainfall || '551.5'} mm
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-primary-cyan shrink-0">
+              <CloudRain className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-[9.5px] sm:text-[11px] text-primary-cyan font-mono mt-0.5 block truncate">
-              Precipitation peak
-            </span>
           </div>
-          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-primary-cyan shrink-0 self-end sm:self-auto">
-            <CloudRain className="w-4 h-4 sm:w-6 sm:h-6" />
+          <div className="text-lg sm:text-2xl lg:text-3xl font-space font-bold text-primary-cyan mt-1 sm:mt-1.5 truncate">
+            {summaryData?.record_flood_rainfall || '551.5'} mm
           </div>
+          <span className="text-[9px] sm:text-[11px] text-primary-cyan font-mono mt-0.5 sm:mt-1 block truncate">
+            Precipitation peak
+          </span>
         </div>
       </div>
 
       {/* ── Analytics Charts Section (Filtered or All) ── */}
       {(activeDashboardTab === 'all' || activeDashboardTab === 'historical' || activeDashboardTab === 'projections' || activeDashboardTab === 'radar') && (
-        <div className={`grid gap-5 ${
+        <div className={`grid gap-4 sm:gap-5 w-full max-w-full min-w-0 box-border ${
           activeDashboardTab === 'all'
             ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
             : 'grid-cols-1 max-w-4xl mx-auto'
         }`}>
           {/* 1. Historical Climate Trends */}
           {(activeDashboardTab === 'all' || activeDashboardTab === 'historical') && (
-            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between animate-in fade-in duration-300">
+            <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col justify-between animate-in fade-in duration-300 w-full max-w-full min-w-0 box-border overflow-hidden">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                   <h3 className="font-space font-bold text-white text-sm">
@@ -432,7 +432,7 @@ export const ClimateIntelligence: React.FC = () => {
               </div>
 
               {/* Chart Body */}
-              <div className="my-2 min-h-[260px] flex items-center justify-center">
+              <div className="my-2 min-h-[240px] sm:min-h-[260px] flex items-center justify-center w-full min-w-0 overflow-hidden">
                 {historicalTab === 'temperature' && historicalData?.records && (
                   <HistoricalTempChart
                     records={historicalData.records}
@@ -466,7 +466,7 @@ export const ClimateIntelligence: React.FC = () => {
 
           {/* 2. Future Projections (2026–2040) */}
           {(activeDashboardTab === 'all' || activeDashboardTab === 'projections') && (
-            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between animate-in fade-in duration-300">
+            <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col justify-between animate-in fade-in duration-300 w-full max-w-full min-w-0 box-border overflow-hidden">
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <h3 className="font-space font-bold text-white text-sm">
@@ -481,7 +481,7 @@ export const ClimateIntelligence: React.FC = () => {
               </div>
 
               {/* Chart Body */}
-              <div className="my-2 min-h-[260px]">
+              <div className="my-2 min-h-[240px] sm:min-h-[260px] w-full min-w-0 overflow-hidden">
                 {scenarioData?.scenarios && (
                   <ScenarioComparisonChart
                     scenarios={scenarioData.scenarios}
@@ -500,7 +500,7 @@ export const ClimateIntelligence: React.FC = () => {
 
           {/* 3. Climate Risk Radar */}
           {(activeDashboardTab === 'all' || activeDashboardTab === 'radar') && (
-            <div className="bg-[#10243A]/80 border border-white/10 p-5 rounded-2xl shadow-xl flex flex-col justify-between animate-in fade-in duration-300">
+            <div className="bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-5 rounded-2xl shadow-xl flex flex-col justify-between animate-in fade-in duration-300 w-full max-w-full min-w-0 box-border overflow-hidden">
               <div>
                 <h3 className="font-space font-bold text-white text-sm mb-1">
                   Climate Risk Radar
@@ -511,7 +511,7 @@ export const ClimateIntelligence: React.FC = () => {
               </div>
 
               {/* Radar Body */}
-              <div className="my-2 min-h-[260px] flex items-center justify-center">
+              <div className="my-2 min-h-[240px] sm:min-h-[260px] flex items-center justify-center w-full min-w-0 overflow-hidden">
                 {riskData?.indicators && (
                   <RiskRadarChart
                     indicators={riskData.indicators}
@@ -534,7 +534,7 @@ export const ClimateIntelligence: React.FC = () => {
 
       {/* ── Row 3: Machine Learning & Deep Learning sequence analysis ── */}
       {(activeDashboardTab === 'all' || activeDashboardTab === 'ai') && (
-        <div className="mt-6 bg-[#10243A]/80 border border-white/10 p-5 sm:p-6 rounded-2xl shadow-xl animate-in fade-in duration-300">
+        <div className="mt-6 bg-[#10243A]/80 border border-white/10 p-3.5 sm:p-6 rounded-2xl shadow-xl animate-in fade-in duration-300 w-full max-w-full min-w-0 box-border overflow-hidden">
           <MachineLearningPanel
             metrics={mlData?.model_metrics || mlData?.metrics}
             futureProjections={mlData?.ml_future_projections || mlData?.future_projections || []}

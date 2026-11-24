@@ -324,10 +324,10 @@ export const ClimateGPTDrawer: React.FC = () => {
         </div>
       )}
 
-      {/* ── Floating Bubble Trigger Button ─────────────────────────────────── */}
+      {/* ── Floating Bubble Trigger Button (Desktop/Tablets only; on mobile accessed via Navigation drawer) ── */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-eco-blue via-sky-500 to-eco-green text-eco-bg font-grotesk font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20"
+        className="hidden lg:flex group items-center gap-2 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-eco-blue via-sky-500 to-eco-green text-eco-bg font-grotesk font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20"
         title="Toggle ClimateGPT Assistant"
       >
         <div className="relative">

@@ -138,7 +138,7 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
 
       {/* ── Area Chart (Matching Tile 3 of Design Reference) ── */}
       <div className="relative w-full bg-[#06111F]/70 rounded-xl p-2 border border-white/5 overflow-hidden">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto select-none overflow-visible">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto select-none overflow-hidden">
           <defs>
             <linearGradient id="ssp5Grad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#FF5D63" stopOpacity="0.28" />

@@ -119,7 +119,7 @@ export const HistoricalTempChart: React.FC<HistoricalTempChartProps> = ({
       <div className="relative w-full overflow-hidden bg-[#06111F]/70 rounded-xl border border-white/5 p-1.5">
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="w-full h-auto select-none overflow-visible touch-none cursor-crosshair"
+          className="w-full h-auto select-none overflow-hidden touch-none cursor-crosshair"
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
         >

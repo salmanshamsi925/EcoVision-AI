@@ -107,18 +107,19 @@ html, body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-/* Position zoom control safely above the bottom telemetry card on mobile */
-.leaflet-bottom.leaflet-right {
-  bottom: 78px !important;
-  right: 12px !important;
-  z-index: 900 !important;
-  margin: 0 !important;
+/* Position zoom control safely above the bottom telemetry card on desktop, hide on touch mobile */
+@media (max-width: 1023px) {
+  .leaflet-control-zoom {
+    display: none !important;
+  }
 }
 
 @media (min-width: 1024px) {
   .leaflet-bottom.leaflet-right {
     bottom: 20px !important;
     right: 20px !important;
+    z-index: 900 !important;
+    margin: 0 !important;
   }
 }
 

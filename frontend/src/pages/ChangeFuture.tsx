@@ -115,7 +115,7 @@ export const ChangeFuture: React.FC = () => {
   const strokeDashoffset = circumference - (activeScore / 100) * circumference;
 
   return (
-    <div className="min-h-screen bg-[#06111F] text-slate-100 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 pb-20 font-inter">
+    <div className="min-h-screen bg-[#06111F] text-slate-100 p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-4 sm:space-y-6 pb-20 font-inter w-full max-w-full overflow-x-hidden box-border">
       {/* ── Top Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
@@ -261,18 +261,18 @@ export const ChangeFuture: React.FC = () => {
           </div>
 
           {/* Action Buttons: Run Simulation & Reset */}
-          <div className="flex items-center gap-3 pt-5 mt-5 border-t border-white/10">
+          <div className="flex items-center gap-3 pt-4 sm:pt-5 mt-4 sm:mt-5 border-t border-white/10 w-full">
             <button
               onClick={handleSimulate}
               disabled={isSimulating}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] active:scale-95 transition cursor-pointer touch-manipulation"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>{isSimulating ? 'Simulating...' : 'Run Simulation'}</span>
             </button>
             <button
               onClick={handleReset}
-              className="py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-space text-xs flex items-center justify-center gap-1.5 transition"
+              className="py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-space text-xs flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer touch-manipulation"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset</span>

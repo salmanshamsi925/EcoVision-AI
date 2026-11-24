@@ -308,11 +308,23 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
 
+    // Continuous container resize observation to prevent partial tile rendering or voids
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
+
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
+      resizeObserver?.disconnect();
       map.remove();
       mapRef.current = null;
     };
@@ -323,8 +335,12 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
     if (isTabActive && mapRef.current) {
       const trigger = () => mapRef.current?.invalidateSize();
       requestAnimationFrame(trigger);
-      const t = setTimeout(trigger, 80);
-      return () => clearTimeout(t);
+      const t1 = setTimeout(trigger, 60);
+      const t2 = setTimeout(trigger, 250);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
     }
   }, [isTabActive]);
 

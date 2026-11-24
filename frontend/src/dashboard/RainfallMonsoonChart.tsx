@@ -62,7 +62,7 @@ export const RainfallMonsoonChart: React.FC<RainfallMonsoonChartProps> = ({
 
       {/* SVG Canvas */}
       <div className="relative w-full overflow-hidden bg-eco-bg/40 rounded-xl border border-white/5 p-1">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto select-none">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto select-none overflow-hidden">
           {/* Y-axis grid lines */}
           {[0, 100, 200, 300, 400, 500].filter(val => val <= maxRain * 1.1).map((val) => (
             <g key={val}>

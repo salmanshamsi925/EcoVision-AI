@@ -30,9 +30,9 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
 }) => {
   if (!indicators || indicators.length === 0) return null;
 
-  const size = 260;
+  const size = 280;
   const center = size / 2;
-  const radius = 80;
+  const radius = 70;
   const numAxes = indicators.length;
 
   const getCoord = (index: number, val: number) => {
@@ -52,9 +52,9 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
   }).join(' ');
 
   return (
-    <div className="flex flex-col h-full justify-between space-y-2 font-inter">
+    <div className="flex flex-col h-full justify-between space-y-2 font-inter w-full min-w-0 overflow-hidden box-border">
       {/* ── Header ── */}
-      <div className="flex flex-wrap items-center justify-between gap-1.5 pb-0.5">
+      <div className="flex flex-wrap items-center justify-between gap-1.5 pb-0.5 w-full min-w-0">
         <div className="flex items-center gap-1.5 text-xs font-space font-semibold text-slate-300">
           <ShieldAlert className="w-3.5 h-3.5 text-warning-orange shrink-0" />
           <span>Vulnerability Radar</span>
@@ -70,9 +70,9 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
         </div>
       </div>
 
-      {/* ── Responsive SVG Radar Canvas ── */}
-      <div className="relative flex items-center justify-center py-1">
-        <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[210px] h-auto select-none overflow-visible">
+      {/* ── Responsive SVG Radar Canvas (No Overflow) ── */}
+      <div className="relative flex items-center justify-center py-1 w-full overflow-hidden">
+        <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[240px] h-auto select-none overflow-hidden">
           <defs>
             <radialGradient id="radarFill" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#20C5FF" stopOpacity="0.45" />
@@ -123,7 +123,7 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
           {/* Vertex dots & Axis Labels */}
           {indicators.map((ind, i) => {
             const pt = getCoord(i, ind.score);
-            const labelPt = getCoord(i, 118);
+            const labelPt = getCoord(i, 122);
             const shortName = ind.axis.split(' ')[0];
 
             return (
@@ -165,13 +165,13 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
         </svg>
       </div>
 
-      {/* ── Clear Breakdown Chips (HCI Compliant) ── */}
-      <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-white/5 text-[10px] font-mono">
-        {indicators.slice(0, 3).map((ind) => {
+      {/* ── Clear Breakdown Chips (HCI Compliant - All 6 Stressors) ── */}
+      <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-white/5 text-[10px] font-mono w-full min-w-0">
+        {indicators.map((ind) => {
           const key = ind.axis.toLowerCase();
           const icon = AXIS_ICONS[Object.keys(AXIS_ICONS).find(k => key.includes(k)) || 'heat'];
           return (
-            <div key={ind.axis} className="bg-[#06111F]/70 border border-white/5 p-1.5 rounded-lg text-center">
+            <div key={ind.axis} className="bg-[#06111F]/80 border border-white/5 p-1.5 rounded-lg text-center min-w-0">
               <span className="text-slate-400 block truncate text-[9px] mb-0.5">
                 {icon} {ind.axis.split(' ')[0]}
               </span>

@@ -320,8 +320,8 @@ export const ExplorePakistan: React.FC = () => {
           />
 
           {/* ── Floating Live GIS Layer HUD Dock (Directly on Map Canvas) ── */}
-          <div className="absolute top-2.5 left-2.5 right-2.5 z-[1500] pointer-events-auto">
-            <div className="bg-[#0B1B2D]/90 backdrop-blur-xl border border-white/15 rounded-2xl p-1.5 shadow-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
+          <div className="absolute top-2.5 left-2.5 right-2.5 z-[1500] pointer-events-auto select-none">
+            <div className="bg-[#0B1B2D]/90 backdrop-blur-xl border border-white/15 rounded-2xl p-1.5 shadow-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth select-none">
               
               {/* Active Overlay Status Pill */}
               <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#10243A]/90 rounded-xl border border-white/10 shrink-0 select-none">

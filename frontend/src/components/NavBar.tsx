@@ -17,6 +17,7 @@ const navItems = [
   { name: 'Pakistan GIS', path: '/pakistan' },
   { name: 'Climate Intel', path: '/intelligence' },
   { name: 'Policy Lab', path: '/change' },
+  { name: 'AI Assistant', path: '/assistant' },
   { name: 'About', path: '/about' },
 ];
 
