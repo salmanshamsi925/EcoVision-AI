@@ -113,8 +113,8 @@ export const ExplorePakistan: React.FC = () => {
               : 'bg-[#10243A]/80 text-slate-300 hover:text-white border border-white/10'
           }`}
         >
-          <Layers className={`w-3.5 h-3.5 shrink-0 ${mobileTab === 'layers' ? 'text-[#06111F]' : 'text-[#20C5FF]'}`} />
-          <span className="truncate">Layers</span>
+          <Search className={`w-3.5 h-3.5 shrink-0 ${mobileTab === 'layers' ? 'text-[#06111F]' : 'text-[#20C5FF]'}`} />
+          <span className="truncate">Search & Layers</span>
         </button>
 
         <button
@@ -140,6 +140,21 @@ export const ExplorePakistan: React.FC = () => {
             mobileTab === 'layers' ? 'flex flex-1' : 'hidden lg:flex'
           }`}
         >
+          {/* Mobile Back to Map button */}
+          <div className="lg:hidden flex items-center justify-between pb-1">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileTab('map');
+                window.dispatchEvent(new Event('resize'));
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#10243A] border border-[#20C5FF]/30 text-xs text-[#20C5FF] font-grotesk font-semibold active:scale-95 transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Interactive Map</span>
+            </button>
+          </div>
+
           {/* GIS Layers Card */}
           <div className="bg-[#10243A]/80 border border-white/10 rounded-2xl p-4 shadow-xl">
             <div className="flex items-center gap-2 mb-3 pb-2 border-b border-white/10">
@@ -304,12 +319,102 @@ export const ExplorePakistan: React.FC = () => {
             isTabActive={mobileTab === 'map'}
           />
 
-          {/* Compass / Map Legend Bar Overlay (Fixed z-[1500] on top of map panes) */}
-          <div className="absolute top-2.5 right-2.5 z-[1500] bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-2.5 py-1 flex items-center gap-2 shadow-lg pointer-events-none select-none">
-            <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse shrink-0" />
-            <span className="text-[10px] font-mono text-emerald-green font-semibold uppercase tracking-wider select-none">
-              OVERLAY: {activeOverlay.toUpperCase()}
-            </span>
+          {/* ── Floating Live GIS Layer HUD Dock (Directly on Map Canvas) ── */}
+          <div className="absolute top-2.5 left-2.5 right-2.5 z-[1500] pointer-events-auto">
+            <div className="bg-[#0B1B2D]/90 backdrop-blur-xl border border-white/15 rounded-2xl p-1.5 shadow-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
+              
+              {/* Active Overlay Status Pill */}
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#10243A]/90 rounded-xl border border-white/10 shrink-0 select-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse shrink-0" />
+                <span className="text-[10px] font-mono text-emerald-green font-bold uppercase tracking-wider">
+                  {activeOverlay === 'none' ? 'LIVE MAP' : activeOverlay}
+                </span>
+              </div>
+
+              {/* Heat Risk Pill */}
+              <button
+                type="button"
+                onClick={() => setActiveOverlay(activeOverlay === 'temperature' ? 'none' : 'temperature')}
+                className={`shrink-0 h-8 px-2.5 rounded-xl text-xs font-grotesk font-semibold flex items-center gap-1.5 transition-all touch-manipulation cursor-pointer active:scale-95 select-none ${
+                  activeOverlay === 'temperature'
+                    ? 'bg-gradient-to-r from-orange-500/35 to-red-500/35 text-orange-200 border border-orange-400/80 shadow-md shadow-orange-500/20 font-bold'
+                    : 'bg-[#10243A]/70 text-slate-300 hover:text-white border border-white/10 hover:border-white/20'
+                }`}
+              >
+                <Thermometer className={`w-3.5 h-3.5 shrink-0 ${activeOverlay === 'temperature' ? 'text-orange-400 animate-pulse' : 'text-slate-400'}`} />
+                <span>Heat Risk</span>
+              </button>
+
+              {/* Flood Risk Pill */}
+              <button
+                type="button"
+                onClick={() => setActiveOverlay(activeOverlay === 'flood' ? 'none' : 'flood')}
+                className={`shrink-0 h-8 px-2.5 rounded-xl text-xs font-grotesk font-semibold flex items-center gap-1.5 transition-all touch-manipulation cursor-pointer active:scale-95 select-none ${
+                  activeOverlay === 'flood'
+                    ? 'bg-gradient-to-r from-cyan-500/35 to-blue-500/35 text-cyan-200 border border-cyan-400/80 shadow-md shadow-cyan-500/20 font-bold'
+                    : 'bg-[#10243A]/70 text-slate-300 hover:text-white border border-white/10 hover:border-white/20'
+                }`}
+              >
+                <CloudRain className={`w-3.5 h-3.5 shrink-0 ${activeOverlay === 'flood' ? 'text-cyan-400 animate-pulse' : 'text-slate-400'}`} />
+                <span>Flood Risk</span>
+              </button>
+
+              {/* Drought Risk Pill */}
+              <button
+                type="button"
+                onClick={() => setActiveOverlay(activeOverlay === 'drought' ? 'none' : 'drought')}
+                className={`shrink-0 h-8 px-2.5 rounded-xl text-xs font-grotesk font-semibold flex items-center gap-1.5 transition-all touch-manipulation cursor-pointer active:scale-95 select-none ${
+                  activeOverlay === 'drought'
+                    ? 'bg-gradient-to-r from-amber-500/35 to-yellow-500/35 text-amber-200 border border-amber-400/80 shadow-md shadow-amber-500/20 font-bold'
+                    : 'bg-[#10243A]/70 text-slate-300 hover:text-white border border-white/10 hover:border-white/20'
+                }`}
+              >
+                <Sun className={`w-3.5 h-3.5 shrink-0 ${activeOverlay === 'drought' ? 'text-amber-400 animate-pulse' : 'text-slate-400'}`} />
+                <span>Drought Risk</span>
+              </button>
+
+              {/* Vegetation Index Pill */}
+              <button
+                type="button"
+                onClick={() => setActiveOverlay(activeOverlay === 'vegetation' ? 'none' : 'vegetation')}
+                className={`shrink-0 h-8 px-2.5 rounded-xl text-xs font-grotesk font-semibold flex items-center gap-1.5 transition-all touch-manipulation cursor-pointer active:scale-95 select-none ${
+                  activeOverlay === 'vegetation'
+                    ? 'bg-gradient-to-r from-emerald-500/35 to-teal-500/35 text-emerald-200 border border-emerald-400/80 shadow-md shadow-emerald-500/20 font-bold'
+                    : 'bg-[#10243A]/70 text-slate-300 hover:text-white border border-white/10 hover:border-white/20'
+                }`}
+              >
+                <Trees className={`w-3.5 h-3.5 shrink-0 ${activeOverlay === 'vegetation' ? 'text-emerald-400 animate-pulse' : 'text-slate-400'}`} />
+                <span>Vegetation</span>
+              </button>
+
+              {/* Satellite / Dark Map Toggle Pill */}
+              <button
+                type="button"
+                onClick={() => setIsSatellite(!isSatellite)}
+                className={`shrink-0 h-8 px-2.5 rounded-xl text-xs font-grotesk font-semibold flex items-center gap-1.5 transition-all touch-manipulation cursor-pointer active:scale-95 select-none ${
+                  isSatellite
+                    ? 'bg-gradient-to-r from-purple-500/30 to-[#20C5FF]/30 text-purple-200 border border-purple-400/70 shadow-md shadow-purple-500/20 font-bold'
+                    : 'bg-[#10243A]/70 text-slate-300 hover:text-white border border-white/10 hover:border-white/20'
+                }`}
+              >
+                <Eye className={`w-3.5 h-3.5 shrink-0 ${isSatellite ? 'text-purple-400' : 'text-slate-400'}`} />
+                <span>{isSatellite ? 'Satellite' : 'Dark Map'}</span>
+              </button>
+
+              {/* District Boundaries Toggle Pill */}
+              <button
+                type="button"
+                onClick={() => setShowBoundaries(!showBoundaries)}
+                className={`shrink-0 h-8 px-2.5 rounded-xl text-xs font-grotesk font-semibold flex items-center gap-1.5 transition-all touch-manipulation cursor-pointer active:scale-95 select-none ${
+                  showBoundaries
+                    ? 'bg-[#10243A] text-[#20C5FF] border border-[#20C5FF]/60 font-semibold'
+                    : 'bg-[#10243A]/70 text-slate-400 border border-white/10 line-through'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5 shrink-0" />
+                <span>Borders</span>
+              </button>
+            </div>
           </div>
 
           {/* Mobile Bottom Quick-Action Bar (Fixed z-[2000] to always stay on top of map tiles) */}

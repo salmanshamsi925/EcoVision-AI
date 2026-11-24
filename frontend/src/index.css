@@ -231,4 +231,13 @@ html, body {
   display: none !important;
 }
 
+/* Hide scrollbar for clean horizontal HUD carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 
