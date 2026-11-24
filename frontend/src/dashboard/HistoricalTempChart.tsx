@@ -25,6 +25,7 @@ export const HistoricalTempChart: React.FC<HistoricalTempChartProps> = ({
 }) => {
   const [showMLTrend, setShowMLTrend] = useState(true);
   const [showRange, setShowRange] = useState(true);
+  const [hoveredRecord, setHoveredRecord] = useState<RecordItem | null>(null);
 
   if (!records || records.length === 0) return null;
 
@@ -44,6 +45,19 @@ export const HistoricalTempChart: React.FC<HistoricalTempChartProps> = ({
 
   const getX = (year: number) => padding.left + ((year - minYear) / (maxYear - minYear)) * chartW;
   const getY = (temp: number) => padding.top + chartH - ((temp - minTemp) / (maxTemp - minTemp)) * chartH;
+
+  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, (x - padding.left) / chartW));
+    const targetYear = Math.round(minYear + ratio * (maxYear - minYear));
+    const rec = records.find(r => r.year === targetYear) || records[records.length - 1];
+    setHoveredRecord(rec);
+  };
+
+  const handlePointerLeave = () => {
+    setHoveredRecord(null);
+  };
 
   // Generate SVG path for mean temperatures
   const points = records.map(r => `${getX(r.year)},${getY(r.mean_temp_c)}`);
@@ -66,10 +80,20 @@ export const HistoricalTempChart: React.FC<HistoricalTempChartProps> = ({
     <div className="flex flex-col h-full justify-between space-y-2 font-inter w-full">
       {/* ── Sub-header: Legend & Toggle Chips ── */}
       <div className="flex flex-wrap items-center justify-between gap-1.5 text-[10px] font-mono">
-        <div className="flex items-center gap-1.5 text-slate-300">
-          <span className="w-2 h-2 rounded-full bg-primary-cyan inline-block shadow-[0_0_6px_#20C5FF]" />
-          <span>Observed Baseline: <strong className="text-white">{baselineTemp}°C</strong></span>
-        </div>
+        {hoveredRecord ? (
+          <div className="flex items-center gap-1.5 text-xs font-mono text-white bg-[#06111F] px-2.5 py-0.5 rounded-lg border border-[#20C5FF]/50 shadow-sm animate-in fade-in duration-150">
+            <span className="text-[#20C5FF] font-bold">{hoveredRecord.year}:</span>
+            <span className="text-white font-bold">{hoveredRecord.mean_temp_c}°C</span>
+            <span className={`text-[10px] font-bold ${hoveredRecord.temp_anomaly >= 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              ({hoveredRecord.temp_anomaly >= 0 ? '+' : ''}{hoveredRecord.temp_anomaly}°C)
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-2 h-2 rounded-full bg-primary-cyan inline-block shadow-[0_0_6px_#20C5FF]" />
+            <span>Baseline: <strong className="text-white">{baselineTemp}°C</strong> (1991–2020)</span>
+          </div>
+        )}
 
         <div className="flex items-center gap-1.5">
           <button
@@ -93,7 +117,12 @@ export const HistoricalTempChart: React.FC<HistoricalTempChartProps> = ({
 
       {/* ── Responsive SVG Canvas ── */}
       <div className="relative w-full overflow-hidden bg-[#06111F]/70 rounded-xl border border-white/5 p-1.5">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto select-none overflow-visible">
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="w-full h-auto select-none overflow-visible touch-none cursor-crosshair"
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
+        >
           <defs>
             <linearGradient id="tempAreaGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#20C5FF" stopOpacity="0.25" />
@@ -185,6 +214,30 @@ export const HistoricalTempChart: React.FC<HistoricalTempChartProps> = ({
                 />
               </g>
             ))}
+
+          {/* Interactive Hover Point & Cursor Line */}
+          {hoveredRecord && (
+            <g pointerEvents="none">
+              <line
+                x1={getX(hoveredRecord.year)}
+                y1={padding.top}
+                x2={getX(hoveredRecord.year)}
+                y2={height - padding.bottom}
+                stroke="#20C5FF"
+                strokeWidth="1"
+                strokeDasharray="2 2"
+                opacity="0.8"
+              />
+              <circle
+                cx={getX(hoveredRecord.year)}
+                cy={getY(hoveredRecord.mean_temp_c)}
+                r={5.5}
+                fill="#20C5FF"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+              />
+            </g>
+          )}
         </svg>
       </div>
 

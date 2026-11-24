@@ -54,19 +54,18 @@ export const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
   return (
     <div className="flex flex-col h-full justify-between space-y-2 font-inter">
       {/* ── Header ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-1.5 pb-0.5">
         <div className="flex items-center gap-1.5 text-xs font-space font-semibold text-slate-300">
-          <ShieldAlert className="w-3.5 h-3.5 text-warning-orange" />
+          <ShieldAlert className="w-3.5 h-3.5 text-warning-orange shrink-0" />
           <span>Vulnerability Radar</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] font-mono text-slate-400">Score:</span>
-          <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${
+        <div className="flex items-center gap-1">
+          <span className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-bold ${
             overallIndex >= 80 ? 'bg-danger-red/20 text-danger-red border border-danger-red/30' :
             overallIndex >= 65 ? 'bg-warning-orange/20 text-warning-orange border border-warning-orange/30' :
             'bg-emerald-green/20 text-emerald-green border border-emerald-green/30'
           }`}>
-            {overallIndex}/100
+            Score: {overallIndex}/100
           </span>
         </div>
       </div>
