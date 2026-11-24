@@ -60,16 +60,6 @@ export const ClimateGPTDrawer: React.FC = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Do not render floating trigger on full-page assistant or on mobile screens where bottom cockpit cards exist
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-  if (
-    routerLocation.pathname === '/assistant' ||
-    routerLocation.pathname === '/gpt' ||
-    ((routerLocation.pathname === '/' || routerLocation.pathname === '/pakistan') && isMobile)
-  ) {
-    return null;
-  }
-
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'drawer-init',
@@ -136,6 +126,7 @@ export const ClimateGPTDrawer: React.FC = () => {
           sender: 'ai',
           structured: {
             title: `Climate Intelligence Analysis for ${districtName}`,
+            answer: `Empirical observations for ${districtName} document extreme temperature variations with summer heatwaves and heavy monsoon inundation challenges.`,
             empirical_facts: `In ${districtName} and the Indus Basin, empirical measurements (PMD / NASA POWER) document peak summer temperatures exceeding 48°C and intense compound precipitation anomalies during the monsoon season.`,
             scenario_projections: `Under CMIP6 SSP2-4.5 and SSP5-8.5 multi-model ensembles, regional warming is projected to add +1.8°C to +3.4°C above baseline by 2035, accelerating agricultural water demand.`,
             recommendations: [
@@ -155,6 +146,17 @@ export const ClimateGPTDrawer: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // Visibility check performed strictly after all hooks have been declared unconditionally
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+  const isHidden =
+    routerLocation.pathname === '/assistant' ||
+    routerLocation.pathname === '/gpt' ||
+    ((routerLocation.pathname === '/' || routerLocation.pathname === '/pakistan') && isMobile);
+
+  if (isHidden) {
+    return null;
+  }
 
   return (
     <aside aria-label="ClimateGPT Floating Assistant" className="fixed bottom-5 right-5 z-50 flex flex-col items-end">

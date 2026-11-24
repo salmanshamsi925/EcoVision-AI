@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import {
   Thermometer,
   CloudRain,
@@ -563,21 +563,18 @@ export const ExplorePakistan: React.FC = () => {
               </div>
 
               {/* Detailed Report Action Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+              <Link
+                to={`/intelligence?district=${encodeURIComponent(selectedDistrict.id)}`}
+                onClick={() => {
                   if (selectedDistrict?.id) {
                     setActiveLocationId(selectedDistrict.id);
-                    navigate(`/intelligence?district=${encodeURIComponent(selectedDistrict.id)}`);
                   }
                 }}
-                className="w-full mt-auto py-3 px-4 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-grotesk font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#20C5FF]/30 active:scale-95 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition cursor-pointer"
+                className="w-full mt-auto py-3 px-4 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-grotesk font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#20C5FF]/30 active:scale-95 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition cursor-pointer select-none no-underline text-center"
               >
                 <span>View Detailed Report</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center p-6 text-slate-400">

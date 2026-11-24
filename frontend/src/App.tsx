@@ -49,10 +49,14 @@ function AppLayout() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <LocationProvider>
-        <AppLayout />
-      </LocationProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <LocationProvider>
+          <ErrorBoundary>
+            <AppLayout />
+          </ErrorBoundary>
+        </LocationProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
