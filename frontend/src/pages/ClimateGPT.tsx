@@ -150,7 +150,7 @@ export const ClimateGPT: React.FC = () => {
           onClick={() => setMobileTab('chat')}
           className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-space transition ${
             mobileTab === 'chat'
-              ? 'bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-bold shadow-md'
+              ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -161,7 +161,7 @@ export const ClimateGPT: React.FC = () => {
           onClick={() => setMobileTab('questions')}
           className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-space transition ${
             mobileTab === 'questions'
-              ? 'bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-bold shadow-md'
+              ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -172,7 +172,7 @@ export const ClimateGPT: React.FC = () => {
           onClick={() => setMobileTab('district')}
           className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-space transition ${
             mobileTab === 'district'
-              ? 'bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-bold shadow-md'
+              ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -325,7 +325,7 @@ export const ClimateGPT: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="w-11 h-11 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] flex items-center justify-center hover:shadow-[0_0_15px_rgba(32,197,255,0.4)] disabled:opacity-40 transition shrink-0"
+                className="w-11 h-11 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] flex items-center justify-center hover:shadow-[0_0_15px_rgba(32,197,255,0.4)] disabled:opacity-40 transition shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>

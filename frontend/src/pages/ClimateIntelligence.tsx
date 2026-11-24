@@ -307,8 +307,8 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 1: Mean Warming Rate */}
         <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-[#20C5FF]/30 transition-all">
           <div className="flex items-center justify-between gap-1 w-full min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
-              Mean Warming Rate
+            <span className="text-[10px] sm:text-[11px] text-slate-300 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
+              Warming Rate
             </span>
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-warning-orange shrink-0">
               <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -325,8 +325,8 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 2: Since 1980 */}
         <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-[#22D3A0]/30 transition-all">
           <div className="flex items-center justify-between gap-1 w-full min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
-              Since 1980 Warming
+            <span className="text-[10px] sm:text-[11px] text-slate-300 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
+              Since 1980
             </span>
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-green shrink-0">
               <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -343,8 +343,8 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 3: Record Summer */}
         <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-amber-400/30 transition-all">
           <div className="flex items-center justify-between gap-1 w-full min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
-              Record Summer Peak
+            <span className="text-[10px] sm:text-[11px] text-slate-300 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
+              Record Summer
             </span>
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
               <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -361,8 +361,8 @@ export const ClimateIntelligence: React.FC = () => {
         {/* Card 4: 2022 Monsoon */}
         <div className="bg-[#10243A]/80 border border-white/10 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex flex-col justify-between w-full min-w-0 box-border overflow-hidden hover:border-[#20C5FF]/30 transition-all">
           <div className="flex items-center justify-between gap-1 w-full min-w-0">
-            <span className="text-[10px] sm:text-[11px] text-slate-400 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
-              2022 Monsoon Flood
+            <span className="text-[10px] sm:text-[11px] text-slate-300 font-inter uppercase tracking-wider block font-semibold truncate flex-1 min-w-0">
+              2022 Monsoon
             </span>
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-primary-cyan shrink-0">
               <CloudRain className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -396,35 +396,35 @@ export const ClimateIntelligence: React.FC = () => {
                   <div className="flex bg-[#06111F] p-1 rounded-xl border border-white/10 shrink-0">
                     <button
                       onClick={() => setHistoricalTab('temperature')}
-                      className={`px-2.5 py-1 text-[11px] font-space font-medium rounded-lg flex items-center gap-1 transition cursor-pointer ${
+                      className={`px-3 py-1.5 text-xs font-space font-semibold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                         historicalTab === 'temperature'
-                          ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/25'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      <Thermometer className="w-3 h-3" />
+                      <Thermometer className="w-3.5 h-3.5" />
                       <span>Temp</span>
                     </button>
                     <button
                       onClick={() => setHistoricalTab('rainfall')}
-                      className={`px-2.5 py-1 text-[11px] font-space font-medium rounded-lg flex items-center gap-1 transition cursor-pointer ${
+                      className={`px-3 py-1.5 text-xs font-space font-semibold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                         historicalTab === 'rainfall'
-                          ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/25'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      <CloudRain className="w-3 h-3" />
+                      <CloudRain className="w-3.5 h-3.5" />
                       <span>Rain</span>
                     </button>
                     <button
                       onClick={() => setHistoricalTab('humidity')}
-                      className={`px-2.5 py-1 text-[11px] font-space font-medium rounded-lg flex items-center gap-1 transition cursor-pointer ${
+                      className={`px-3 py-1.5 text-xs font-space font-semibold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                         historicalTab === 'humidity'
-                          ? 'bg-primary-cyan text-[#06111F] font-bold shadow-sm'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-md shadow-[#20C5FF]/25'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      <Droplets className="w-3 h-3" />
+                      <Droplets className="w-3.5 h-3.5" />
                       <span>Humidity</span>
                     </button>
                   </div>

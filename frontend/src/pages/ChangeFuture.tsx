@@ -265,7 +265,7 @@ export const ChangeFuture: React.FC = () => {
             <button
               onClick={handleSimulate}
               disabled={isSimulating}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] active:scale-95 transition cursor-pointer touch-manipulation"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-space font-bold text-xs flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] active:scale-95 transition cursor-pointer touch-manipulation"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>{isSimulating ? 'Simulating...' : 'Run Simulation'}</span>

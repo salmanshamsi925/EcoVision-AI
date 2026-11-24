@@ -16,6 +16,10 @@ module.exports = {
         'eco-red': '#FF5555',
         'eco-text': '#F5F7FA',
         'eco-muted': '#A8B4C5',
+        'primary-cyan': '#20C5FF',
+        'emerald-green': '#22D3A0',
+        'warning-orange': '#FFAA45',
+        'danger-red': '#FF5D63',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],

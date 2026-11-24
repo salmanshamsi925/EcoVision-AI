@@ -556,8 +556,8 @@ export const ExplorePakistan: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between text-xs pt-1 border-t border-white/10">
                   <span className="text-slate-400">Heat Risk Profile</span>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-danger-red/15 text-danger-red border border-danger-red/30">
-                    {selectedDistrict.heat_risk.split(' ')[0]}
+                  <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-red-500/15 text-red-400 border border-red-500/30">
+                    {selectedDistrict.heat_risk}
                   </span>
                 </div>
               </div>
@@ -565,7 +565,7 @@ export const ExplorePakistan: React.FC = () => {
               {/* Detailed Report Action Button */}
               <button
                 onClick={() => navigate(`/intelligence?district=${selectedDistrict.id}`)}
-                className="w-full mt-auto py-3 px-4 rounded-xl bg-gradient-to-r from-primary-cyan to-emerald-green text-[#06111F] font-space font-bold text-xs flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition"
+                className="w-full mt-auto py-3 px-4 rounded-xl bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-grotesk font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#20C5FF]/30 active:scale-95 hover:shadow-[0_0_20px_rgba(32,197,255,0.4)] transition cursor-pointer"
               >
                 <span>View Detailed Report</span>
                 <ArrowRight className="w-4 h-4" />

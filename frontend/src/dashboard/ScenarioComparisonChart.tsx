@@ -128,7 +128,11 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
             <button
               key={yr}
               onClick={() => setSelectedYear(yr)}
-              className={`px-2 py-0.5 text-[10px] font-mono rounded transition ${selectedYear === yr ? 'bg-primary-cyan text-[#06111F] font-bold' : 'text-slate-400 hover:text-white'}`}
+              className={`px-2 py-0.5 text-[10px] font-mono rounded transition cursor-pointer ${
+                selectedYear === yr
+                  ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
             >
               {yr}
             </button>
