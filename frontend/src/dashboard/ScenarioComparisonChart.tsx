@@ -35,9 +35,10 @@ export const ScenarioComparisonChart: React.FC<ScenarioComparisonChartProps> = (
 
   // Map scenario data for 2026-2040 curve
   const chartData = useMemo(() => {
-    const ssp1 = scenarios.find(s => s.scenario_id.includes('1_26') || s.scenario_id.includes('126'))?.projections || [];
-    const ssp2 = scenarios.find(s => s.scenario_id.includes('2_45') || s.scenario_id.includes('245'))?.projections || [];
-    const ssp5 = scenarios.find(s => s.scenario_id.includes('5_85') || s.scenario_id.includes('585'))?.projections || [];
+    if (!scenarios || !Array.isArray(scenarios) || scenarios.length === 0) return [];
+    const ssp1 = scenarios.find(s => s && (s.scenario_id?.includes('1_26') || s.scenario_id?.includes('126')))?.projections || [];
+    const ssp2 = scenarios.find(s => s && (s.scenario_id?.includes('2_45') || s.scenario_id?.includes('245')))?.projections || [];
+    const ssp5 = scenarios.find(s => s && (s.scenario_id?.includes('5_85') || s.scenario_id?.includes('585')))?.projections || [];
 
     const getVal = (list: ScenarioProjection[], yr: number, fallback: number) => {
       const match = list.find(p => p.year === yr);

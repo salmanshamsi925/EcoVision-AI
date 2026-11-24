@@ -289,34 +289,24 @@ export const Home: React.FC = () => {
 
   const isNavigatingRef = useRef(false);
 
-  const handleEnterExperience = (e?: React.MouseEvent | React.TouchEvent) => {
+  const handleEnterExperience = (e?: React.MouseEvent | React.TouchEvent, targetLoc?: LocationDetail) => {
     if (e) {
       e.stopPropagation();
     }
     if (isNavigatingRef.current) return;
     isNavigatingRef.current = true;
     setIsEnteringExperience(true);
-    setSelectedLocation({
-      id: 'pakistan',
-      name: 'Pakistan',
-      province: 'Sindh Region',
-      latitude: 28.5,
-      longitude: 69.0,
-      category: 'National Geographic Center',
-      heat_risk: 'High',
-      flood_exposure: 'High',
-      drought_indicator: 'Moderate',
-      temp_anomaly: '+1.82°C',
-      summary: 'Central Indus River Basin & Sindh agricultural delta.'
-    });
+
+    // Lock in the chosen city (e.g. Karachi) or default to Karachi/Pakistan
+    const target = targetLoc || selectedLocation || fallbackLocations.find((l) => l.id === 'karachi') || fallbackLocations[0];
+    setSelectedLocation(target);
+    setActiveLocationId(target.id);
     setFlyToTrigger((prev) => prev + 1);
 
-    // Immediate & tactile navigation transition: 180ms on mobile, 650ms on desktop
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-    const delay = isMobile ? 180 : 650;
+    // Google Earth cinematic orbital zoom plunge duration (1050ms)
     setTimeout(() => {
-      navigate('/pakistan');
-    }, delay);
+      navigate(`/pakistan?district=${encodeURIComponent(target.id)}`);
+    }, 1050);
   };
 
   return (
@@ -324,14 +314,39 @@ export const Home: React.FC = () => {
       id="home-container"
       className="relative w-full max-w-full h-[calc(100dvh-56px)] sm:h-[calc(100dvh-64px)] overflow-x-hidden overflow-y-auto lg:overflow-hidden bg-[#07111F] select-none"
     >
-      {/* 1. FIXED 3D EARTH CANVAS (Pinned in the background, scaled & positioned on the right) */}
+      {/* 1. FIXED 3D EARTH CANVAS (Pinned in the background with Google Earth Zoom Plunge capability) */}
       <div className="fixed inset-0 top-14 sm:top-16 z-0 pointer-events-auto max-w-full overflow-hidden">
         <EarthGlobe
           selectedLocation={selectedLocation}
           flyToTrigger={flyToTrigger}
           reducedMotion={reducedMotion}
+          isZoomingIn={isEnteringExperience}
         />
       </div>
+
+      {/* 1.5. CINEMATIC ORBITAL ENTRY HUD OVERLAY */}
+      {isEnteringExperience && (
+        <div className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center animate-in fade-in duration-300">
+          {/* Radial atmosphere blur & speed bloom */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_20%,_rgba(32,197,255,0.18)_60%,_rgba(6,17,31,0.95)_95%)] animate-pulse" />
+          
+          {/* Google Earth Descent HUD Card */}
+          <div className="relative z-10 px-5 sm:px-7 py-3.5 sm:py-4 rounded-2xl bg-[#06111F]/90 border border-[#20C5FF]/60 shadow-[0_0_40px_rgba(32,197,255,0.5)] backdrop-blur-2xl flex flex-col items-center text-center space-y-1.5 animate-in zoom-in-95 duration-250 max-w-[90vw]">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#20C5FF] animate-ping" />
+              <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-widest text-[#20C5FF] uppercase">
+                Orbital Descent &bull; Target Locked
+              </span>
+            </div>
+            <div className="font-orbitron font-bold text-white text-base sm:text-xl">
+              Zooming into {selectedLocation?.name || 'Pakistan'}...
+            </div>
+            <div className="text-[10px] sm:text-[11px] font-mono text-[#22D3A0]">
+              Descending into Sindh Atmosphere &bull; High-Res GIS Telemetry
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Sleek Upper Search Bar + Open 3D Globe + Clean Bottom Hero) */}
       {!fullScreenGlobe && (

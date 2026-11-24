@@ -17,6 +17,8 @@ interface EarthGlobeProps {
   flyToTrigger?: number; // increments to trigger fly
   reducedMotion?: boolean;
   onFlyComplete?: () => void;
+  isZoomingIn?: boolean;
+  onZoomComplete?: () => void;
 }
 
 export const EarthGlobe: React.FC<EarthGlobeProps> = ({
@@ -25,6 +27,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
   flyToTrigger,
   reducedMotion = false,
   onFlyComplete,
+  isZoomingIn = false,
+  onZoomComplete,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -42,6 +46,13 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
   const cameraStartPos = useRef(new THREE.Vector3());
   const cameraEndPos = useRef(new THREE.Vector3());
   const rotProgress = useRef(0);
+
+  // Google Earth Deep Zoom-In Plunge state
+  const isZooming = useRef(false);
+  const zoomProgress = useRef(0);
+  const zoomCameraStartPos = useRef(new THREE.Vector3());
+  const zoomCameraEndPos = useRef(new THREE.Vector3());
+  const zoomStartFov = useRef(45);
 
   const GLOBE_RADIUS = 2.0;
 
@@ -283,8 +294,30 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
         cloudsMeshRef.current.rotation.y += delta * 0.015;
       }
 
-      // Smooth globe rotation (Google Earth spherical slerp)
-      if (isRotating.current && globeGroupRef.current) {
+      // Cinematic Google Earth Deep Zoom Plunge (Fly down towards Pakistan / City surface)
+      if (isZooming.current && globeGroupRef.current && cameraRef.current) {
+        zoomProgress.current += delta * 1.05; // ~0.95s cinematic dive
+        if (zoomProgress.current >= 1.0) {
+          zoomProgress.current = 1.0;
+          isZooming.current = false;
+          if (onZoomComplete) onZoomComplete();
+        }
+
+        const t = zoomProgress.current;
+        // Powerful progressive acceleration into the atmosphere
+        const ease = t < 0.4 ? 2.5 * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        globeGroupRef.current.quaternion.slerpQuaternions(startQuat.current, targetQuat.current, ease);
+
+        cameraRef.current.position.lerpVectors(zoomCameraStartPos.current, zoomCameraEndPos.current, ease);
+        cameraRef.current.lookAt(0, 0, 0);
+
+        // Dynamic FOV speed-blur contraction (45 down to 36)
+        cameraRef.current.fov = THREE.MathUtils.lerp(zoomStartFov.current, 36, ease);
+        cameraRef.current.updateProjectionMatrix();
+
+        controls.target.set(0, 0, 0);
+      } else if (isRotating.current && globeGroupRef.current) {
         rotProgress.current += delta * 0.9; // ~1.1s cinematic arrival duration
         if (rotProgress.current >= 1.0) {
           rotProgress.current = 1.0;
@@ -439,6 +472,29 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
     rotProgress.current = 0;
     isRotating.current = true;
   }, [selectedLocation, flyToTrigger]);
+
+  // Google Earth Deep Plunge Sequence: executes when isZoomingIn turns true
+  useEffect(() => {
+    if (!isZoomingIn || !globeGroupRef.current || !cameraRef.current) return;
+
+    const lat = selectedLocation ? selectedLocation.latitude : 24.8607;
+    const lon = selectedLocation ? selectedLocation.longitude : 67.0011;
+
+    const localPoint = latLonToVector3(lat, lon, 1.0).normalize();
+    const cameraDir = new THREE.Vector3(0, 0, 1.0).normalize();
+
+    startQuat.current.copy(globeGroupRef.current.quaternion);
+    targetQuat.current.setFromUnitVectors(localPoint, cameraDir);
+
+    zoomCameraStartPos.current.copy(cameraRef.current.position);
+    // Deep plunge: camera rushes from space down to 2.22 (globe radius = 2.0)
+    zoomCameraEndPos.current.set(0, 0, 2.22);
+
+    zoomStartFov.current = cameraRef.current.fov;
+    zoomProgress.current = 0;
+    isZooming.current = true;
+    isRotating.current = false;
+  }, [isZoomingIn, selectedLocation]);
 
   return (
     <div className="relative w-full max-w-full h-full select-none overflow-hidden">

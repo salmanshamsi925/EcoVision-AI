@@ -440,7 +440,7 @@ export const ExplorePakistan: React.FC = () => {
 
         {/* ── Right Column: Selected District Information ── */}
         <div
-          className={`w-full lg:w-80 xl:w-88 bg-[#0B1B2D]/95 backdrop-blur-xl border-l border-white/10 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto z-10 shrink-0 ${
+          className={`w-full lg:w-80 xl:w-88 bg-[#0B1B2D]/95 backdrop-blur-xl border-l border-white/10 p-4 sm:p-5 pb-24 sm:pb-28 flex flex-col gap-4 overflow-y-auto z-10 shrink-0 ${
             mobileTab === 'details' ? 'flex flex-1' : 'hidden lg:flex'
           }`}
         >

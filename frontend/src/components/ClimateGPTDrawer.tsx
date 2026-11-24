@@ -148,66 +148,64 @@ export const ClimateGPTDrawer: React.FC = () => {
   };
 
   // Visibility check performed strictly after all hooks have been declared unconditionally
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-  const isHidden =
-    routerLocation.pathname === '/assistant' ||
-    routerLocation.pathname === '/gpt' ||
-    ((routerLocation.pathname === '/' || routerLocation.pathname === '/pakistan') && isMobile);
+  // The drawer is available on BOTH mobile and desktop across all pages,
+  // except the dedicated full-page assistant route (/assistant or /gpt)
+  const isHidden = routerLocation.pathname === '/assistant' || routerLocation.pathname === '/gpt';
 
   if (isHidden) {
     return null;
   }
 
   return (
-    <aside aria-label="ClimateGPT Floating Assistant" className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <aside aria-label="ClimateGPT Floating Assistant" className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-[2100] flex flex-col items-end select-none">
       {/* ── Slide-up Glassmorphic Chat Drawer ─────────────────────────────── */}
       {isOpen && (
         <div
-          className={`mb-3 rounded-2xl border border-eco-blue/30 shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 ${
+          className={`mb-2.5 rounded-2xl border border-[#20C5FF]/40 shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 ${
             isExpanded
-              ? 'w-[95vw] sm:w-[540px] h-[80vh] max-h-[700px]'
-              : 'w-[92vw] sm:w-[400px] h-[520px]'
+              ? 'fixed inset-x-2.5 bottom-16 sm:inset-auto sm:relative w-auto sm:w-[540px] h-[82dvh] sm:h-[80vh] max-h-[700px]'
+              : 'fixed inset-x-2.5 bottom-16 sm:inset-auto sm:relative w-auto sm:w-[400px] h-[72dvh] sm:h-[520px] max-h-[620px]'
           }`}
-          style={{ background: 'rgba(7, 17, 31, 0.94)' }}
+          style={{ background: 'rgba(7, 17, 31, 0.96)' }}
         >
           {/* Header */}
-          <div className="p-3.5 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-eco-blue/15 border border-eco-blue/40 flex items-center justify-center text-eco-blue shadow-neon-blue">
-                <Bot className="w-4 h-4" />
+          <div className="p-3 sm:p-3.5 border-b border-white/10 flex items-center justify-between bg-white/[0.03]">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#20C5FF]/15 border border-[#20C5FF]/40 flex items-center justify-center text-[#20C5FF] shadow-neon-blue shrink-0">
+                <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-orbitron font-bold text-white text-xs">ClimateGPT</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-eco-green animate-pulse" />
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-orbitron font-bold text-white text-xs truncate">ClimateGPT</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#22D3A0] animate-pulse shrink-0" />
                 </div>
-                <span className="text-[10px] text-eco-muted font-grotesk flex items-center gap-1">
-                  <MapPin className="w-2.5 h-2.5 text-eco-green" /> {districtName}, Sindh
+                <span className="text-[9.5px] sm:text-[10px] text-eco-muted font-grotesk flex items-center gap-1 truncate">
+                  <MapPin className="w-2.5 h-2.5 text-[#22D3A0] shrink-0" /> {districtName}, Sindh
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={() => setMessages([messages[0]])}
                 title="Reset Chat"
-                className="p-1.5 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition"
+                className="p-1 sm:p-1.5 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 title={isExpanded ? 'Collapse' : 'Expand'}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition"
+                className="p-1 sm:p-1.5 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition hidden sm:block"
               >
                 {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
                 title="Close Drawer"
-                className="p-1.5 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition"
+                className="p-1 sm:p-1.5 rounded-lg hover:bg-white/10 text-eco-muted hover:text-white transition"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
@@ -351,18 +349,19 @@ export const ClimateGPTDrawer: React.FC = () => {
         </div>
       )}
 
-      {/* ── Floating Bubble Trigger Button (Desktop/Tablets only; on mobile accessed via Navigation drawer) ── */}
+      {/* ── Floating Bubble Trigger Button (Responsive: Mobile + Tablet + Desktop) ── */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="hidden lg:flex group items-center gap-2 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-eco-blue via-sky-500 to-eco-green text-eco-bg font-grotesk font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20"
+        className="flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full bg-gradient-to-r from-[#20C5FF] via-sky-500 to-[#22D3A0] text-[#06111F] font-grotesk font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/25 select-none cursor-pointer"
         title="Toggle ClimateGPT Assistant"
       >
         <div className="relative">
-          <Bot className="w-4 h-4 text-eco-bg" />
+          <Bot className="w-4 h-4 text-[#06111F]" />
           <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-white animate-ping" />
         </div>
-        <span className="hidden sm:inline">Ask ClimateGPT</span>
-        {isOpen && <ChevronDown className="w-3 h-3 ml-0.5" />}
+        <span className="text-[11px] sm:text-xs font-bold tracking-tight">Ask ClimateGPT</span>
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
     </aside>
   );
