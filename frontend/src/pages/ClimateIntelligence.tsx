@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   BarChart3, 
@@ -17,7 +17,10 @@ import {
   Database,
   Thermometer,
   Droplets,
-  Info
+  Info,
+  MapPin,
+  Search,
+  Check
 } from 'lucide-react';
 import { useActiveLocation } from '../context/LocationContext';
 import { API_BASE } from '../config/api';
@@ -234,6 +237,26 @@ export const ClimateIntelligence: React.FC = () => {
     { id: 'jamshoro', name: 'Jamshoro' }
   ];
 
+  const [districtDropdownOpen, setDistrictDropdownOpen] = useState(false);
+  const [districtSearch, setDistrictSearch] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDistrictDropdownOpen(false);
+      }
+    };
+    if (districtDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [districtDropdownOpen]);
+
   return (
     <div className="min-h-screen bg-[#06111F] text-slate-100 p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-4 sm:space-y-6 pb-20 font-inter w-full max-w-full overflow-x-hidden box-border">
       {/* ── Top Header ── */}
@@ -256,20 +279,76 @@ export const ClimateIntelligence: React.FC = () => {
             <span className="text-slate-400 hidden sm:inline">• Updated: Nov 16, 2026</span>
           </div>
 
-          {/* District Selector */}
-          <div className="relative">
-            <select
-              value={currentDistrict}
-              onChange={(e) => handleDistrictChange(e.target.value)}
-              className="bg-[#10243A] border border-primary-cyan/40 text-primary-cyan font-space font-semibold text-xs rounded-xl px-3 py-2 pr-8 appearance-none focus:outline-none focus:border-primary-cyan shadow-lg cursor-pointer"
+          {/* Custom District Selector Popover (Zero native select, 100% theme consistent) */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={() => setDistrictDropdownOpen(!districtDropdownOpen)}
+              className="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-[#10243A] border border-[#20C5FF]/40 text-[#20C5FF] font-space font-semibold text-xs hover:border-[#20C5FF] shadow-lg cursor-pointer transition-all active:scale-95"
             >
-              {districtList.map((d) => (
-                <option key={d.id} value={d.id} className="bg-[#06111F] text-white">
-                  📍 {d.name}, Sindh
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 text-primary-cyan absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <MapPin className="w-3.5 h-3.5 text-[#20C5FF] shrink-0" />
+              <span className="truncate max-w-[140px] xs:max-w-[180px] sm:max-w-none text-white font-medium">
+                {districtList.find(d => d.id === currentDistrict)?.name || 'Khairpur'}, Sindh
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-[#20C5FF] shrink-0 transition-transform duration-200 ${districtDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {districtDropdownOpen && (
+              <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#0B1B2D]/98 border border-[#20C5FF]/40 rounded-2xl shadow-2xl backdrop-blur-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[380px] overflow-hidden">
+                {/* Header & Quick Filter */}
+                <div className="px-2 pt-1 pb-2 border-b border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                    <span>Select District</span>
+                    <span className="text-[#20C5FF] font-bold">{districtList.length} Sindh Districts</span>
+                  </div>
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={districtSearch}
+                      onChange={(e) => setDistrictSearch(e.target.value)}
+                      placeholder="Search district..."
+                      className="w-full bg-[#06111F] border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#20C5FF]"
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                {/* District Options List */}
+                <div className="overflow-y-auto custom-scrollbar p-1 space-y-1 max-h-56 mt-1">
+                  {districtList
+                    .filter(d => d.name.toLowerCase().includes(districtSearch.toLowerCase()))
+                    .map((d) => {
+                      const isSelected = currentDistrict === d.id;
+                      return (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => {
+                            handleDistrictChange(d.id);
+                            setDistrictDropdownOpen(false);
+                            setDistrictSearch('');
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-xs font-grotesk transition-all flex items-center justify-between cursor-pointer active:scale-98 ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#20C5FF]/20 to-[#22D3A0]/10 border border-[#20C5FF]/50 text-white font-bold shadow-sm'
+                              : 'text-slate-300 hover:bg-white/5 hover:text-white border border-transparent'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <MapPin className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-[#20C5FF]' : 'text-slate-500'}`} />
+                            <span className="truncate">{d.name}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className="text-[10px] font-mono text-slate-400">Sindh</span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#22D3A0]" />}
+                          </div>
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
