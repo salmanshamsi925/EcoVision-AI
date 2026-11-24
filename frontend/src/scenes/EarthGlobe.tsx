@@ -285,7 +285,7 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
 
       // Smooth globe rotation (Google Earth spherical slerp)
       if (isRotating.current && globeGroupRef.current) {
-        rotProgress.current += delta * 1.0; // ~1.0s arrival duration
+        rotProgress.current += delta * 0.9; // ~1.1s cinematic arrival duration
         if (rotProgress.current >= 1.0) {
           rotProgress.current = 1.0;
           isRotating.current = false;
@@ -303,8 +303,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
           cameraRef.current.lookAt(0, 0, 0);
           controls.target.set(0, 0, 0);
         }
-      } else if (globeGroupRef.current && !controls.state && !reducedMotion) {
-        // Gentle orbital spin when idle
+      } else if (globeGroupRef.current && !controls.state && !reducedMotion && !selectedLocation) {
+        // Gentle orbital spin ONLY when idle and no specific target location is selected
         const idleRot = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), delta * 0.02);
         globeGroupRef.current.quaternion.multiply(idleRot);
       }

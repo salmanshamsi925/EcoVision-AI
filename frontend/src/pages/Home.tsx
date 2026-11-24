@@ -114,6 +114,58 @@ const fallbackLocations: LocationDetail[] = [
     summary: "Ground zero for compound disasters: extreme Kirthar range flash torrents followed by punishing heatwaves."
   },
   {
+    id: "hyderabad",
+    name: "Hyderabad",
+    province: "Sindh",
+    latitude: 25.3960,
+    longitude: 68.3578,
+    category: "Sindh Priority",
+    heat_risk: "Very High (Heatwave & Urban Density)",
+    flood_exposure: "High (Indus Riverine & Urban Drainage)",
+    drought_indicator: "Moderate to High",
+    temp_anomaly: "+2.2°C above baseline",
+    summary: "Historical cultural and economic hub in lower Sindh facing intense summer heat and Indus water flow dependency."
+  },
+  {
+    id: "jacobabad",
+    name: "Jacobabad",
+    province: "Sindh",
+    latitude: 28.2769,
+    longitude: 68.4514,
+    category: "Sindh Priority",
+    heat_risk: "Extreme (Globally Hottest City 53.5°C)",
+    flood_exposure: "High (Balochistan Hill Torrents)",
+    drought_indicator: "Very High",
+    temp_anomaly: "+3.1°C above baseline",
+    summary: "Recognized as one of the hottest urban centers on Earth, frequently crossing human survivability wet-bulb thresholds."
+  },
+  {
+    id: "thatta",
+    name: "Thatta",
+    province: "Sindh",
+    latitude: 24.7461,
+    longitude: 67.9224,
+    category: "Sindh Priority",
+    heat_risk: "High",
+    flood_exposure: "Extreme (Indus Delta & Coastal Surge)",
+    drought_indicator: "Moderate",
+    temp_anomaly: "+2.0°C above baseline",
+    summary: "Coastal Indus Delta deltaic ecosystem facing seawater intrusion and mangrove loss."
+  },
+  {
+    id: "badin",
+    name: "Badin",
+    province: "Sindh",
+    latitude: 24.6567,
+    longitude: 68.8373,
+    category: "Sindh Priority",
+    heat_risk: "High",
+    flood_exposure: "Extreme (Coastal & Cyclone Delta)",
+    drought_indicator: "Low to Moderate",
+    temp_anomaly: "+2.1°C above baseline",
+    summary: "Vulnerable to Arabian Sea cyclone surges and tidal river ingress."
+  },
+  {
     id: "islamabad",
     name: "Islamabad",
     province: "Federal",
@@ -149,8 +201,26 @@ export const Home: React.FC = () => {
   const [locations, setLocations] = useState<LocationDetail[]>(fallbackLocations);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<LocationDetail | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const [selectedLocation, setSelectedLocation] = useState<LocationDetail | null>(() => {
+    return fallbackLocations.find(l => l.id === 'khairpur') || fallbackLocations[0];
+  });
   const [flyToTrigger, setFlyToTrigger] = useState(0);
+
+  // Close search dropdown on click/tap outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
   const [liveWeather, setLiveWeather] = useState<{
     temperature_c?: number;
     feels_like_c?: number;
@@ -263,70 +333,82 @@ export const Home: React.FC = () => {
         />
       </div>
 
-      {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Clear Upper Earth View + Sleek Bottom Hero matching Tile 6) */}
+      {/* 2. COCKPIT INTERFACE (Desktop: Left 50% column | Mobile: Sleek Upper Search Bar + Open 3D Globe + Clean Bottom Hero) */}
       {!fullScreenGlobe && (
-        <div className="relative z-20 w-full max-w-full lg:w-1/2 min-h-full flex flex-col justify-end lg:justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-6 sm:pb-8 lg:pb-8 box-border min-w-0 overflow-x-hidden">
+        <div className="relative z-20 w-full max-w-full lg:w-1/2 min-h-full flex flex-col justify-between p-3 sm:p-6 lg:p-8 lg:pl-12 pointer-events-none pb-4 sm:pb-8 lg:pb-8 box-border min-w-0 overflow-x-hidden gap-3">
           
-          {/* Top: Google Earth-Style City Search Bar & Quick Chips (Desktop only to keep mobile 100% clean & focused on 3D Earth) */}
-          <div className="hidden lg:block w-full max-w-lg pointer-events-auto">
-            <div className="hud-card rounded-2xl flex items-center px-4 py-2.5 border border-[#20C5FF]/30 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-neon-blue">
-              <Search className="w-4 h-4 text-[#20C5FF] shrink-0 mr-2.5" />
+          {/* Top: Google Earth-Style City Search Bar & Quick Chips (Fully accessible on Mobile & Desktop) */}
+          <div ref={searchContainerRef} className="w-full max-w-lg pointer-events-auto relative z-40">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const q = searchQuery.trim().toLowerCase();
+                if (!q) return;
+                const match = locations.find((l) => l.name.toLowerCase().includes(q) || l.province?.toLowerCase().includes(q)) ||
+                  fallbackLocations.find((l) => l.name.toLowerCase().includes(q));
+                if (match) handleSelectCity(match);
+              }}
+              className="hud-card rounded-2xl flex items-center px-3 sm:px-4 py-2 sm:py-2.5 bg-[#0B1B2D]/90 border border-[#20C5FF]/40 backdrop-blur-xl shadow-2xl transition-all focus-within:border-[#20C5FF] focus-within:shadow-[0_0_20px_rgba(32,197,255,0.3)]"
+            >
+              <Search className="w-4 h-4 text-[#20C5FF] shrink-0 mr-2 sm:mr-2.5" />
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setSearchFocused(true);
+                }}
                 onFocus={() => setSearchFocused(true)}
                 placeholder="Search location... (e.g. Khairpur, Karachi, Sukkur)"
-                className="w-full bg-transparent text-xs sm:text-sm text-white placeholder-eco-muted/70 focus:outline-none font-inter"
+                className="w-full bg-transparent text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none font-inter"
               />
               {searchQuery ? (
                 <button
+                  type="button"
                   onClick={() => {
                     setSearchQuery('');
-                    setSelectedLocation(null);
+                    setSearchFocused(false);
                   }}
-                  className="p-1 hover:text-white text-eco-muted transition"
+                  className="p-1 hover:text-white text-slate-400 transition cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               ) : (
                 <button
-                  onClick={() => {
-                    const first = filteredLocations[0] || locations[0];
-                    if (first) handleSelectCity(first);
-                  }}
+                  type="submit"
                   className="w-6 h-6 rounded-lg bg-[#20C5FF]/20 hover:bg-[#20C5FF] text-[#20C5FF] hover:text-[#06111F] flex items-center justify-center transition-all cursor-pointer shrink-0"
                 >
-                  <ArrowRight className="w-3 h-3" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               )}
-            </div>
+            </form>
 
-            {/* Autocomplete Dropdown */}
+            {/* Autocomplete Dropdown (Pops right under search bar on mobile & desktop) */}
             {searchFocused && filteredLocations.length > 0 && (
-              <div className="absolute top-14 left-3 sm:left-6 lg:left-12 right-3 sm:right-auto sm:w-[480px] bg-[#0B1B2D]/98 border border-[#20C5FF]/40 rounded-xl overflow-hidden shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-40">
+              <div className="absolute top-full mt-2 left-0 right-0 sm:w-[480px] bg-[#0B1B2D]/98 border border-[#20C5FF]/40 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-2xl max-h-60 overflow-y-auto z-50 animate-in fade-in zoom-in-95 duration-150">
                 {filteredLocations.map((loc) => (
                   <button
                     key={loc.id}
+                    type="button"
                     onClick={() => handleSelectCity(loc)}
-                    className="w-full px-3.5 py-2.5 text-left hover:bg-[#20C5FF]/15 border-b border-white/5 flex items-center justify-between transition group"
+                    className="w-full px-3.5 py-2.5 text-left hover:bg-[#20C5FF]/15 border-b border-white/5 flex items-center justify-between transition group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5">
-                      <MapPin className="w-4 h-4 text-[#22D3A0] group-hover:text-[#20C5FF] transition" />
+                      <MapPin className="w-4 h-4 text-[#22D3A0] group-hover:text-[#20C5FF] transition shrink-0" />
                       <div>
-                        <span className="font-grotesk font-semibold text-sm text-white block">
+                        <span className="font-grotesk font-semibold text-xs sm:text-sm text-white block">
                           {loc.name}
                         </span>
-                        <span className="text-[11px] text-eco-muted">
-                          {loc.province} • {loc.category}
+                        <span className="text-[10.5px] text-slate-400">
+                          {loc.province} &bull; {loc.category}
                         </span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span className="text-[11px] font-mono text-[#FFAA45] block">
+                    <div className="text-right shrink-0">
+                      <span className="text-[11px] font-mono text-[#FFAA45] font-semibold block">
                         {loc.temp_anomaly}
                       </span>
-                      <span className="text-[10px] text-eco-muted">
+                      <span className="text-[10px] text-slate-500 font-mono">
                         {loc.latitude.toFixed(2)}°N, {loc.longitude.toFixed(2)}°E
                       </span>
                     </div>
@@ -335,24 +417,59 @@ export const Home: React.FC = () => {
               </div>
             )}
 
-            {/* Quick-Select City Chips (Hidden on small mobile screens to prevent clutter) */}
-            <div className="hidden sm:flex items-center gap-1.5 mt-2 overflow-x-auto pb-0.5 scrollbar-none">
-              {['Khairpur', 'Karachi', 'Sukkur', 'Larkana', 'Islamabad'].map((cityName) => (
-                <button
-                  key={cityName}
-                  onClick={() => {
-                    const target = locations.find((l) => l.name.toLowerCase() === cityName.toLowerCase());
-                    if (target) handleSelectCity(target);
-                  }}
-                  className={`px-3 py-1 rounded-full text-xs font-grotesk font-medium transition whitespace-nowrap border ${
-                    selectedLocation?.name.toLowerCase() === cityName.toLowerCase()
-                      ? 'bg-[#20C5FF] text-[#06111F] border-[#20C5FF] font-bold shadow-md shadow-[#20C5FF]/30'
-                      : 'bg-[#10243A]/80 border-white/10 text-eco-muted hover:text-white hover:border-[#20C5FF]/40'
-                  }`}
-                >
-                  {cityName}
-                </button>
-              ))}
+            {/* Quick-Select City Chips (Smooth horizontal scroll on mobile & desktop) */}
+            <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+              {[
+                { id: 'pakistan', name: '🇵🇰 Pakistan' },
+                { id: 'khairpur', name: 'Khairpur' },
+                { id: 'karachi', name: 'Karachi' },
+                { id: 'sukkur', name: 'Sukkur' },
+                { id: 'larkana', name: 'Larkana' },
+                { id: 'hyderabad', name: 'Hyderabad' },
+                { id: 'tharparkar', name: 'Tharparkar' },
+                { id: 'jacobabad', name: 'Jacobabad' },
+                { id: 'islamabad', name: 'Islamabad' }
+              ].map((chip) => {
+                const isSelected = selectedLocation?.name.toLowerCase() === chip.name.replace('🇵🇰 ', '').toLowerCase() ||
+                  selectedLocation?.id.toLowerCase() === chip.id.toLowerCase();
+                return (
+                  <button
+                    key={chip.id}
+                    type="button"
+                    onClick={() => {
+                      if (chip.id === 'pakistan') {
+                        setSelectedLocation({
+                          id: 'pakistan',
+                          name: 'Pakistan',
+                          province: 'Sindh Region',
+                          latitude: 28.5,
+                          longitude: 69.0,
+                          category: 'National Geographic Center',
+                          heat_risk: 'High',
+                          flood_exposure: 'High',
+                          drought_indicator: 'Moderate',
+                          temp_anomaly: '+1.82°C',
+                          summary: 'Central Indus River Basin & Sindh agricultural delta.'
+                        });
+                        setSearchQuery('');
+                        setActiveLocationId('khairpur');
+                        setFlyToTrigger((prev) => prev + 1);
+                      } else {
+                        const target = locations.find((l) => l.name.toLowerCase() === chip.name.toLowerCase() || l.id === chip.id) ||
+                          fallbackLocations.find((l) => l.name.toLowerCase() === chip.name.toLowerCase() || l.id === chip.id);
+                        if (target) handleSelectCity(target);
+                      }
+                    }}
+                    className={`px-3 py-1 rounded-full text-xs font-grotesk font-semibold transition whitespace-nowrap border shrink-0 cursor-pointer active:scale-95 touch-manipulation select-none ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-[#20C5FF] to-[#22D3A0] text-[#06111F] border-transparent font-bold shadow-md shadow-[#20C5FF]/30'
+                        : 'bg-[#10243A]/85 border-white/10 text-slate-300 hover:text-white hover:border-[#20C5FF]/40'
+                    }`}
+                  >
+                    {chip.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
