@@ -304,17 +304,17 @@ export const ExplorePakistan: React.FC = () => {
             isTabActive={mobileTab === 'map'}
           />
 
-          {/* Compass / Map Legend Bar Overlay */}
-          <div className="absolute top-2.5 right-2.5 z-20 bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-2.5 py-1 flex items-center gap-2 shadow-lg pointer-events-none select-none">
+          {/* Compass / Map Legend Bar Overlay (Fixed z-[1500] on top of map panes) */}
+          <div className="absolute top-2.5 right-2.5 z-[1500] bg-[#10243A]/90 backdrop-blur-md border border-white/10 rounded-xl px-2.5 py-1 flex items-center gap-2 shadow-lg pointer-events-none select-none">
             <span className="w-2 h-2 rounded-full bg-emerald-green animate-pulse shrink-0" />
             <span className="text-[10px] font-mono text-emerald-green font-semibold uppercase tracking-wider select-none">
               OVERLAY: {activeOverlay.toUpperCase()}
             </span>
           </div>
 
-          {/* Mobile Bottom Quick-Action Bar */}
+          {/* Mobile Bottom Quick-Action Bar (Fixed z-[2000] to always stay on top of map tiles) */}
           {selectedDistrict && (
-            <div className="lg:hidden absolute bottom-3 left-3 right-3 z-30 bg-[#0B1B2D]/95 border border-[#20C5FF]/40 backdrop-blur-xl rounded-2xl px-3.5 py-2.5 flex items-center justify-between shadow-2xl gap-2">
+            <div className="lg:hidden absolute bottom-3 left-3 right-3 z-[2000] bg-[#0B1B2D]/95 border border-[#20C5FF]/40 backdrop-blur-xl rounded-2xl px-3.5 py-2.5 flex items-center justify-between shadow-2xl gap-2 pointer-events-auto">
               <div className="min-w-0 flex-1">
                 <span className="text-[9.5px] font-mono text-[#20C5FF] uppercase tracking-wider block">Selected District</span>
                 <div className="font-grotesk font-bold text-white text-sm truncate">

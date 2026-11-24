@@ -287,8 +287,8 @@ export const PakistanSindhMap: React.FC<PakistanSindhMapProps> = ({
 
     tileLayerRef.current = tileLayer;
 
-    // Elegant Top-Left Zoom Control (prevents overlap with mobile bottom telemetry card)
-    L.control.zoom({ position: 'topleft' }).addTo(map);
+    // Elegant Zoom Control positioned safely above bottom card via CSS
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     mapRef.current = map;
 

@@ -107,34 +107,42 @@ html, body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-/* Hide Leaflet zoom controls on touch/mobile screens to prevent blocking map labels & polygons */
-@media (max-width: 1023px) {
-  .leaflet-control-zoom {
-    display: none !important;
-  }
+/* Position zoom control safely above the bottom telemetry card on mobile */
+.leaflet-bottom.leaflet-right {
+  bottom: 78px !important;
+  right: 12px !important;
+  z-index: 900 !important;
+  margin: 0 !important;
 }
 
-.leaflet-top.leaflet-left {
-  top: 10px !important;
-  left: 10px !important;
+@media (min-width: 1024px) {
+  .leaflet-bottom.leaflet-right {
+    bottom: 20px !important;
+    right: 20px !important;
+  }
 }
 
 .leaflet-bar {
   border: 1px solid rgba(32, 197, 255, 0.4) !important;
   border-radius: 12px !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(32, 197, 255, 0.15) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(32, 197, 255, 0.2) !important;
 }
 
 .leaflet-control-zoom a {
-  background: rgba(16, 36, 58, 0.92) !important;
+  background: rgba(16, 36, 58, 0.95) !important;
   color: #20C5FF !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  width: 34px !important;
-  height: 34px !important;
-  line-height: 34px !important;
-  font-size: 16px !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
   font-weight: bold !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: all 0.2s ease !important;
 }
 
@@ -142,7 +150,8 @@ html, body {
   border-bottom: none !important;
 }
 
-.leaflet-control-zoom a:hover {
+.leaflet-control-zoom a:hover,
+.leaflet-control-zoom a:active {
   background: #20C5FF !important;
   color: #06111F !important;
 }
