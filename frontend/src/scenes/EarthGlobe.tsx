@@ -96,8 +96,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
           controlsRef.current.maxDistance = 14.0;
         }
       } else {
-        // Mobile (<1024px): Balanced vertical framing centered neatly between top search bar and bottom Climate Command hero
-        camera.setViewOffset(w, h, 0, h * 0.04, w, h);
+        // Mobile (<1024px): Balanced vertical framing with equal margins above Pakistan Command badge and below search chips
+        camera.setViewOffset(w, h, 0, h * 0.10, w, h);
         if (controlsRef.current) {
           controlsRef.current.minDistance = 4.0;
           controlsRef.current.maxDistance = 18.0;
