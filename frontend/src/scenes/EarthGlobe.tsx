@@ -96,7 +96,8 @@ export const EarthGlobe: React.FC<EarthGlobeProps> = ({
           controlsRef.current.maxDistance = 14.0;
         }
       } else {
-        camera.setViewOffset(w, h, 0, h * 0.21, w, h);
+        // Mobile (<1024px): Balanced vertical framing centered neatly between top search bar and bottom Climate Command hero
+        camera.setViewOffset(w, h, 0, h * 0.04, w, h);
         if (controlsRef.current) {
           controlsRef.current.minDistance = 4.0;
           controlsRef.current.maxDistance = 18.0;
